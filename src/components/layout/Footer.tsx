@@ -1,0 +1,54 @@
+import Link from "next/link";
+
+export function Footer() {
+  return (
+    <footer className="border-t bg-muted/20">
+      <div className="container px-4 md:px-8 py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold">Agency.</h3>
+            <p className="text-sm text-muted-foreground">
+              We design and build websites and apps that deliver concrete outcomes.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-medium mb-4">Company</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link href="/about" className="hover:text-foreground">About Us</Link></li>
+              <li><Link href="/services" className="hover:text-foreground">Services</Link></li>
+              <li><Link href="/posts" className="hover:text-foreground">Insights</Link></li>
+              <li><Link href="/process" className="hover:text-foreground">Process</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-4">Services</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link href="/services" className="hover:text-foreground">Web Development</Link></li>
+              <li><Link href="/services" className="hover:text-foreground">Mobile App Development</Link></li>
+              <li><Link href="/portfolio" className="hover:text-foreground">Portfolio</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-4">Contact</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>hello@agency.com</li>
+              <li>+1 (555) 123-4567</li>
+              <li className="pt-2">
+                <Link href="/contact" className="font-medium text-foreground hover:underline">
+                  Get in touch &rarr;
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-12 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+          <p>&copy; {new Date().getFullYear()} Agency. All rights reserved.</p>
+          <div className="flex gap-4">
+            <Link href="/privacy" className="hover:text-foreground">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-foreground">Terms of Service</Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
