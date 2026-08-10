@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Image as ImageIcon, UploadCloud, Crop as CropIcon, RefreshCw } from "lucide-react";
-import { getCloudinaryImages, getCloudinarySignature } from "@/app/actions/cloudinary";
+import { getCloudinaryImages, getCloudinarySignature, invalidateCloudinaryCache } from "@/app/actions/cloudinary";
 import { toast } from "sonner";
 import ReactCrop, { Crop, PixelCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -117,6 +117,7 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
       if (data.secure_url) {
         setSelectedImage(data.secure_url);
         toast.success("Image uploaded successfully");
+        await invalidateCloudinaryCache();
         loadImages(); // Refresh library
       } else {
         throw new Error(data.error?.message || "Upload failed");

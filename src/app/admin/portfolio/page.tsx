@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { revalidatePublicRoutes } from "@/app/actions/revalidate";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -89,6 +90,7 @@ export default function PortfolioAdminPage() {
       };
       
       await saveWithVersionHistory("portfolio", docId, projectData);
+      await revalidatePublicRoutes("portfolio", docId);
       
       toast("Project saved successfully");
       setIsDialogOpen(false);

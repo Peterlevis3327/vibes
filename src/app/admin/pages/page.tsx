@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { LiveEditor } from "@/components/admin/LiveEditor";
+import { revalidatePublicRoutes } from "@/app/actions/revalidate";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
@@ -87,6 +88,7 @@ export default function AdminPages() {
     try {
       // For the demo we use a static 'home' id
       await saveWithVersionHistory("pages", "home", savedData);
+      await revalidatePublicRoutes("pages", "home");
       toast("Settings saved", {
         description: "The home page content has been updated.",
       });

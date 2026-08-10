@@ -1,5 +1,5 @@
 import Image from "next/image";
-export const revalidate = 60;
+
 
 import { Metadata } from "next";
 import { Users, Target, Zap, Globe } from "lucide-react";

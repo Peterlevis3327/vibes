@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { revalidatePublicRoutes } from "@/app/actions/revalidate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -96,6 +97,7 @@ export default function PostsAdminPage() {
       
       // Note: Using "posts" collection
       await saveWithVersionHistory("posts", docId, postData);
+      await revalidatePublicRoutes("posts", docId);
       
       toast("Post saved successfully");
       setIsDialogOpen(false);

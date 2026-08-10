@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { revalidatePublicRoutes } from "@/app/actions/revalidate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -85,6 +86,7 @@ export default function ServicesAdminPage() {
       };
       
       await saveWithVersionHistory("services", docId, serviceData);
+      await revalidatePublicRoutes("services", docId);
       
       toast("Service saved successfully");
       setIsDialogOpen(false);

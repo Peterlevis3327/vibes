@@ -1,6 +1,7 @@
 "use server";
 
 import { v2 as cloudinary } from 'cloudinary';
+import { unstable_cache, revalidateTag } from 'next/cache';
 
 // Note: Ensure NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET are set in .env.local
 cloudinary.config({
@@ -31,9 +32,10 @@ export async function getCloudinarySignature() {
   }
 }
 
-export async function getCloudinaryImages() {
-  try {
-    // Note: To use the Admin API to list resources, you need the API key and secret.
+const getCachedImages = unstable_cache(
+  async () => {
+    try {
+      // Note: To use the Admin API to list resources, you need the API key and secret.
     const result = await cloudinary.api.resources({
       type: 'upload',
       prefix: 'portfolio/', // folder
@@ -50,7 +52,18 @@ export async function getCloudinaryImages() {
     }));
   } catch (error) {
     console.error("Cloudinary resources error:", error);
-    // Return empty array or throw based on preference. If not configured, just return empty to not break the UI.
-    return [];
-  }
+      // Return empty array or throw based on preference. If not configured, just return empty to not break the UI.
+      return [];
+    }
+  },
+  ['cloudinary-images'],
+  { tags: ['cloudinary-images'], revalidate: 300 }
+);
+
+export async function getCloudinaryImages() {
+  return getCachedImages();
+}
+
+export async function invalidateCloudinaryCache() {
+  revalidateTag('cloudinary-images');
 }

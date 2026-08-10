@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
+import { revalidatePublicRoutes } from "@/app/actions/revalidate";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -103,6 +104,7 @@ export default function SettingsPage() {
       };
       const docRef = doc(db, "settings", "global");
       await setDoc(docRef, settingsToSave, { merge: true });
+      await revalidatePublicRoutes("settings", "global");
       alert("Settings saved successfully.");
       // In a real app we'd use a toast notification
     } catch (error) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { revalidatePublicRoutes } from "@/app/actions/revalidate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -74,6 +75,7 @@ export default function TeamAdminPage() {
       };
       
       await saveWithVersionHistory("team", docId, memberData);
+      await revalidatePublicRoutes("team", docId);
       
       toast("Team member saved successfully");
       setIsDialogOpen(false);
