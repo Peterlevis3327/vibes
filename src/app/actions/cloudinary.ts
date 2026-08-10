@@ -65,5 +65,6 @@ export async function getCloudinaryImages() {
 }
 
 export async function invalidateCloudinaryCache() {
+  // @ts-expect-error Next.js 15 cache typings expect 2 arguments in some versions
   revalidateTag('cloudinary-images');
 }

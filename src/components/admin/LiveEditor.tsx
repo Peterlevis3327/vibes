@@ -32,7 +32,7 @@ export function LiveEditor({
   const [isVersionsOpen, setIsVersionsOpen] = useState(false);
   const [mediaLibraryKey, setMediaLibraryKey] = useState<string | null>(null);
 
-  const handleChange = (key: string, value: string) => {
+  const handleChange = (key: string, value: any) => {
     setData((prev: any) => ({ ...prev, [key]: value }));
   };
 
