@@ -74,8 +74,8 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
             <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Projects Delivered</p>
           </div>
           <div className="flex flex-col items-center space-y-2">
-            <h3 className="text-3xl font-bold">10</h3>
-            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Years Experience</p>
+            <h3 className="text-3xl font-bold">10+</h3>
+            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Years Combined Experience</p>
           </div>
           <div className="flex flex-col items-center space-y-2">
             <h3 className="text-3xl font-bold">98%</h3>

@@ -30,6 +30,27 @@ export default async function ProcessPage() {
       duration: "1-2 Weeks",
       desc: "We start by deeply understanding your business, your users, and your goals. We define the project scope, technical requirements, and success metrics.",
       deliverables: ["Project Brief", "Technical Architecture Document", "Timeline & Milestones"]
+    },
+    {
+      num: "02",
+      title: "Design",
+      duration: "2-4 Weeks",
+      desc: "Crafting intuitive, beautiful interfaces that align with your brand. We prioritize user experience and aesthetic excellence to ensure your product stands out.",
+      deliverables: ["Wireframes", "Interactive Prototypes", "Design System"]
+    },
+    {
+      num: "03",
+      title: "Development",
+      duration: "4-8 Weeks",
+      desc: "Writing clean, scalable code to bring the designs to life. We build robust architectures that perform seamlessly across all devices.",
+      deliverables: ["Frontend Implementation", "Backend Integration", "CMS Setup"]
+    },
+    {
+      num: "04",
+      title: "Launch",
+      duration: "1-2 Weeks",
+      desc: "Rigorous testing and a smooth deployment to production. We ensure everything works perfectly before introducing your product to the world.",
+      deliverables: ["QA Testing", "Performance Optimization", "Deployment"]
     }
   ];
 

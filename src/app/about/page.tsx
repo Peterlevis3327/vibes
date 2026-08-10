@@ -37,9 +37,12 @@ export default async function AboutPage() {
               </p>
             </div>
             <div className="aspect-square bg-muted rounded-3xl overflow-hidden relative">
-              <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/30">
-                <span>Office/Team Image</span>
-              </div>
+              <Image 
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800" 
+                alt="Our creative team collaborating in a modern office space" 
+                fill 
+                className="object-cover" 
+              />
             </div>
           </div>
         </div>

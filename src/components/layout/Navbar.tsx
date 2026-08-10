@@ -36,6 +36,9 @@ export function Navbar() {
           <Link href="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             About
           </Link>
+          <Link href="/testimonials" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            Testimonials
+          </Link>
           <Link href="/posts" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Insights
           </Link>
@@ -63,6 +66,9 @@ export function Navbar() {
                   </Link>
                   <Link href="/about" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
                     About
+                  </Link>
+                  <Link href="/testimonials" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
+                    Testimonials
                   </Link>
                   <Link href="/posts" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
                     Insights
