@@ -21,7 +21,7 @@ interface Service {
   title: string;
   shortDescription: string;
   fullDescription: string;
-  screenshotImage?: { url: string; alt: string };
+  screenshotImage?: { url: string; alt: string; caption?: string; showCaption?: boolean };
   order?: number;
   features: string[];
   status: "Draft" | "Published";
@@ -34,7 +34,7 @@ export default function ServicesAdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
-  const [screenshotImage, setScreenshotImage] = useState<{ url: string, alt: string } | null>(null);
+  const [screenshotImage, setScreenshotImage] = useState<{ url: string, alt: string, caption?: string, showCaption?: boolean } | null>(null);
   const [currentService, setCurrentService] = useState<Partial<Service>>({ status: "Draft", order: 0 });
   const [featuresInput, setFeaturesInput] = useState("");
 
@@ -174,25 +174,54 @@ export default function ServicesAdminPage() {
                 </div>
                 <div className="space-y-2">
                   <Label>Screenshot Image</Label>
-                  <div className="flex items-center gap-4">
-                    {screenshotImage?.url ? (
-                      <div className="relative h-16 w-24 rounded overflow-hidden border">
-                        <img src={screenshotImage.url} alt={screenshotImage.alt || "Screenshot"} className="object-cover w-full h-full" />
+                  {screenshotImage ? (
+                    <div className="border rounded-lg p-4 bg-muted/30 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={screenshotImage.url} alt={screenshotImage.alt || "Screenshot"} className="h-16 w-24 object-cover rounded" />
+                          <div>
+                            <p className="text-sm font-medium line-clamp-1 max-w-[200px]">{screenshotImage.url.split('/').pop()}</p>
+                            <p className="text-xs text-muted-foreground">Alt: {screenshotImage.alt}</p>
+                            {screenshotImage.caption && (
+                              <p className="text-xs text-muted-foreground italic mt-1 line-clamp-1">Caption: {screenshotImage.caption}</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button type="button" variant="outline" size="sm" onClick={() => setIsMediaLibraryOpen(true)}>
+                            Change
+                          </Button>
+                          <Button type="button" variant="ghost" size="icon" onClick={() => setScreenshotImage(null)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
                       </div>
-                    ) : (
+                      {screenshotImage.caption && (
+                        <div className="flex items-center gap-2 pt-2 border-t">
+                          <input
+                            type="checkbox"
+                            id="showCaption"
+                            checked={screenshotImage.showCaption || false}
+                            onChange={(e) => setScreenshotImage({ ...screenshotImage, showCaption: e.target.checked })}
+                            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                          />
+                          <Label htmlFor="showCaption" className="font-normal text-sm cursor-pointer">
+                            Show caption visibly under image on live site
+                          </Label>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-4">
                       <div className="h-16 w-24 bg-muted flex items-center justify-center rounded border">
                         <ImageIcon className="h-6 w-6 text-muted-foreground" />
                       </div>
-                    )}
-                    <Button type="button" variant="outline" onClick={() => setIsMediaLibraryOpen(true)}>
-                      {screenshotImage ? 'Change Image' : 'Select Image'}
-                    </Button>
-                    {screenshotImage && (
-                      <Button type="button" variant="ghost" size="icon" onClick={() => setScreenshotImage(null)}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
+                      <Button type="button" variant="outline" onClick={() => setIsMediaLibraryOpen(true)}>
+                        Select Image
                       </Button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="space-y-2">
@@ -231,10 +260,11 @@ export default function ServicesAdminPage() {
               </div>
               <div className="space-y-2">
                 <Label>SEO Description</Label>
-                <Input 
+                <Textarea 
                   placeholder="Optional SEO Description" 
                   value={currentService.seoDescription || ""} 
                   onChange={e => setCurrentService({...currentService, seoDescription: e.target.value})}
+                  rows={3}
                 />
               </div>
               <div className="flex justify-between items-center pt-4 border-t">
@@ -294,8 +324,8 @@ export default function ServicesAdminPage() {
       <MediaLibraryModal 
         open={isMediaLibraryOpen}
         onOpenChange={setIsMediaLibraryOpen}
-        onSelect={(url, alt) => {
-          setScreenshotImage({ url, alt });
+        onSelect={(url, alt, caption) => {
+          setScreenshotImage({ url, alt, caption, showCaption: !!caption });
           setIsMediaLibraryOpen(false);
         }}
       />

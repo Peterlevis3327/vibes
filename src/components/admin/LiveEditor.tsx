@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { getDocumentVersions } from "@/lib/firebase/db";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { MediaLibraryModal } from "@/components/admin/MediaLibraryModal";
+import { Image as ImageIcon } from "lucide-react";
 
 // A generic wrapper component that provides a split view for editing page content
 export function LiveEditor({ 
@@ -28,6 +30,7 @@ export function LiveEditor({
   const [history, setHistory] = useState<any[]>([]); // local undo stack
   const [serverVersions, setServerVersions] = useState<any[]>([]);
   const [isVersionsOpen, setIsVersionsOpen] = useState(false);
+  const [mediaLibraryKey, setMediaLibraryKey] = useState<string | null>(null);
 
   const handleChange = (key: string, value: string) => {
     setData((prev: any) => ({ ...prev, [key]: value }));
@@ -106,7 +109,36 @@ export function LiveEditor({
           {Object.keys(data).map((key) => (
             <div key={key} className="space-y-2">
               <Label className="capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</Label>
-              {typeof data[key] === 'string' && data[key].length > 100 ? (
+              {typeof data[key] === 'object' && data[key] !== null ? (
+                <div className="border rounded-lg p-4 bg-muted/30 space-y-4">
+                  {data[key]?.url ? (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={data[key].url} alt={data[key].alt || ""} className="h-16 w-16 object-cover rounded-lg border" />
+                        <div>
+                          <p className="text-sm font-medium line-clamp-1 max-w-[150px]" title={data[key].url.split('/').pop()}>{data[key].url.split('/').pop()}</p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Button type="button" variant="outline" size="sm" onClick={() => setMediaLibraryKey(key)}>
+                          Change
+                        </Button>
+                        <Button type="button" variant="ghost" size="sm" onClick={() => handleChange(key, { url: "", alt: "" })} className="text-destructive">
+                          Remove
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-4 border-2 border-dashed rounded-lg bg-background/50">
+                      <Button type="button" variant="outline" onClick={() => setMediaLibraryKey(key)}>
+                        <ImageIcon className="h-4 w-4 mr-2" />
+                        Select Image
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              ) : typeof data[key] === 'string' && (data[key].length > 100 || key.toLowerCase().includes('description') || key.toLowerCase().includes('headline')) ? (
                 <Textarea 
                   value={data[key]} 
                   onChange={(e) => handleChange(key, e.target.value)} 
@@ -137,6 +169,17 @@ export function LiveEditor({
           </div>
         </div>
       </div>
+
+      <MediaLibraryModal 
+        open={mediaLibraryKey !== null} 
+        onOpenChange={(open) => { if (!open) setMediaLibraryKey(null); }}
+        onSelect={(url, alt, caption) => {
+          if (mediaLibraryKey) {
+            handleChange(mediaLibraryKey, { url, alt, caption, showCaption: data[mediaLibraryKey]?.showCaption || false });
+            setMediaLibraryKey(null);
+          }
+        }}
+      />
     </div>
   );
 }

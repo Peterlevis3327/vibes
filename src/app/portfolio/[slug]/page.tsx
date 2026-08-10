@@ -63,12 +63,23 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         {/* Hero Image */}
         <div className="w-full max-w-7xl mx-auto px-4 md:px-8 mb-24">
           <div className="aspect-video bg-muted rounded-3xl w-full flex items-center justify-center text-muted-foreground/30 relative overflow-hidden">
-            {project.images?.[0]?.url ? (
-              <Image src={project.images[0].url} alt={project.images[0].alt || project.title} fill className="object-cover" priority />
+            {(project.coverImage?.url || project.images?.[0]?.url) ? (
+              <Image 
+                src={project.coverImage?.url || project.images[0].url} 
+                alt={project.coverImage?.alt || project.images?.[0]?.alt || project.title} 
+                fill 
+                className="object-cover" 
+                priority 
+              />
             ) : (
               <span>Primary Project Image / Device Mockup</span>
             )}
           </div>
+          {project.coverImage?.showCaption && project.coverImage?.caption && (
+            <p className="text-center text-sm text-muted-foreground mt-4 italic">
+              {project.coverImage.caption}
+            </p>
+          )}
         </div>
 
         <div className="container mx-auto px-4 md:px-8 max-w-4xl space-y-24">
@@ -117,17 +128,26 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               <p className="text-xl md:text-2xl leading-relaxed mb-8 relative z-10 font-medium">
                 "{relatedTestimonial.quote}"
               </p>
-              <div className="flex items-center gap-4 relative z-10">
-                <div className="h-12 w-12 rounded-full bg-primary-foreground/10 flex-shrink-0 flex items-center justify-center relative overflow-hidden">
-                  {relatedTestimonial.avatar?.url ? (
-                    <Image src={relatedTestimonial.avatar.url} alt={relatedTestimonial.avatar.alt || relatedTestimonial.name} fill className="object-cover" />
-                  ) : (
-                    <span className="text-xs">Photo</span>
-                  )}
-                </div>
+              <div className="flex flex-col gap-4 relative z-10">
                 <div>
-                  <h4 className="font-bold">{relatedTestimonial.name}</h4>
-                  <p className="text-sm opacity-80">{relatedTestimonial.role}{relatedTestimonial.company ? `, ${relatedTestimonial.company}` : ''}</p>
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-primary-foreground/10 flex-shrink-0 flex items-center justify-center relative overflow-hidden">
+                      {relatedTestimonial.avatar?.url ? (
+                        <Image src={relatedTestimonial.avatar.url} alt={relatedTestimonial.avatar.alt || relatedTestimonial.name} fill className="object-cover" />
+                      ) : (
+                        <span className="text-xs">Photo</span>
+                      )}
+                    </div>
+                    <div>
+                      <h4 className="font-bold">{relatedTestimonial.name}</h4>
+                      <p className="text-sm opacity-80">{relatedTestimonial.role}{relatedTestimonial.company ? `, ${relatedTestimonial.company}` : ''}</p>
+                    </div>
+                  </div>
+                  {relatedTestimonial.avatar?.showCaption && relatedTestimonial.avatar?.caption && (
+                    <p className="text-xs text-primary-foreground/80 mt-3 italic ml-16">
+                      {relatedTestimonial.avatar.caption}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

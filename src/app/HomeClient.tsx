@@ -31,14 +31,23 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
     <div className="flex flex-col w-full">
       {/* Hero Section */}
       <section className="relative px-4 md:px-8 pt-24 pb-32 md:pt-32 md:pb-40 flex flex-col items-center text-center overflow-hidden">
+        {data.heroBackgroundImage?.url && (
+          <>
+            <div 
+              className="absolute inset-0 z-0 bg-cover bg-center" 
+              style={{ backgroundImage: `url(${data.heroBackgroundImage.url})` }}
+            />
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px] z-0"></div>
+          </>
+        )}
         {/* Removed radial gradient for a cleaner editorial look */}
         <motion.div 
-          className="max-w-4xl mx-auto space-y-8"
+          className="max-w-4xl mx-auto space-y-8 relative z-10"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium bg-muted/50">
+          <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium bg-muted/50 backdrop-blur-md">
             <span className="flex h-2 w-2 rounded-full bg-primary mr-2"></span>
             {data.availabilityBadge}
           </div>

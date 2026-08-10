@@ -54,6 +54,11 @@ export default async function TestimonialsPage() {
                         <p className="text-sm text-muted-foreground">{testimonial.role}{testimonial.company ? `, ${testimonial.company}` : ''}</p>
                       </div>
                     </div>
+                    {testimonial.avatar?.showCaption && testimonial.avatar?.caption && (
+                      <p className="text-xs text-muted-foreground mt-2 italic ml-16">
+                        {testimonial.avatar.caption}
+                      </p>
+                    )}
                     {testimonial.relatedProjectId && (
                       <div className="pt-4 border-t mt-2">
                         <a href={`/portfolio/${testimonial.relatedProjectId}`} className="text-sm font-medium text-primary hover:underline">

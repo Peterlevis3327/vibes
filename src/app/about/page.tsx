@@ -60,15 +60,20 @@ export default async function AboutPage() {
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
               {team.map((member: any) => (
                 <div key={member.id} className="group">
-                  <div className="aspect-[4/5] bg-background/10 rounded-2xl mb-6 overflow-hidden relative">
-                     {member.photo?.url ? (
-                       <Image src={member.photo.url} alt={member.photo.alt || member.name} fill className="object-cover" />
-                     ) : (
-                       <div className="absolute inset-0 flex items-center justify-center text-background/30">
-                        <span>Portrait</span>
-                      </div>
-                     )}
-                  </div>
+                    <div className="aspect-[4/5] bg-background/10 rounded-2xl mb-6 overflow-hidden relative">
+                       {member.avatar?.url ? (
+                         <Image src={member.avatar.url} alt={member.avatar.alt || member.name} fill className="object-cover" />
+                       ) : (
+                         <div className="absolute inset-0 flex items-center justify-center text-background/30">
+                          <span>Portrait</span>
+                        </div>
+                       )}
+                    </div>
+                    {member.avatar?.showCaption && member.avatar?.caption && (
+                      <p className="text-sm text-muted-foreground mt-2 italic text-center mb-4">
+                        {member.avatar.caption}
+                      </p>
+                    )}
                   <h3 className="text-xl font-bold">{member.name}</h3>
                   <p className="text-primary font-medium mb-3">{member.role}</p>
                   <p className="text-background/70 text-sm leading-relaxed">{member.bio}</p>

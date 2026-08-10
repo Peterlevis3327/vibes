@@ -23,7 +23,7 @@ interface CloudinaryImage {
 interface MediaLibraryModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSelect: (imageUrl: string, altText: string) => void;
+  onSelect: (imageUrl: string, altText: string, caption?: string) => void;
 }
 
 export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibraryModalProps) {
@@ -31,6 +31,7 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [altText, setAltText] = useState("");
+  const [caption, setCaption] = useState("");
   const [isCropping, setIsCropping] = useState(false);
   
   // Cropping state
@@ -60,9 +61,6 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
 
   const handleConfirm = () => {
     if (selectedImage && altText) {
-      // If we cropped the image, we could theoretically generate a new URL by modifying the Cloudinary URL 
-      // with crop parameters, e.g., `/upload/c_crop,h_200,w_200,x_10,y_10/v1234/public_id.jpg`
-      // For now, we will return the original image URL or a mocked crop URL.
       let finalUrl = selectedImage;
       if (isCropping && completedCrop && imgRef.current) {
         const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
@@ -72,13 +70,12 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
         const w = Math.round(completedCrop.width * scaleX);
         const h = Math.round(completedCrop.height * scaleY);
         
-        // Very basic Cloudinary URL transform injection
         if (finalUrl.includes('/upload/')) {
           finalUrl = finalUrl.replace('/upload/', `/upload/c_crop,x_${x},y_${y},w_${w},h_${h}/`);
         }
       }
 
-      onSelect(finalUrl, altText);
+      onSelect(finalUrl, altText, caption);
       onOpenChange(false);
       resetState();
     }
@@ -87,6 +84,7 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
   const resetState = () => {
     setSelectedImage(null);
     setAltText("");
+    setCaption("");
     setIsCropping(false);
     setCrop(undefined);
     setCompletedCrop(null);
@@ -166,6 +164,7 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
                     onClick={() => {
                       setSelectedImage(img.url);
                       setAltText(img.alt || "");
+                      setCaption("");
                       setIsCropping(false);
                       setCrop(undefined);
                       setCompletedCrop(null);
@@ -251,6 +250,18 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
                 <p className="text-sm text-muted-foreground">
                   Crucial for accessibility (a11y) and SEO. Describe exactly what appears in the image.
                 </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="caption" className="text-base">
+                  Caption (Optional)
+                </Label>
+                <Input 
+                  id="caption"
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value)}
+                  placeholder="Optional visible caption text for this image..."
+                />
               </div>
               
               <div className="flex justify-end gap-3 pt-4">

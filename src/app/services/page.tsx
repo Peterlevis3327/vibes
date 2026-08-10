@@ -46,8 +46,15 @@ export default async function ServicesPage() {
               <div key={service.id || index} className="grid md:grid-cols-12 gap-8 md:gap-16 items-start">
                 <div className="md:col-span-4 space-y-6 sticky top-24">
                   {service.screenshotImage?.url && (
-                    <div className="relative h-24 w-24 rounded-2xl overflow-hidden border">
-                      <Image src={service.screenshotImage.url} alt={service.screenshotImage.alt || service.title} fill className="object-cover" />
+                    <div>
+                      <div className="relative h-24 w-24 rounded-2xl overflow-hidden border">
+                        <Image src={service.screenshotImage.url} alt={service.screenshotImage.alt || service.title} fill className="object-cover" />
+                      </div>
+                      {service.screenshotImage?.showCaption && service.screenshotImage?.caption && (
+                        <p className="text-sm text-muted-foreground mt-2 italic">
+                          {service.screenshotImage.caption}
+                        </p>
+                      )}
                     </div>
                   )}
                   <div>

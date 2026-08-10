@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import { getPostBySlug } from "@/lib/firebase/db";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -46,8 +47,19 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             </h1>
           </header>
 
-          <div className="aspect-video bg-muted rounded-3xl w-full flex items-center justify-center text-muted-foreground/30 mb-16">
-            <span>Cover Image</span>
+          <div className="mb-16">
+            <div className="aspect-video bg-muted rounded-3xl w-full flex items-center justify-center text-muted-foreground/30 relative overflow-hidden">
+              {post.coverImage?.url ? (
+                <Image src={post.coverImage.url} alt={post.coverImage.alt || post.title} fill className="object-cover" priority />
+              ) : (
+                <span>Cover Image</span>
+              )}
+            </div>
+            {post.coverImage?.showCaption && post.coverImage?.caption && (
+              <p className="text-center text-sm text-muted-foreground mt-4 italic">
+                {post.coverImage.caption}
+              </p>
+            )}
           </div>
 
           <div 

@@ -21,7 +21,7 @@ interface TeamMember {
   name: string;
   role: string;
   bio: string;
-  avatar?: { url: string; alt: string };
+  avatar?: { url: string; alt: string; caption?: string; showCaption?: boolean };
   socialLinks?: { linkedin?: string; twitter?: string };
   status: "Draft" | "Published";
 }
@@ -31,7 +31,7 @@ export default function TeamAdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
-  const [avatar, setAvatar] = useState<{ url: string, alt: string } | null>(null);
+  const [avatar, setAvatar] = useState<{ url: string, alt: string, caption?: string, showCaption?: boolean } | null>(null);
   const [currentMember, setCurrentMember] = useState<Partial<TeamMember>>({ status: "Draft", socialLinks: {} });
 
   const fetchTeamMembers = async () => {
@@ -186,18 +186,37 @@ export default function TeamAdminPage() {
               <div className="space-y-2">
                 <Label>Avatar Image</Label>
                 {avatar ? (
-                  <div className="border rounded-lg p-4 bg-muted/30 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={avatar.url} alt={avatar.alt} className="h-16 w-16 object-cover rounded-full" />
-                      <div>
-                        <p className="text-sm font-medium line-clamp-1 max-w-[200px]">{avatar.url.split('/').pop()}</p>
-                        <p className="text-xs text-muted-foreground">Alt: {avatar.alt}</p>
+                  <div className="border rounded-lg p-4 bg-muted/30 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={avatar.url} alt={avatar.alt} className="h-16 w-16 object-cover rounded-full" />
+                        <div>
+                          <p className="text-sm font-medium line-clamp-1 max-w-[200px]">{avatar.url.split('/').pop()}</p>
+                          <p className="text-xs text-muted-foreground">Alt: {avatar.alt}</p>
+                          {avatar.caption && (
+                            <p className="text-xs text-muted-foreground italic mt-1 line-clamp-1">Caption: {avatar.caption}</p>
+                          )}
+                        </div>
                       </div>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => setAvatar(null)}>
+                        Remove
+                      </Button>
                     </div>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => setAvatar(null)}>
-                      Remove
-                    </Button>
+                    {avatar.caption && (
+                      <div className="flex items-center gap-2 pt-2 border-t">
+                        <input
+                          type="checkbox"
+                          id="showCaption"
+                          checked={avatar.showCaption || false}
+                          onChange={(e) => setAvatar({ ...avatar, showCaption: e.target.checked })}
+                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                        />
+                        <Label htmlFor="showCaption" className="font-normal text-sm cursor-pointer">
+                          Show caption visibly under image on live site
+                        </Label>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="border-2 border-dashed rounded-lg p-8 text-center bg-muted/30">
@@ -231,8 +250,8 @@ export default function TeamAdminPage() {
         <MediaLibraryModal 
           open={isMediaLibraryOpen} 
           onOpenChange={setIsMediaLibraryOpen}
-          onSelect={(url, alt) => {
-            setAvatar({ url, alt });
+          onSelect={(url, alt, caption) => {
+            setAvatar({ url, alt, caption, showCaption: !!caption });
           }}
         />
       </div>

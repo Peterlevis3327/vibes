@@ -10,6 +10,7 @@ import { Edit, Plus, Trash2, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { MediaLibraryModal } from "@/components/admin/MediaLibraryModal";
 
+import { Textarea } from "@/components/ui/textarea";
 import { useEffect } from "react";
 import { getAllPortfolioProjects, saveWithVersionHistory, generateUniqueSlug } from "@/lib/firebase/db";
 import { doc, deleteDoc } from "firebase/firestore";
@@ -28,7 +29,7 @@ interface Project {
   description?: string;
   seoTitle?: string;
   seoDescription?: string;
-  coverImage?: { url: string; alt: string };
+  coverImage?: { url: string; alt: string; caption?: string; showCaption?: boolean };
 }
 
 export default function PortfolioAdminPage() {
@@ -36,7 +37,7 @@ export default function PortfolioAdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
-  const [coverImage, setCoverImage] = useState<{ url: string, alt: string } | null>(null);
+  const [coverImage, setCoverImage] = useState<{ url: string, alt: string, caption?: string, showCaption?: boolean } | null>(null);
   const [currentProject, setCurrentProject] = useState<Partial<Project>>({ status: "Draft", year: new Date().getFullYear().toString() });
 
   const fetchProjects = async () => {
@@ -131,7 +132,7 @@ export default function PortfolioAdminPage() {
           <Button onClick={() => openEditModal()}>
             <Plus className="mr-2 h-4 w-4" /> Add Project
           </Button>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Project</DialogTitle>
             </DialogHeader>
@@ -189,27 +190,47 @@ export default function PortfolioAdminPage() {
               </div>
               <div className="space-y-2">
                 <Label>SEO Description</Label>
-                <Input 
+                <Textarea 
                   placeholder="Optional SEO Description" 
                   value={currentProject.seoDescription || ""} 
                   onChange={e => setCurrentProject({...currentProject, seoDescription: e.target.value})}
+                  rows={3}
                 />
               </div>
               <div className="space-y-2">
                 <Label>Cover Image</Label>
                 {coverImage ? (
-                  <div className="border rounded-lg p-4 bg-muted/30 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={coverImage.url} alt={coverImage.alt} className="h-16 w-16 object-cover rounded" />
-                      <div>
-                        <p className="text-sm font-medium line-clamp-1 max-w-[200px]">{coverImage.url.split('/').pop()}</p>
-                        <p className="text-xs text-muted-foreground">Alt: {coverImage.alt}</p>
+                  <div className="border rounded-lg p-4 bg-muted/30 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={coverImage.url} alt={coverImage.alt} className="h-16 w-16 object-cover rounded" />
+                        <div>
+                          <p className="text-sm font-medium line-clamp-1 max-w-[200px]">{coverImage.url.split('/').pop()}</p>
+                          <p className="text-xs text-muted-foreground">Alt: {coverImage.alt}</p>
+                          {coverImage.caption && (
+                            <p className="text-xs text-muted-foreground italic mt-1 line-clamp-1">Caption: {coverImage.caption}</p>
+                          )}
+                        </div>
                       </div>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => setCoverImage(null)}>
+                        Remove
+                      </Button>
                     </div>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => setCoverImage(null)}>
-                      Remove
-                    </Button>
+                    {coverImage.caption && (
+                      <div className="flex items-center gap-2 pt-2 border-t">
+                        <input
+                          type="checkbox"
+                          id="showCaption"
+                          checked={coverImage.showCaption || false}
+                          onChange={(e) => setCoverImage({ ...coverImage, showCaption: e.target.checked })}
+                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                        />
+                        <Label htmlFor="showCaption" className="font-normal text-sm cursor-pointer">
+                          Show caption visibly under image on live site
+                        </Label>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="border-2 border-dashed rounded-lg p-8 text-center bg-muted/30">
@@ -243,8 +264,8 @@ export default function PortfolioAdminPage() {
         <MediaLibraryModal 
           open={isMediaLibraryOpen} 
           onOpenChange={setIsMediaLibraryOpen}
-          onSelect={(url, alt) => {
-            setCoverImage({ url, alt });
+          onSelect={(url, alt, caption) => {
+            setCoverImage({ url, alt, caption, showCaption: !!caption });
           }}
         />
       </div>

@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Image from '@tiptap/extension-image';
 import { Button } from '@/components/ui/button';
-import { Bold, Italic, Strikethrough, Heading1, Heading2, List, ListOrdered, Quote, Undo, Redo } from 'lucide-react';
+import { Bold, Italic, Strikethrough, Heading1, Heading2, List, ListOrdered, Quote, Undo, Redo, Image as ImageIcon } from 'lucide-react';
+import { MediaLibraryModal } from '@/components/admin/MediaLibraryModal';
 
 interface TipTapEditorProps {
   content: string;
@@ -9,8 +12,17 @@ interface TipTapEditorProps {
 }
 
 export function TipTapEditor({ content, onChange }: TipTapEditorProps) {
+  const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
+
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Image.configure({
+        HTMLAttributes: {
+          class: 'rounded-md my-4 max-w-full',
+        },
+      }),
+    ],
     content,
     editorProps: {
       attributes: {
@@ -108,6 +120,15 @@ export function TipTapEditor({ content, onChange }: TipTapEditorProps) {
           type="button"
           variant="ghost"
           size="sm"
+          onClick={() => setIsMediaLibraryOpen(true)}
+        >
+          <ImageIcon className="h-4 w-4" />
+        </Button>
+        <div className="w-px h-6 bg-border mx-1 my-auto" />
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
         >
@@ -124,6 +145,15 @@ export function TipTapEditor({ content, onChange }: TipTapEditorProps) {
         </Button>
       </div>
       <EditorContent editor={editor} />
+      <MediaLibraryModal 
+        open={isMediaLibraryOpen}
+        onOpenChange={setIsMediaLibraryOpen}
+        onSelect={(url, alt) => {
+          if (url) {
+            editor.chain().focus().setImage({ src: url, alt }).run();
+          }
+        }}
+      />
     </div>
   );
 }

@@ -17,7 +17,8 @@ const initialHomePageData = {
   primaryCtaText: "Start a Project",
   secondaryCtaText: "View Our Work",
   seoTitle: "Agency | Digital Product Studio",
-  seoDescription: "We design and build websites and apps that deliver concrete outcomes."
+  seoDescription: "We design and build websites and apps that deliver concrete outcomes.",
+  heroBackgroundImage: { url: "", alt: "", caption: "", showCaption: false }
 };
 
 // Simplified preview component that mimics the home page hero
@@ -25,8 +26,17 @@ const HomePreview = ({ data }: { data: typeof initialHomePageData }) => {
   return (
     <div className="flex flex-col w-full font-sans">
       <section className="relative px-4 md:px-8 pt-24 pb-32 flex flex-col items-center text-center overflow-hidden">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium bg-muted/50">
+        {data.heroBackgroundImage?.url && (
+          <>
+            <div 
+              className="absolute inset-0 z-0 bg-cover bg-center" 
+              style={{ backgroundImage: `url(${data.heroBackgroundImage.url})` }}
+            />
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px] z-0"></div>
+          </>
+        )}
+        <div className="max-w-4xl mx-auto space-y-8 relative z-10">
+          <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium bg-muted/50 backdrop-blur-md">
             <span className="flex h-2 w-2 rounded-full bg-primary mr-2"></span>
             {data.availabilityBadge}
           </div>
