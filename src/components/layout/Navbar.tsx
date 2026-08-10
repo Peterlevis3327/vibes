@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,32 +49,32 @@ export function Navbar() {
             <Button>Start a Project</Button>
           </Link>
           <div className="md:hidden">
-            <Sheet>
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger className={buttonVariants({ variant: "ghost", size: "icon" })} aria-label="Open mobile menu">
                 <Menu className="h-6 w-6" />
               </SheetTrigger>
               <SheetContent side="right">
                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 <div className="flex flex-col space-y-6 mt-8">
-                  <Link href="/services" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
+                  <Link href="/services" onClick={() => setIsOpen(false)} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
                     Services
                   </Link>
-                  <Link href="/portfolio" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
+                  <Link href="/portfolio" onClick={() => setIsOpen(false)} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
                     Our Work
                   </Link>
-                  <Link href="/process" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
+                  <Link href="/process" onClick={() => setIsOpen(false)} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
                     Process
                   </Link>
-                  <Link href="/about" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
+                  <Link href="/about" onClick={() => setIsOpen(false)} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
                     About
                   </Link>
-                  <Link href="/testimonials" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
+                  <Link href="/testimonials" onClick={() => setIsOpen(false)} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
                     Testimonials
                   </Link>
-                  <Link href="/posts" className="text-lg font-medium text-foreground hover:text-primary transition-colors">
+                  <Link href="/posts" onClick={() => setIsOpen(false)} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
                     Insights
                   </Link>
-                  <Link href="/contact">
+                  <Link href="/contact" onClick={() => setIsOpen(false)}>
                     <Button className="w-full mt-4">Start a Project</Button>
                   </Link>
                 </div>

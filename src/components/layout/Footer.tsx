@@ -4,14 +4,14 @@ export function Footer() {
   return (
     <footer className="border-t bg-muted/20">
       <div className="container px-4 md:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="col-span-2 md:col-span-1 space-y-4">
             <h3 className="text-lg font-bold">Agency.</h3>
             <p className="text-sm text-muted-foreground">
               We design and build websites and apps that deliver concrete outcomes.
             </p>
           </div>
-          <div>
+          <div className="col-span-1">
             <h4 className="font-medium mb-4">Company</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/about" className="hover:text-foreground">About Us</Link></li>
@@ -21,7 +21,7 @@ export function Footer() {
               <li><Link href="/process" className="hover:text-foreground">Process</Link></li>
             </ul>
           </div>
-          <div>
+          <div className="col-span-1">
             <h4 className="font-medium mb-4">Services</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/services" className="hover:text-foreground">Web Development</Link></li>
@@ -29,7 +29,7 @@ export function Footer() {
               <li><Link href="/portfolio" className="hover:text-foreground">Portfolio</Link></li>
             </ul>
           </div>
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <h4 className="font-medium mb-4">Contact</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>hello@agency.com</li>
