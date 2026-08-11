@@ -7,14 +7,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await getPortfolioProjects()
   const posts = await getPosts()
 
+  const parseDate = (val: any) => {
+    if (!val) return new Date()
+    if (typeof val.toDate === 'function') return val.toDate()
+    const d = new Date(val)
+    return isNaN(d.getTime()) ? new Date() : d
+  }
+
   const projectUrls = projects.map((project) => ({
     url: `${baseUrl}/portfolio/${project.id}`,
-    lastModified: project.updatedAt ? new Date(project.updatedAt) : new Date(),
+    lastModified: parseDate(project.updatedAt),
   }))
 
   const postUrls = posts.map((post) => ({
     url: `${baseUrl}/posts/${post.id}`,
-    lastModified: post.updatedAt ? new Date(post.updatedAt) : new Date(),
+    lastModified: parseDate(post.updatedAt),
   }))
 
   return [
