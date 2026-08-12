@@ -23,6 +23,7 @@ export default async function TestimonialsPage() {
         title={pageData?.title || "Client Testimonials"}
         subtitle={pageData?.subtitle || "Don't just take our word for it. Here's what our partners have to say about working with us."}
         backgroundImage={pageData?.headerBackgroundImage}
+        showBackgroundImage={pageData?.showBackgroundImage !== false}
       />
 
       <section className="px-4 md:px-8 py-24">

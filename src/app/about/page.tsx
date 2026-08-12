@@ -23,6 +23,7 @@ export default async function AboutPage() {
         title={pageData?.title || "About Agency."}
         subtitle={pageData?.subtitle || "We are a collective of designers, engineers, and strategists dedicated to building digital products that matter."}
         backgroundImage={pageData?.headerBackgroundImage}
+        showBackgroundImage={pageData?.showBackgroundImage !== false}
       />
 
       <section className="px-4 md:px-8 py-24">

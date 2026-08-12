@@ -62,6 +62,7 @@ export default async function ProcessPage() {
         title={pageData?.title || "Our Process"}
         subtitle={pageData?.subtitle || "A transparent, proven methodology to take your project from initial concept to a successful launch, without the guesswork."}
         backgroundImage={pageData?.headerBackgroundImage}
+        showBackgroundImage={pageData?.showBackgroundImage !== false}
       />
 
       <section className="px-4 md:px-8 py-24">

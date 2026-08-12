@@ -33,6 +33,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
         title={pageData?.title || "Insights"}
         subtitle={pageData?.subtitle || "Thoughts, learnings, and strategies on product design, software engineering, and growing digital businesses."}
         backgroundImage={pageData?.headerBackgroundImage}
+        showBackgroundImage={pageData?.showBackgroundImage !== false}
       />
 
       <section className="px-4 md:px-8 py-24">

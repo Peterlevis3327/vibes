@@ -31,7 +31,7 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
     <div className="flex flex-col w-full">
       {/* Hero Section */}
       <section className="relative px-4 md:px-8 pt-24 pb-32 md:pt-32 md:pb-40 flex flex-col items-center text-center overflow-hidden">
-        {data.heroBackgroundImage?.url && (
+        {data.showBackgroundImage !== false && data.heroBackgroundImage?.url && (
           <>
             <div 
               className="absolute inset-0 z-0 bg-cover bg-center" 
@@ -47,10 +47,6 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium bg-muted/50 backdrop-blur-md">
-            <span className="flex h-2 w-2 rounded-full bg-primary mr-2"></span>
-            {data.availabilityBadge}
-          </div>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight">
             {data.heroHeadline.includes("drive results.") ? (
               <>We design and build products that <span className="text-muted-foreground">drive results.</span></>
@@ -61,14 +57,6 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto text-balance">
             {data.heroSubheadline}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Link href="/contact" className={buttonVariants({ size: "lg", className: "text-base px-8 h-12" })}>
-              {data.primaryCtaText} <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-            <Link href="/portfolio" className={buttonVariants({ size: "lg", variant: "outline", className: "text-base px-8 h-12" })}>
-              {data.secondaryCtaText}
-            </Link>
-          </div>
         </motion.div>
 
         {/* Trust Signals */}

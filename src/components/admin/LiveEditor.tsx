@@ -9,6 +9,7 @@ import { getDocumentVersions } from "@/lib/firebase/db";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { MediaLibraryModal } from "@/components/admin/MediaLibraryModal";
 import { Image as ImageIcon } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 // A generic wrapper component that provides a split view for editing page content
 export function LiveEditor({ 
@@ -137,6 +138,14 @@ export function LiveEditor({
                       </Button>
                     </div>
                   )}
+                </div>
+              ) : typeof data[key] === 'boolean' ? (
+                <div className="flex items-center space-x-2 h-10 border rounded-lg px-4 bg-muted/30">
+                  <Switch 
+                    checked={data[key]} 
+                    onCheckedChange={(checked) => handleChange(key, checked)} 
+                  />
+                  <span className="text-sm font-medium">{data[key] ? "Enabled" : "Disabled"}</span>
                 </div>
               ) : typeof data[key] === 'string' && (data[key].length > 100 || key.toLowerCase().includes('description') || key.toLowerCase().includes('headline')) ? (
                 <Textarea 

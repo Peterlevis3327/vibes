@@ -11,20 +11,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Default structures
 const initialHomePageData = {
-  availabilityBadge: "Available for new projects in Q4",
   heroHeadline: "We design and build products that drive results.",
   heroSubheadline: "An independent digital agency crafting high-performance websites and mobile apps for ambitious brands.",
-  primaryCtaText: "Start a Project",
-  secondaryCtaText: "View Our Work",
   seoTitle: "Agency | Digital Product Studio",
   seoDescription: "We design and build websites and apps that deliver concrete outcomes.",
-  heroBackgroundImage: { url: "", alt: "", caption: "", showCaption: false }
+  heroBackgroundImage: { url: "", alt: "", caption: "", showCaption: false },
+  showBackgroundImage: true
 };
 
 const initialGenericPageData = {
   title: "",
   subtitle: "",
-  headerBackgroundImage: { url: "", alt: "", caption: "", showCaption: false }
+  headerBackgroundImage: { url: "", alt: "", caption: "", showCaption: false },
+  showBackgroundImage: true
 };
 
 // Simplified preview component that mimics the home page hero
@@ -32,7 +31,7 @@ const HomePreview = ({ data }: { data: typeof initialHomePageData }) => {
   return (
     <div className="flex flex-col w-full font-sans">
       <section className="relative px-4 md:px-8 pt-24 pb-32 flex flex-col items-center text-center overflow-hidden">
-        {data.heroBackgroundImage?.url && (
+        {data.showBackgroundImage && data.heroBackgroundImage?.url && (
           <>
             <div 
               className="absolute inset-0 z-0 bg-cover bg-center" 
@@ -42,10 +41,6 @@ const HomePreview = ({ data }: { data: typeof initialHomePageData }) => {
           </>
         )}
         <div className="max-w-4xl mx-auto space-y-8 relative z-10">
-          <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium bg-muted/50 backdrop-blur-md">
-            <span className="flex h-2 w-2 rounded-full bg-primary mr-2"></span>
-            {data.availabilityBadge}
-          </div>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight">
             {/* Simple hack to render the highlighted text if it matches our pattern, otherwise just render the string */}
             {data.heroHeadline?.includes("drive results.") ? (
@@ -57,14 +52,6 @@ const HomePreview = ({ data }: { data: typeof initialHomePageData }) => {
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto text-balance">
             {data.heroSubheadline}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Button size="lg" className="text-base px-8 h-12">
-              {data.primaryCtaText} <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-            <Button size="lg" variant="outline" className="text-base px-8 h-12">
-              {data.secondaryCtaText}
-            </Button>
-          </div>
         </div>
       </section>
     </div>
@@ -76,7 +63,7 @@ const GenericPagePreview = ({ data }: { data: typeof initialGenericPageData }) =
   return (
     <div className="flex flex-col w-full font-sans">
       <section className="relative px-4 md:px-8 py-24 md:py-32 flex flex-col items-center text-center overflow-hidden">
-        {data.headerBackgroundImage?.url ? (
+        {data.showBackgroundImage && data.headerBackgroundImage?.url ? (
           <>
             <div 
               className="absolute inset-0 z-0 bg-cover bg-center" 
