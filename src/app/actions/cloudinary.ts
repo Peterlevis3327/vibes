@@ -68,3 +68,17 @@ export async function invalidateCloudinaryCache() {
   // @ts-expect-error Next.js 15 cache typings expect 2 arguments in some versions
   revalidateTag('cloudinary-images');
 }
+
+export async function uploadUrlToCloudinary(imageUrl: string) {
+  try {
+    const result = await cloudinary.uploader.upload(imageUrl, {
+      folder: 'portfolio',
+    });
+    // @ts-expect-error Next.js 15 cache typings expect 2 arguments in some versions
+    revalidateTag('cloudinary-images');
+    return { secure_url: result.secure_url };
+  } catch (error: any) {
+    console.error("Cloudinary url upload error:", error);
+    throw new Error(error.message || "Failed to upload image URL");
+  }
+}

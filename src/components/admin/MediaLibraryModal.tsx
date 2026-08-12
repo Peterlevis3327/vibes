@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Image as ImageIcon, UploadCloud, Crop as CropIcon, RefreshCw } from "lucide-react";
-import { getCloudinaryImages, getCloudinarySignature, invalidateCloudinaryCache } from "@/app/actions/cloudinary";
+import { getCloudinaryImages, getCloudinarySignature, invalidateCloudinaryCache, uploadUrlToCloudinary } from "@/app/actions/cloudinary";
 import { toast } from "sonner";
 import ReactCrop, { Crop, PixelCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -134,18 +134,43 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
   };
 
   useEffect(() => {
-    const handlePaste = (e: ClipboardEvent) => {
+    const handlePaste = async (e: ClipboardEvent) => {
       if (!open || uploading) return;
-      const items = e.clipboardData?.items;
-      if (!items) return;
       
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].type.indexOf('image') !== -1) {
-          const file = items[i].getAsFile();
-          if (file) {
-            uploadFile(file);
-            // Switch to upload tab conceptually if needed, or just let it upload
-            break;
+      const items = e.clipboardData?.items;
+      let hasImage = false;
+      if (items) {
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].type.indexOf('image') !== -1) {
+            const file = items[i].getAsFile();
+            if (file) {
+              uploadFile(file);
+              hasImage = true;
+              break;
+            }
+          }
+        }
+      }
+
+      if (hasImage) return;
+
+      const text = e.clipboardData?.getData('text/plain');
+      if (text) {
+        const urlMatch = text.match(/^https?:\/\/[^\s]+$/i);
+        if (urlMatch) {
+          const url = urlMatch[0];
+          setUploading(true);
+          try {
+            const data = await uploadUrlToCloudinary(url);
+            if (data.secure_url) {
+              setSelectedImage(data.secure_url);
+              toast.success("Image URL uploaded successfully");
+              loadImages();
+            }
+          } catch (err: any) {
+            toast.error(err.message || "Failed to upload image URL");
+          } finally {
+            setUploading(false);
           }
         }
       }
@@ -208,8 +233,8 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
             <div className="text-center space-y-4 p-8">
               <UploadCloud className="h-12 w-12 mx-auto text-muted-foreground" />
               <div>
-                <p className="text-lg font-medium">Click to upload</p>
-                <p className="text-sm text-muted-foreground">Supports JPG, PNG, WEBP (Max 5MB)</p>
+                <p className="text-lg font-medium">Click to upload <span className="text-muted-foreground font-normal">(or Ctrl+V to paste)</span></p>
+                <p className="text-sm text-muted-foreground">Supports JPG, PNG, WEBP, or a copied image URL (Max 5MB)</p>
               </div>
               <div>
                 <Label htmlFor="image-upload" className="cursor-pointer">
