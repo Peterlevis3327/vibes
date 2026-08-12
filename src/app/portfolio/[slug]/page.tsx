@@ -7,6 +7,7 @@ import { getProjectBySlug, getTestimonials } from "@/lib/firebase/db";
 import { notFound } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
+import ProjectGallery from "./ProjectGallery";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -162,6 +163,11 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               <p className="text-muted-foreground leading-relaxed">{project.outcome}</p>
             </div>
           </div>
+
+          <ProjectGallery 
+            images={project.galleryImages || []} 
+            isMobile={project.category?.toLowerCase().includes('mobile')} 
+          />
 
           {/* Tech Stack & Links */}
           <div className="bg-muted/30 rounded-3xl p-8 md:p-12 border">

@@ -117,7 +117,9 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
             </div>
           ) : (
             <div className="space-y-16">
-              {services.slice(0, 4).map((service: any, i: number) => (
+              {services.slice(0, 4).map((service: any, i: number) => {
+                const isMobile = service.category?.toLowerCase().includes('mobile');
+                return (
                 <motion.div key={service.id || i} variants={fadeUp} className="group grid md:grid-cols-2 gap-8 items-center">
                   <div className={`space-y-6 ${i % 2 !== 0 ? 'md:order-last' : ''}`}>
                     <h3 className="text-3xl font-bold tracking-tight">{service.title}</h3>
@@ -126,9 +128,15 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
                       Learn more <ChevronRight className="ml-1 h-4 w-4" />
                     </Link>
                   </div>
-                  <div className="aspect-[4/3] bg-muted rounded-2xl overflow-hidden relative border flex items-center justify-center">
+                  <div className={`aspect-[4/3] bg-muted rounded-2xl overflow-hidden relative border flex items-center justify-center ${isMobile ? '' : 'group-hover:border-primary/50 transition-colors'}`}>
                     {service.screenshotImage?.url ? (
-                      <Image src={service.screenshotImage.url} alt={service.screenshotImage.alt || service.title} fill className="object-contain p-6 sm:p-10 drop-shadow-2xl" sizes="(max-width: 768px) 100vw, 50vw" />
+                      <Image 
+                        src={service.screenshotImage.url} 
+                        alt={service.screenshotImage.alt || service.title} 
+                        fill 
+                        className={isMobile ? "object-contain p-6 sm:p-10 drop-shadow-2xl" : "object-cover group-hover:scale-105 transition-transform duration-500"} 
+                        sizes="(max-width: 768px) 100vw, 50vw" 
+                      />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/40">
                         <span className="text-sm font-medium uppercase tracking-widest">[ Device Mockup ]</span>
@@ -136,7 +144,8 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
                     )}
                   </div>
                 </motion.div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

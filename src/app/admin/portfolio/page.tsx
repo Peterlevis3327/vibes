@@ -38,6 +38,7 @@ interface Project {
   industry?: string;
   techStack?: string[]; // Array of strings, handled as comma-separated string in form
   liveLink?: string;
+  galleryImages?: { url: string; alt: string; caption?: string; showCaption?: boolean }[];
 }
 
 // Helper to safely join tech stack array to string
@@ -50,9 +51,10 @@ export default function PortfolioAdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
-  const [mediaTarget, setMediaTarget] = useState<"cover" | "thumbnail" | null>(null);
+  const [mediaTarget, setMediaTarget] = useState<"cover" | "thumbnail" | "gallery" | null>(null);
   const [coverImage, setCoverImage] = useState<{ url: string, alt: string, caption?: string, showCaption?: boolean } | null>(null);
   const [thumbnailImage, setThumbnailImage] = useState<{ url: string, alt: string, caption?: string, showCaption?: boolean } | null>(null);
+  const [galleryImages, setGalleryImages] = useState<{ url: string, alt: string, caption?: string, showCaption?: boolean }[]>([]);
   const [currentProject, setCurrentProject] = useState<Partial<Project>>({ status: "Draft", year: new Date().getFullYear().toString() });
   const [techStackInput, setTechStackInput] = useState("");
 
@@ -103,6 +105,7 @@ export default function PortfolioAdminPage() {
         ...currentProject,
         coverImage,
         thumbnailImage,
+        galleryImages,
         techStack: techStackInput.split(",").map(s => s.trim()).filter(Boolean)
       };
       
@@ -113,6 +116,7 @@ export default function PortfolioAdminPage() {
       setIsDialogOpen(false);
       setCoverImage(null);
       setThumbnailImage(null);
+      setGalleryImages([]);
       setTechStackInput("");
       setCurrentProject({ status: "Draft", year: new Date().getFullYear().toString() });
       fetchProjects(); // Refresh the list
@@ -132,6 +136,11 @@ export default function PortfolioAdminPage() {
     if (versionData.thumbnailImage) {
       setThumbnailImage(versionData.thumbnailImage);
     }
+    if (versionData.galleryImages) {
+      setGalleryImages(versionData.galleryImages);
+    } else {
+      setGalleryImages([]);
+    }
     if (versionData.techStack) {
       setTechStackInput(techStackToString(versionData.techStack));
     }
@@ -142,11 +151,13 @@ export default function PortfolioAdminPage() {
       setCurrentProject(project);
       setCoverImage(project.coverImage || null);
       setThumbnailImage(project.thumbnailImage || null);
+      setGalleryImages(project.galleryImages || []);
       setTechStackInput(techStackToString(project.techStack));
     } else {
       setCurrentProject({ status: "Draft", year: new Date().getFullYear().toString() });
       setCoverImage(null);
       setThumbnailImage(null);
+      setGalleryImages([]);
       setTechStackInput("");
     }
     setIsDialogOpen(true);
@@ -399,6 +410,44 @@ export default function PortfolioAdminPage() {
                   </div>
                 </div>
               </div>
+              <div className="space-y-4 pt-4 border-t">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold">Project Gallery (Optional)</h3>
+                    <p className="text-sm text-muted-foreground">Add multiple images to display a gallery below the main case study.</p>
+                  </div>
+                  <Button type="button" variant="outline" size="sm" onClick={() => { setMediaTarget("gallery"); setIsMediaLibraryOpen(true); }}>
+                    <Plus className="h-4 w-4 mr-2" /> Add Image
+                  </Button>
+                </div>
+                
+                {galleryImages.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
+                    {galleryImages.map((img, i) => (
+                      <div key={i} className="border rounded-lg p-2 bg-muted/30 relative group">
+                        <div className="aspect-[4/3] relative rounded overflow-hidden mb-2 border border-muted/50">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={img.url} alt={img.alt} className="object-cover w-full h-full" />
+                        </div>
+                        <p className="text-xs font-medium truncate px-1">{img.url.split('/').pop()}</p>
+                        <Button 
+                          type="button" 
+                          variant="destructive" 
+                          size="icon" 
+                          className="absolute top-4 right-4 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => setGalleryImages(galleryImages.filter((_, index) => index !== i))}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed rounded-lg p-8 text-center bg-muted/30 mt-4">
+                    <p className="text-muted-foreground text-sm">No gallery images added yet.</p>
+                  </div>
+                )}
+              </div>
               <div className="flex justify-between items-center pt-4 border-t">
                 {currentProject.id ? (
                   <VersionHistoryPanel
@@ -426,6 +475,8 @@ export default function PortfolioAdminPage() {
               setCoverImage({ url, alt, caption, showCaption: !!caption });
             } else if (mediaTarget === "thumbnail") {
               setThumbnailImage({ url, alt, caption, showCaption: false });
+            } else if (mediaTarget === "gallery") {
+              setGalleryImages([...galleryImages, { url, alt, caption, showCaption: !!caption }]);
             }
           }}
         />

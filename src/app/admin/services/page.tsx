@@ -26,6 +26,7 @@ interface Service {
   order?: number;
   features: string[];
   status: "Draft" | "Published";
+  category?: string;
   seoTitle?: string;
   seoDescription?: string;
 }
@@ -160,6 +161,21 @@ export default function ServicesAdminPage() {
                     <SelectContent>
                       <SelectItem value="Draft">Draft</SelectItem>
                       <SelectItem value="Published">Published</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2 col-span-2 sm:col-span-1">
+                  <Label>Category</Label>
+                  <Select value={currentService.category || ""} onValueChange={(v) => setCurrentService({...currentService, category: v})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Web Application">Web Application</SelectItem>
+                      <SelectItem value="Mobile Application">Mobile Application</SelectItem>
+                      <SelectItem value="UI/UX Design">UI/UX Design</SelectItem>
+                      <SelectItem value="Branding">Branding</SelectItem>
+                      <SelectItem value="E-Commerce">E-Commerce</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
