@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import { Menu, ChevronRight } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function Navbar({ siteName = "Agency." }: { siteName?: string }) {
@@ -73,7 +73,6 @@ export function Navbar({ siteName = "Agency." }: { siteName?: string }) {
                       <span className="text-xl font-semibold tracking-tight text-foreground/80 group-hover:text-foreground transition-colors">
                         {item.label}
                       </span>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground/50 group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                     </Link>
                   ))}
                   <div className="pt-6 px-4">
