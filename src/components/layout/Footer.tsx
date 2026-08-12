@@ -32,11 +32,10 @@ export function Footer({ siteName = "Agency." }: { siteName?: string }) {
           <div className="col-span-2 md:col-span-1">
             <h4 className="font-medium mb-4">Contact</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>hello@agency.com</li>
-              <li>+1 (555) 123-4567</li>
+             
               <li className="pt-2">
                 <Link href="/contact" className="font-medium text-foreground hover:underline">
-                  Get in touch &rarr;
+                  Get in touch;
                 </Link>
               </li>
             </ul>

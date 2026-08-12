@@ -72,9 +72,7 @@ export default function LoginPage() {
             </Button>
           </form>
           
-          <div className="mt-6 p-4 bg-muted/50 rounded-lg text-sm text-muted-foreground text-center">
-            <p><strong>Demo Note:</strong> Firebase is using placeholder credentials. To bypass auth for development, you'll need to remove the auth guard in layout.tsx or provide real Firebase credentials.</p>
-          </div>
+          
         </CardContent>
       </Card>
     </div>
