@@ -35,7 +35,7 @@ export function Footer({ siteName = "Agency." }: { siteName?: string }) {
              
               <li className="pt-2">
                 <Link href="/contact" className="font-medium text-foreground hover:underline">
-                  Get in touch;
+                 <u>Get in touch</u> 
                 </Link>
               </li>
             </ul>
