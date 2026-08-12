@@ -9,13 +9,15 @@ export const metadata: Metadata = {
 };
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { getServices, getPortfolioProjects } from "@/lib/firebase/db";
+import { getServices, getPortfolioProjects, getPageData } from "@/lib/firebase/db";
 import Image from "next/image";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export default async function ServicesPage() {
-  const [services, portfolio] = await Promise.all([
+  const [services, portfolio, pageData] = await Promise.all([
     getServices(),
-    getPortfolioProjects()
+    getPortfolioProjects(),
+    getPageData("services")
   ]);
   
   // Sort services by order if it exists
@@ -23,14 +25,11 @@ export default async function ServicesPage() {
 
   return (
     <div className="flex flex-col w-full">
-      <section className="px-4 md:px-8 py-24 md:py-32 bg-muted/30">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">Our Services</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Comprehensive digital solutions designed to help your business scale. From concept to deployment, we handle it all.
-          </p>
-        </div>
-      </section>
+      <PageHeader 
+        title={pageData?.title || "Our Services"}
+        subtitle={pageData?.subtitle || "Comprehensive digital solutions designed to help your business scale. From concept to deployment, we handle it all."}
+        backgroundImage={pageData?.headerBackgroundImage}
+      />
 
       <section className="px-4 md:px-8 py-24">
         <div className="container mx-auto max-w-5xl space-y-24">

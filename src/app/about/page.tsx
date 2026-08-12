@@ -3,7 +3,8 @@ import Image from "next/image";
 
 import { Metadata } from "next";
 import { Users, Target, Zap, Globe } from "lucide-react";
-import { getTeamMembers } from "@/lib/firebase/db";
+import { getTeamMembers, getPageData } from "@/lib/firebase/db";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
   title: "About Us | Agency.",
@@ -11,18 +12,18 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const team = await getTeamMembers();
+  const [team, pageData] = await Promise.all([
+    getTeamMembers(),
+    getPageData("about")
+  ]);
 
   return (
     <div className="flex flex-col w-full">
-      <section className="px-4 md:px-8 py-24 md:py-32 bg-muted/30">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">About Agency.</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            We are a collective of designers, engineers, and strategists dedicated to building digital products that matter.
-          </p>
-        </div>
-      </section>
+      <PageHeader 
+        title={pageData?.title || "About Agency."}
+        subtitle={pageData?.subtitle || "We are a collective of designers, engineers, and strategists dedicated to building digital products that matter."}
+        backgroundImage={pageData?.headerBackgroundImage}
+      />
 
       <section className="px-4 md:px-8 py-24">
         <div className="container mx-auto max-w-5xl">

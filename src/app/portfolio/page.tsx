@@ -2,7 +2,8 @@
 
 import { Metadata } from "next";
 import Link from "next/link";
-import { getPortfolioProjects } from "@/lib/firebase/db";
+import { getPortfolioProjects, getPageData } from "@/lib/firebase/db";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
   title: "Portfolio & Case Studies | Agency.",
@@ -16,7 +17,10 @@ import Image from "next/image";
 export default async function PortfolioPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const params = await searchParams;
   const selectedCategory = params.category || "All Projects";
-  const allProjects = await getPortfolioProjects();
+  const [allProjects, pageData] = await Promise.all([
+    getPortfolioProjects(),
+    getPageData("portfolio")
+  ]);
   
   // Extract unique categories from projects
   const availableCategories = Array.from(new Set(allProjects.map((p: any) => p.category).filter(Boolean))) as string[];
@@ -27,14 +31,11 @@ export default async function PortfolioPage({ searchParams }: { searchParams: Pr
     : allProjects.filter((p: any) => p.category === selectedCategory);
   return (
     <div className="flex flex-col w-full">
-      <section className="px-4 md:px-8 py-24 md:py-32 bg-muted/30">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">Our Work</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            A selection of recent projects where we've helped ambitious companies launch and scale their digital products.
-          </p>
-        </div>
-      </section>
+      <PageHeader 
+        title={pageData?.title || "Our Work"}
+        subtitle={pageData?.subtitle || "A selection of recent projects where we've helped ambitious companies launch and scale their digital products."}
+        backgroundImage={pageData?.headerBackgroundImage}
+      />
 
       <section className="px-4 md:px-8 py-24">
         <div className="container mx-auto max-w-6xl">

@@ -2,7 +2,8 @@
 
 import { Metadata } from "next";
 import Link from "next/link";
-import { getPosts } from "@/lib/firebase/db";
+import { getPosts, getPageData } from "@/lib/firebase/db";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
   title: "Insights & Blog | Agency.",
@@ -14,7 +15,10 @@ import { ArrowRight } from "lucide-react";
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const params = await searchParams;
   const selectedCategory = params.category || "All Insights";
-  const allPosts = await getPosts();
+  const [allPosts, pageData] = await Promise.all([
+    getPosts(),
+    getPageData("posts")
+  ]);
   
   // Extract unique categories
   const availableCategories = Array.from(new Set(allPosts.map((p: any) => p.category).filter(Boolean))) as string[];
@@ -25,14 +29,11 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
     : allPosts.filter((p: any) => p.category === selectedCategory);
   return (
     <div className="flex flex-col w-full">
-      <section className="px-4 md:px-8 py-24 md:py-32 bg-muted/30">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">Insights</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Thoughts, learnings, and strategies on product design, software engineering, and growing digital businesses.
-          </p>
-        </div>
-      </section>
+      <PageHeader 
+        title={pageData?.title || "Insights"}
+        subtitle={pageData?.subtitle || "Thoughts, learnings, and strategies on product design, software engineering, and growing digital businesses."}
+        backgroundImage={pageData?.headerBackgroundImage}
+      />
 
       <section className="px-4 md:px-8 py-24">
         <div className="container mx-auto max-w-4xl">

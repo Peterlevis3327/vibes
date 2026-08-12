@@ -2,7 +2,8 @@
 
 import { Metadata } from "next";
 import { Quote } from "lucide-react";
-import { getTestimonials } from "@/lib/firebase/db";
+import { getTestimonials, getPageData } from "@/lib/firebase/db";
+import { PageHeader } from "@/components/layout/PageHeader";
 import Image from "next/image";
 
 export const metadata: Metadata = {
@@ -11,17 +12,18 @@ export const metadata: Metadata = {
 };
 
 export default async function TestimonialsPage() {
-  const testimonials = await getTestimonials();
+  const [testimonials, pageData] = await Promise.all([
+    getTestimonials(),
+    getPageData("testimonials")
+  ]);
+  
   return (
     <div className="flex flex-col w-full">
-      <section className="px-4 md:px-8 py-24 md:py-32 bg-foreground text-background">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">Client Testimonials</h1>
-          <p className="text-xl text-muted/80 max-w-2xl mx-auto">
-            Don't just take our word for it. Here's what our partners have to say about working with us.
-          </p>
-        </div>
-      </section>
+      <PageHeader 
+        title={pageData?.title || "Client Testimonials"}
+        subtitle={pageData?.subtitle || "Don't just take our word for it. Here's what our partners have to say about working with us."}
+        backgroundImage={pageData?.headerBackgroundImage}
+      />
 
       <section className="px-4 md:px-8 py-24">
         <div className="container mx-auto max-w-6xl">

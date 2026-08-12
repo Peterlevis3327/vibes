@@ -250,6 +250,7 @@ export default function PortfolioAdminPage() {
                   />
                 </div>
               </div>
+            </div>
 
               {/* Content & Story */}
               <div className="space-y-4">

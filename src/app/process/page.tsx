@@ -1,18 +1,20 @@
-
-
 import { Metadata } from "next";
 import Link from "next/link";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { getPageData } from "@/lib/firebase/db";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { getProcessSteps } from "@/lib/firebase/db";
 
 export const metadata: Metadata = {
   title: "Our Process | Agency.",
   description: "Learn how we take digital products from ideation to launch.",
 };
-import { Button, buttonVariants } from "@/components/ui/button";
-import { getProcessSteps } from "@/lib/firebase/db";
 
 export default async function ProcessPage() {
-  const processSteps = await getProcessSteps();
-  
+  const [processSteps, pageData] = await Promise.all([
+    getProcessSteps(),
+    getPageData("process")
+  ]);
   // Sort by order ascending
   const steps = processSteps.sort((a, b) => (a.order || 0) - (b.order || 0)).map((s, idx) => ({
     num: (idx + 1).toString().padStart(2, '0'),
@@ -56,14 +58,11 @@ export default async function ProcessPage() {
 
   return (
     <div className="flex flex-col w-full">
-      <section className="px-4 md:px-8 py-24 md:py-32 bg-foreground text-background">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">Our Process</h1>
-          <p className="text-xl text-muted/80 max-w-2xl mx-auto">
-            A transparent, proven methodology to take your project from initial concept to a successful launch, without the guesswork.
-          </p>
-        </div>
-      </section>
+      <PageHeader 
+        title={pageData?.title || "Our Process"}
+        subtitle={pageData?.subtitle || "A transparent, proven methodology to take your project from initial concept to a successful launch, without the guesswork."}
+        backgroundImage={pageData?.headerBackgroundImage}
+      />
 
       <section className="px-4 md:px-8 py-24">
         <div className="container mx-auto max-w-4xl">

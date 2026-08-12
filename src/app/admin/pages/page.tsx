@@ -1,16 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import { LiveEditor } from "@/components/admin/LiveEditor";
 import { revalidatePublicRoutes } from "@/app/actions/revalidate";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
-import { saveWithVersionHistory, getHomePageData } from "@/lib/firebase/db";
+import { saveWithVersionHistory, getHomePageData, getPageData } from "@/lib/firebase/db";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-// This is the data structure we will store in Firestore
-// This is the default structure if none exists in Firestore
+// Default structures
 const initialHomePageData = {
   availabilityBadge: "Available for new projects in Q4",
   heroHeadline: "We design and build products that drive results.",
@@ -20,6 +19,12 @@ const initialHomePageData = {
   seoTitle: "Agency | Digital Product Studio",
   seoDescription: "We design and build websites and apps that deliver concrete outcomes.",
   heroBackgroundImage: { url: "", alt: "", caption: "", showCaption: false }
+};
+
+const initialGenericPageData = {
+  title: "",
+  subtitle: "",
+  headerBackgroundImage: { url: "", alt: "", caption: "", showCaption: false }
 };
 
 // Simplified preview component that mimics the home page hero
@@ -43,7 +48,7 @@ const HomePreview = ({ data }: { data: typeof initialHomePageData }) => {
           </div>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight">
             {/* Simple hack to render the highlighted text if it matches our pattern, otherwise just render the string */}
-            {data.heroHeadline.includes("drive results.") ? (
+            {data.heroHeadline?.includes("drive results.") ? (
               <>We design and build products that <span className="text-muted-foreground">drive results.</span></>
             ) : (
               data.heroHeadline
@@ -66,31 +71,55 @@ const HomePreview = ({ data }: { data: typeof initialHomePageData }) => {
   );
 };
 
-// ... [existing HomePreview component code remains unchanged below this block in the file, handled via a later chunk if needed or untouched]
+// Preview component for generic pages
+const GenericPagePreview = ({ data }: { data: typeof initialGenericPageData }) => {
+  return (
+    <div className="flex flex-col w-full font-sans">
+      <section className="relative px-4 md:px-8 py-24 md:py-32 flex flex-col items-center text-center overflow-hidden">
+        {data.headerBackgroundImage?.url ? (
+          <>
+            <div 
+              className="absolute inset-0 z-0 bg-cover bg-center" 
+              style={{ backgroundImage: `url(${data.headerBackgroundImage.url})` }}
+            />
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px] z-0"></div>
+          </>
+        ) : (
+          <div className="absolute inset-0 z-0 bg-muted/30"></div>
+        )}
+        <div className="container mx-auto max-w-4xl text-center relative z-10">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">{data.title || "Page Title"}</h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            {data.subtitle || "Page subtitle goes here."}
+          </p>
+        </div>
+      </section>
+    </div>
+  );
+};
 
-export default function AdminPages() {
+// Component to handle individual page editing
+const PageEditor = ({ pageId, initialData, fetcher, PreviewComponent, title }: any) => {
   const [data, setData] = useState<any>(null);
 
   useEffect(() => {
     async function loadData() {
-      const dbData = await getHomePageData();
+      const dbData = await fetcher(pageId);
       if (dbData) {
-        // Ensure new fields exist even if old DB document doesn't have them
-        setData({ ...initialHomePageData, ...dbData });
+        setData({ ...initialData, ...dbData });
       } else {
-        setData(initialHomePageData);
+        setData(initialData);
       }
     }
     loadData();
-  }, []);
+  }, [pageId, fetcher, initialData]);
 
   const handleSave = async (savedData: any) => {
     try {
-      // For the demo we use a static 'home' id
-      await saveWithVersionHistory("pages", "home", savedData);
-      await revalidatePublicRoutes("pages", "home");
+      await saveWithVersionHistory("pages", pageId, savedData);
+      await revalidatePublicRoutes("pages", pageId);
       toast("Settings saved", {
-        description: "The home page content has been updated.",
+        description: `The ${pageId} page content has been updated.`,
       });
     } catch (e) {
       toast.error("Error saving", {
@@ -99,7 +128,30 @@ export default function AdminPages() {
     }
   };
 
-  if (!data) return <div>Loading...</div>;
+  if (!data) return <div className="p-8 text-center text-muted-foreground">Loading...</div>;
+
+  return (
+    <LiveEditor 
+      title={title}
+      initialData={data}
+      PreviewComponent={PreviewComponent}
+      onSave={handleSave}
+      collectionName="pages"
+      docId={pageId}
+    />
+  );
+};
+
+export default function AdminPages() {
+  const pagesConfig = [
+    { id: "home", label: "Home", initialData: initialHomePageData, Preview: HomePreview, fetcher: () => getHomePageData() },
+    { id: "services", label: "Services", initialData: initialGenericPageData, Preview: GenericPagePreview, fetcher: (id: string) => getPageData(id) },
+    { id: "portfolio", label: "Portfolio", initialData: initialGenericPageData, Preview: GenericPagePreview, fetcher: (id: string) => getPageData(id) },
+    { id: "process", label: "Process", initialData: initialGenericPageData, Preview: GenericPagePreview, fetcher: (id: string) => getPageData(id) },
+    { id: "about", label: "About", initialData: initialGenericPageData, Preview: GenericPagePreview, fetcher: (id: string) => getPageData(id) },
+    { id: "testimonials", label: "Testimonials", initialData: initialGenericPageData, Preview: GenericPagePreview, fetcher: (id: string) => getPageData(id) },
+    { id: "posts", label: "Posts", initialData: initialGenericPageData, Preview: GenericPagePreview, fetcher: (id: string) => getPageData(id) },
+  ];
 
   return (
     <div className="space-y-6">
@@ -108,14 +160,25 @@ export default function AdminPages() {
         <p className="text-muted-foreground">Edit static page content with real-time preview.</p>
       </div>
 
-      <LiveEditor 
-        title="Home Page Hero"
-        initialData={data}
-        PreviewComponent={HomePreview}
-        onSave={handleSave}
-        collectionName="pages"
-        docId="home"
-      />
+      <Tabs defaultValue="home" className="w-full">
+        <TabsList className="mb-4 flex-wrap h-auto">
+          {pagesConfig.map(page => (
+            <TabsTrigger key={page.id} value={page.id}>{page.label}</TabsTrigger>
+          ))}
+        </TabsList>
+        
+        {pagesConfig.map(page => (
+          <TabsContent key={page.id} value={page.id} className="mt-0">
+            <PageEditor 
+              pageId={page.id}
+              initialData={page.initialData}
+              fetcher={page.fetcher}
+              PreviewComponent={page.Preview}
+              title={`${page.label} Page Hero`}
+            />
+          </TabsContent>
+        ))}
+      </Tabs>
     </div>
   );
 }

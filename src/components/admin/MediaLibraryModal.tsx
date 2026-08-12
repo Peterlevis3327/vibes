@@ -90,10 +90,7 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
     setCompletedCrop(null);
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const uploadFile = async (file: File) => {
     setUploading(true);
     try {
       const sigData = await getCloudinarySignature();
@@ -129,6 +126,34 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
       setUploading(false);
     }
   };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    uploadFile(file);
+  };
+
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      if (!open || uploading) return;
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile();
+          if (file) {
+            uploadFile(file);
+            // Switch to upload tab conceptually if needed, or just let it upload
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('paste', handlePaste);
+    return () => window.removeEventListener('paste', handlePaste);
+  }, [open, uploading]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

@@ -166,7 +166,7 @@ export default function ServicesAdminPage() {
                 </div>
                 <div className="space-y-2 col-span-2 sm:col-span-1">
                   <Label>Category</Label>
-                  <Select value={currentService.category || ""} onValueChange={(v) => setCurrentService({...currentService, category: v})}>
+                  <Select value={currentService.category || ""} onValueChange={(v: any) => setCurrentService({...currentService, category: v})}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>

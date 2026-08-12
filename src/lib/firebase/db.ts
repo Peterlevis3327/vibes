@@ -43,6 +43,19 @@ export async function getHomePageData() {
     });
 }
 
+export async function getPageData(pageId: string) {
+    return fetchWithFallback(async () => {
+        const docRef = doc(db, "pages", pageId);
+        const docSnap = await getDoc(docRef);
+        return docSnap.exists() ? docSnap.data() : null;
+    }, {
+        title: "",
+        subtitle: "",
+        headerBackgroundImage: { url: "", alt: "", caption: "", showCaption: false }
+    });
+}
+
+
 export async function getPortfolioProjects() {
     return fetchWithFallback(async () => {
         const q = query(collection(db, "portfolio"), where("status", "==", "Published"), orderBy("year", "desc"));

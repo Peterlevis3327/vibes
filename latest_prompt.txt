@@ -1,0 +1,364 @@
+<USER_REQUEST>
+/teamwork-preview 
+# Build Prompt: Page Header Background Images + Clipboard Paste Upload
+
+Do the following in one continuous pass. Do not stop for approval between items. Confirm each numbered item individually and explicitly when done — not as a rolled-up summary — and state which files were changed for each.
+
+**Do not modify, rebuild, or regress anything not explicitly listed below.** This includes: all existing admin CRUD (Portfolio, Pages, Services, Testimonials, Team, Posts), the live-preview editing experience, security rules, the rate limiter, version history, the Cloudinary media library's existing upload/crop/browse flow, the category-aware device-mockup framing (Portfolio and Services), the Portfolio gallery/lightbox, and the image optimization/caching work already in place.
+
+---
+
+## Part 1 — Page Header Background Images
+
+### 1.1 Architecture check (do this first, report before proceeding)
+
+Confirm and report: does Home hero content currently come from a generic `pages` Firestore collection? Do Services, Portfolio, Process, About, Testimonials, and Posts (Insights) have equivalent header sections (title/subtitle) stored in that same collection, or are their header titles/subtitles currently hardcoded directly in each page's component? Report this clearly before making any changes, since it determines how the fix should be structured.
+
+### 1.2 Add editable headers with optional background image
+
+Ensure every one of these pages has an editable header section in the admin: **Home, Services, Portfolio (Our Work), Process, About, Testimonials, Posts (Insights)**. Each header section should support:
+- Title (already exists for most — confirm)
+- Subtitle / description (already exists for most — confirm)
+- **New: optional background image**, selected via the existing Media Library component (including an option to clear/remove it and revert to the plain background)
+
+### 1.3 Rendering behavior
+
+- When a background image is set for a section, render it behind that section's text/content.
+- Apply a dark overlay/gradient between the image and the text so headline/subtitle text remains readable (WCAG AA contrast) regardless of which image is chosen — same approach already used for the Home hero design.
+- When no background image is set, keep the current plain background exactly as it is today. Do not change the visual default for pages that don't get a background image assigned.
+- Use `object-cover` sizing — no stretching or distortion, consistent with the image-quality work already done elsewhere on the site.
+- Route the image through the existing Cloudinary optimization pipeline (`f_auto`, `q_auto:best`, correct `sizes`) — do not bypass it for this new use case.
+- Do not let a background image override or interact with the CMS-editable accent/secondary color system already in place.
+- Keep the overall visual language restrained and editorial, consistent with the rest of the site — avoid this becoming six unrelated stock-photo banners across six pages. A neutral placeholder (no image) should always look intentional, not broken.
+
+### 1.4 Live preview
+
+Confirm the live preview pane updates instantly as an admin selects or removes a background image for any of these sections, consistent with how text field edits already update live.
+
+---
+
+## Part 2 — Clipboard Paste Support in the Media Library
+
+### 2.1 Paste-to-upload
+
+In `MediaLibraryModal` (or wherever the upload UI lives), support pasting an image directly via Ctrl+V / Cmd+V while the modal has focus, as an addition to — not a replacement for — the existing file-browse upload.
+
+### 2.2 Handle both clipboard content types
+
+- **Actual image data on the clipboard** (e.g., copied from Canva, a screenshot, or "Copy Image" from a browser): read it as a Blob and run it through the existing signed upload flow, exactly as a browsed file would be handled.
+- **A copied image URL** (plain text pointing to an image): fetch and re-upload it via a Server Action, server-side — do not attempt a direct client-side `fetch()` of an external URL, since that will fail on CORS for most sources.
+
+### 2.3 UX feedback
+
+Show a clear visual affordance that pasting is supported (e.g., a subtle "or paste an image" hint near the upload button) and the same upload-progress feedback already used for browsed-file uploads.
+
+### 2.4 Coverage
+
+Confirm this works everywhere the Media Library is used: Portfolio (cover, thumbnail, gallery), Services, Team, Testimonials, Posts, and the new page header background fields from Part 1.
+
+---
+
+## Verification (required before reporting complete)
+
+1. Run `npm run build` and confirm no errors.
+2. For at least two of the pages from 1.2, set a background image through the admin and confirm it renders correctly and readably on the live public page.
+3. Test clipboard paste with at least one actual image copy and confirm it uploads and appears in the media library.
+4. Confirm this is **committed, pushed, and successfully deployed** — check the actual Netlify deploy log, not just that a push happened. Report the deploy timestamp and status explicitly. Do not report this task as complete without this confirmation.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-08-12T19:26:17+03:00.
+
+The user has mentioned some items in the form @[ITEM]. Here is extra information about the items that were mentioned by the user, in the order that they appear:
+
+/teamwork-preview is a [Slash Command]:
+<TEAMWORK>
+The user has added the 'teamwork_preview' subagent, for use in multi-agent teamwork systems.
+The user wants to use the teamwork multi-agent system for a project.
+Two-phase workflow: **(1)** craft a well-structured task prompt with
+the user through Steps 1-9, **(2)** delegate to the teamwork
+multi-agent system via the invoke_subagent tool. Both phases are required —
+crafting without delegation is incomplete.
+
+## Artifact-Based Workflow
+
+Maintain a **prompt draft artifact** (prompt_draft.md) throughout the
+process. It serves as both a live display for the user and a step
+tracker for you. **Create it immediately** with this scaffold:
+
+```markdown
+# Teamwork Project Prompt — Draft
+
+> Status: Step 1 — Eliciting project idea
+> Goal: Craft prompt → get user approval → delegate to teamwork_preview
+
+[Project description — 1-2 sentences]
+
+Working directory: [TBD]
+
+## Requirements
+
+### R1. [TBD]
+
+### R2. [TBD]
+
+## Acceptance Criteria
+
+### [TBD]
+- [ ] [TBD]
+
+---
+*Next: when approved → delegate via invoke_subagent (see Delegation Protocol)*
+```
+
+Update the artifact after every step.
+
+## Core Principles
+
+| # | Principle | Rule |
+|---|-----------|------|
+| 1 | **Specify What, Not How** | Define requirements and acceptance criteria. Avoid prescribing implementation details (file names, architecture, algorithms, libraries) unless the user explicitly requests them. |
+| 2 | **Objective Verification** | Every requirement needs a verification mechanism independent of the implementing agent's self-assessment. Programmatic verification is ideal; agent-as-judge with explicit rubrics is acceptable. |
+| 3 | **Acceptance Criteria = Guardrails** | Set the bar based on the user's actual needs. Purpose: prevent self-certification of poor work. If the first run falls short, tighten criteria and re-run. |
+| 4 | **Minimal Requirements** | Only specify what the user cares about. Let teamwork infer the rest. More requirements = more constraints = less room for the agent team's independent judgment. |
+
+## Workflow
+
+Work through Steps 1-9 interactively. **Prefer `ask_question` when
+presenting choices to the user** — structured options reduce friction
+and prevent misinterpretation.
+
+**Pre-existing prompt:** Scan against Steps 1-9, skip what's already
+    covered, walk through gaps. Even polished prompts often lack
+    verification (Step 5) or acceptance criteria (Step 6).
+
+**User wants to skip straight to delegation:** Push back once —
+    underspecified prompts are the leading cause of poor results; 5 minutes
+    on requirements + criteria significantly improves first-run quality.
+    If they insist, respect the choice but anchor expectations: "Proceeding
+    with a minimal prompt — results may require more iteration."
+
+### Step 1: Elicit the Idea
+
+Ask: What do you want to build? What is the purpose (demo, production,
+    eval, exploration)? Who is the audience?
+
+Capture in 1-2 sentences → this becomes the prompt's opening.
+Update artifact: replace [Project description], set status to Step 2.
+
+### Step 2: Identify Ambiguity
+
+Identify points with multiple reasonable interpretations. For each,
+    present concrete choices:
+
+```
+Example: "Build a search engine"
+
+Ambiguous: What data source?
+→ Options:
+  a) Crawl external websites (risk: anti-bot, rate limiting)
+  b) Index a provided static dataset
+  c) Let the agent team decide
+```
+
+Only ask about decisions that affect scope or verification. Don't ask
+    about implementation details unless the user brings them up.
+
+Key dimensions to probe:
+
+| Dimension | Question |
+|-----------|----------|
+| **Scope** | How large/complex should the final product be? |
+| **Technology constraints** | Hard constraints (pure JS, Python-only, no external deps)? |
+| **Infrastructure** | Need network access, remote storage, job launching? → controlled APIs |
+| **Quality bar** | Polished demo or proof-of-concept? |
+| **Integrity** | How strict should integrity enforcement be? (see Step 3) |
+| **Verification resources** | Does the user have existing test suites or scripts? (see Step 5) |
+
+### Step 3: Determine Integrity Mode
+
+Determine how strictly integrity enforcement should operate.
+Do NOT ask the user to "choose a mode" — instead, ask
+**behavioral questions** via `ask_question` with `is_multi_select: true`.
+Present these options:
+
+- Copying code from existing open-source projects for core logic
+- Using pre-built libraries/frameworks for core functionality
+- Running external scripts or delegating execution to other tools
+- Reading test source code to understand expected behavior before implementing
+- No restrictions — the team can use any approach that works
+
+Map answers to mode:
+- (e) or nothing selected → integrity_mode: development
+- any of (a)-(d) selected, but NOT all → integrity_mode: demo
+- all of (a)-(d) selected → integrity_mode: benchmark
+
+Default: development. If the project is clearly a capability
+showcase, suggest demo.
+
+### Step 4: Draft Requirements
+
+Write 2-5 requirement blocks (R1, R2, ...).
+
+| Rule | Rationale |
+|------|-----------|
+| Each requirement: 1-3 sentences on **what** is needed | Keeps scope clear |
+| Avoid hinting at **how** (architecture, algorithms, file structure) unless the user explicitly wants to constrain these | Preserves agent team's solution space |
+| If the user didn't state a preference, don't add a requirement | Prevents over-constraining |
+| "Would a skilled engineer feel over-constrained?" → if yes, cut it | Litmus test |
+
+### Step 5: Design Verification
+
+> **Why this matters:** Verification is **a forcing function**, not a
+> literal mirror of the user's goal. Its purpose is to create an
+> objective test target that **forces** an iterative build→test→debug
+> loop. Without one, agents self-certify half-baked work and stop early.
+>
+> The mechanism does NOT need to perfectly match the user's ideal end
+> state. It is a **means** — a trick to force real debugging. Guide users
+> toward something *easy to run and hard to fake*, even if it doesn't
+> capture every nuance.
+
+For each requirement, design an **objective** verification mechanism:
+
+| Type | When to use | Examples |
+|------|-------------|----------|
+| **Programmatic** (preferred) | Feasible to automate | Bot scripts, reference benchmarks, test suites with known I/O, metric scripts |
+| **Agent-as-judge** | Programmatic testing is hard | Independent agent + explicit rubric concrete enough that two judges mostly agree |
+
+**User-provided verification resources**: Ask whether the user has
+existing test suites, scripts, evaluation guidelines, or a reference
+implementation.
+
+If yes, include them in the prompt as a Verification Resources
+section. Even partial resources (e.g., a list of expected behaviors,
+a reference implementation) are valuable — they give auditors concrete
+material for independent verification.
+
+**Verification anti-patterns:**
+
+| ❌ Pattern | Risk |
+|-----------|------|
+| Self-assessment | Implementing agent judges own work |
+| Subjective criteria ("looks good") | Unfalsifiable |
+| No criteria at all | Premature self-certification |
+| Impossibly high thresholds | Wasted iterations |
+
+### Step 6: Set Acceptance Criteria
+
+Convert verification mechanisms into concrete, checkable criteria.
+    Calibrate to purpose:
+
+| Purpose | Bar |
+|---------|-----|
+| Demo | Impressive but achievable in time budget |
+| Production | Match target system quality standards |
+| Eval | Precise and reproducible — measurement over polish |
+| Exploration | Loose — prove feasibility only |
+
+Common user adjustments: "too easy" → tighten; "too hard" → relax or
+    make optional; "too prescriptive" → remove constraining criteria.
+
+### Step 7: Infrastructure Constraints
+
+If the project needs controlled infrastructure, add a requirement:
+
+| Operation | Why control it |
+|-----------|---------------|
+| Remote file I/O (GCS, cloud storage) | Prevent writes to arbitrary paths |
+| Job launching | Prevent expensive runaway jobs |
+| Network access | Prevent hitting anti-bot protections or unintended services |
+
+Pattern: "You must use the provided controlled API for X. You write the
+    logic; the execution environment is managed externally."
+
+Skip if no infrastructure is needed (e.g., pure HTML/JS games).
+
+### Step 8: Choose Working Directory
+
+Ask where project files should live. Default:
+```
+~/teamwork_projects/{PROJECT_NAME}
+```
+
+{PROJECT_NAME}: short, lowercase, underscore-separated (e.g.,
+    c_compiler, search_engine, tetris_game).
+
+Include as a top-level directive in the final prompt:
+```
+Working directory: <path>
+```
+
+### Step 9: Assemble and Validate
+
+Ensure the artifact has this structure:
+
+```
+[1-2 sentence project description]
+
+Working directory: <chosen path from Step 8>
+Integrity mode: [development | demo | benchmark]
+
+[Optional: reference material (paper URL, spec link)]
+
+## Requirements
+
+### R1. [Primary deliverable]
+[What it does, not how to build it]
+
+### R2. [Secondary requirement or constraint]
+...
+
+### R3. [Controlled infrastructure, if needed]
+...
+
+## Acceptance Criteria
+
+### [Criterion category]
+- [ ] [Objective, checkable condition]
+...
+```
+
+**Validation checklist:**
+
+- [ ] No implementation hints unless explicitly requested by the user
+- [ ] Every acceptance criterion is objectively checkable without
+      human judgment
+- [ ] Requirements scoped by user needs, not by what the agent "should" do
+- [ ] Infrastructure constraints clearly state what's controlled and why
+- [ ] A skilled engineer would NOT feel over-constrained
+- [ ] An agent could NOT trivially self-certify a half-baked result
+
+Present final prompt to user. Ask for approval.
+Set artifact status to: Ready for launch — awaiting user approval.
+
+Once approved → execute the **Delegation Protocol** (final section).
+
+## Anti-Patterns
+
+| ❌ Anti-pattern | Why |
+|----------------|-----|
+| Pass artifact file path as prompt source | Artifact may change after launch; always copy text |
+| Invoke the teamwork subagent before explicit user approval | User must confirm readiness |
+| Skip creating the artifact | Artifact is the user's window into the prompt |
+| Lose the draft on iteration | If user wants changes after Step 8, update and re-present |
+| Add implementation hints by default | Narrows agent team's solution space. If user explicitly wants to constrain (e.g., "use Python"), include as a requirement but flag the trade-off |
+
+## Iterate After First Run
+
+Prompt crafting is iterative. If the first run falls short, tighten
+    acceptance criteria or add better verification — prefer this over
+    adding implementation hints. Re-run with the updated prompt.
+
+## Delegation Protocol
+
+When the user approves ("go", "looks good", "launch", "run it", or
+    similar):
+
+1. Extract the complete prompt text from prompt_draft.md.
+2. Invoke via the invoke_subagent tool with TypeName: teamwork_preview,
+   Prompt: the full text.
+   (teamwork_preview is hidden from the subagents list but can be invoked.)
+
+Set artifact status to: Launched.
+</TEAMWORK>
+</ADDITIONAL_METADATA>

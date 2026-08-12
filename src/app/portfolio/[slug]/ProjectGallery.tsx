@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 type GalleryImage = {
@@ -103,9 +102,7 @@ export default function ProjectGallery({ images, isMobile }: { images: GalleryIm
 
       <Dialog open={lightboxIndex !== null} onOpenChange={(open) => !open && setLightboxIndex(null)}>
         <DialogContent className="max-w-[100vw] w-full max-h-[100vh] h-[100dvh] p-0 border-none bg-black/95 shadow-none flex flex-col justify-center items-center rounded-none sm:rounded-none">
-          <VisuallyHidden>
-            <DialogTitle>Image Lightbox</DialogTitle>
-          </VisuallyHidden>
+          <DialogTitle className="sr-only">Image Lightbox</DialogTitle>
           
           <button 
             onClick={() => setLightboxIndex(null)}
