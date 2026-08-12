@@ -158,7 +158,7 @@ export function LiveEditor({
                     value={[data[key]]} 
                     max={100} 
                     step={1} 
-                    onValueChange={(val) => handleChange(key, val[0])} 
+                    onValueChange={(val: any) => handleChange(key, Array.isArray(val) ? val[0] : val)} 
                   />
                 </div>
               ) : typeof data[key] === 'string' && (data[key].length > 100 || key.toLowerCase().includes('description') || key.toLowerCase().includes('headline')) ? (
