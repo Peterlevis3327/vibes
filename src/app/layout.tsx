@@ -33,7 +33,13 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
-        {(settings.primaryColor || settings.secondaryColor || settings.textColor || settings.headingColor || settings.mutedTextColor) && (
+        {settings.fontFamily && settings.fontFamily !== "Inter" && (
+          <link 
+            href={`https://fonts.googleapis.com/css2?family=${settings.fontFamily.replace(/ /g, '+')}:wght@300;400;500;600;700&display=swap`} 
+            rel="stylesheet" 
+          />
+        )}
+        {(settings.primaryColor || settings.secondaryColor || settings.textColor || settings.headingColor || settings.mutedTextColor || settings.fontFamily || settings.baseFontSize) && (
           <style>{`
             :root {
               ${settings.primaryColor ? `--primary: ${settings.primaryColor}; --primary-foreground: ${settings.primaryForeground || '#ffffff'};` : ''}
@@ -48,6 +54,10 @@ export default async function RootLayout({
               ${settings.textColor ? `--foreground: ${settings.textColor};` : ''}
               ${settings.headingColor ? `--heading: ${settings.headingColor};` : ''}
               ${settings.mutedTextColor ? `--muted-foreground: ${settings.mutedTextColor};` : ''}
+            }
+            html {
+              ${settings.baseFontSize ? `font-size: ${settings.baseFontSize}px;` : ''}
+              ${settings.fontFamily && settings.fontFamily !== "Inter" ? `--font-inter: '${settings.fontFamily}', sans-serif;` : ''}
             }
           `}</style>
         )}

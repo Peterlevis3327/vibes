@@ -60,6 +60,8 @@ export default function SettingsPage() {
     headingColor: "",
     textColor: "",
     mutedTextColor: "",
+    fontFamily: "Inter",
+    baseFontSize: 16,
     enableAnalytics: false,
     defaultSeoTitle: "Agency | Digital Product Studio",
     defaultSeoDescription: "We design and build websites and apps that deliver concrete outcomes.",
@@ -355,6 +357,42 @@ export default function SettingsPage() {
               />
             </div>
             <p className="text-sm text-muted-foreground">Used for subheadings, captions, and secondary descriptions.</p>
+          </div>
+
+          <div className="space-y-4 pt-4 border-t">
+            <Label htmlFor="fontFamily">Font Family</Label>
+            <select
+              id="fontFamily"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              value={settings.fontFamily || "Inter"}
+              onChange={(e) => setSettings({ ...settings, fontFamily: e.target.value })}
+            >
+              <option value="Inter">Inter (Default)</option>
+              <option value="Roboto">Roboto</option>
+              <option value="Playfair Display">Playfair Display (Serif)</option>
+              <option value="Lora">Lora (Serif)</option>
+              <option value="Space Grotesk">Space Grotesk</option>
+              <option value="Outfit">Outfit</option>
+              <option value="Montserrat">Montserrat</option>
+            </select>
+            <p className="text-sm text-muted-foreground">Select the primary font used across the site.</p>
+          </div>
+
+          <div className="space-y-4 pt-4 border-t">
+            <Label htmlFor="baseFontSize">Base Font Size ({settings.baseFontSize || 16}px)</Label>
+            <div className="flex items-center gap-4">
+              <input
+                type="range"
+                id="baseFontSize"
+                min="12"
+                max="24"
+                step="1"
+                value={settings.baseFontSize || 16}
+                onChange={(e) => setSettings({ ...settings, baseFontSize: parseInt(e.target.value) })}
+                className="w-full"
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">Adjust the global scaling of text and UI elements. Default is 16px.</p>
           </div>
         </CardContent>
         <CardFooter className="border-t px-6 py-4">
