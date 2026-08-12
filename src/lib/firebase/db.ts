@@ -196,6 +196,7 @@ export async function getGlobalSettings() {
         const snapshot = await getDocs(q);
         return snapshot.docs[0]?.data() || { enableAnalytics: false };
     }, {
+        siteName: "Agency.",
         enableAnalytics: true,
         defaultSeoTitle: "Agency | Digital Product Studio",
         defaultSeoDescription: "We design and build websites and apps that deliver concrete outcomes.",

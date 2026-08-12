@@ -70,11 +70,11 @@ export default async function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <Navbar />
+          <Navbar siteName={settings.siteName || "Agency."} />
           <main className="flex-1">
             {children}
           </main>
-          <Footer />
+          <Footer siteName={settings.siteName || "Agency."} />
           <WhatsAppButton 
             phoneNumber={settings.whatsappNumber} 
             defaultMessage={settings.whatsappMessage} 

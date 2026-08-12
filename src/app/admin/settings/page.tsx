@@ -54,6 +54,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
+    siteName: "Agency.",
     primaryColor: "#0f172a",
     secondaryColor: "#f1f5f9",
     enableAnalytics: false,
@@ -123,6 +124,49 @@ export default function SettingsPage() {
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
         <p className="text-muted-foreground">Manage global configuration and brand elements.</p>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Site Identity & SEO</CardTitle>
+          <CardDescription>Configure the main branding and search engine optimization settings.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
+            <Label htmlFor="siteName">Site Name / Logo Text</Label>
+            <Input 
+              id="siteName"
+              value={settings.siteName || ""}
+              onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
+              placeholder="Agency."
+            />
+            <p className="text-sm text-muted-foreground">This text appears in the navigation bar and footer.</p>
+          </div>
+          <div className="space-y-4">
+            <Label htmlFor="defaultSeoTitle">Default SEO Title</Label>
+            <Input 
+              id="defaultSeoTitle"
+              value={settings.defaultSeoTitle || ""}
+              onChange={(e) => setSettings({ ...settings, defaultSeoTitle: e.target.value })}
+              placeholder="Agency | Digital Product Studio"
+            />
+            <p className="text-sm text-muted-foreground">The default title shown in browser tabs and search engine results.</p>
+          </div>
+          <div className="space-y-4">
+            <Label htmlFor="defaultSeoDescription">Default SEO Description</Label>
+            <Input 
+              id="defaultSeoDescription"
+              value={settings.defaultSeoDescription || ""}
+              onChange={(e) => setSettings({ ...settings, defaultSeoDescription: e.target.value })}
+              placeholder="We design and build websites and apps..."
+            />
+          </div>
+        </CardContent>
+        <CardFooter className="border-t px-6 py-4">
+          <Button onClick={handleSave} disabled={saving}>
+            {saving ? "Saving..." : "Save Identity Settings"}
+          </Button>
+        </CardFooter>
+      </Card>
 
       <Card>
         <CardHeader>

@@ -1,12 +1,12 @@
 import Link from "next/link";
 
-export function Footer() {
+export function Footer({ siteName = "Agency." }: { siteName?: string }) {
   return (
     <footer className="border-t bg-muted/20">
       <div className="container px-4 md:px-8 py-12 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1 space-y-4">
-            <h3 className="text-lg font-bold">Agency.</h3>
+            <h3 className="text-lg font-bold">{siteName}</h3>
             <p className="text-sm text-muted-foreground">
               We design and build websites and apps that deliver concrete outcomes.
             </p>
@@ -43,7 +43,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Agency. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} {siteName} All rights reserved.</p>
           <div className="flex gap-4">
             <Link href="/privacy" className="hover:text-foreground">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-foreground">Terms of Service</Link>

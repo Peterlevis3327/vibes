@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export function Navbar() {
+export function Navbar({ siteName = "Agency." }: { siteName?: string }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -22,7 +22,7 @@ export function Navbar() {
     <header className={`sticky top-0 z-50 w-full transition-shadow duration-300 bg-background ${isScrolled ? 'shadow-sm border-b' : 'border-b-transparent'}`}>
       <div className="container flex h-16 items-center justify-between px-4 md:px-8">
         <Link href="/" className="flex items-center space-x-2">
-          <span className="font-bold text-xl tracking-tight">Agency.</span>
+          <span className="font-bold text-xl tracking-tight">{siteName}</span>
         </Link>
         <nav className="hidden md:flex gap-6">
           <Link href="/services" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
