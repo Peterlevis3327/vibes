@@ -126,9 +126,9 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
                       Learn more <ChevronRight className="ml-1 h-4 w-4" />
                     </Link>
                   </div>
-                  <div className="aspect-[4/3] bg-muted rounded-2xl overflow-hidden relative border">
+                  <div className="aspect-[4/3] bg-muted rounded-2xl overflow-hidden relative border flex items-center justify-center">
                     {service.screenshotImage?.url ? (
-                      <Image src={service.screenshotImage.url} alt={service.screenshotImage.alt || service.title} fill className="object-cover" sizes="96px" />
+                      <Image src={service.screenshotImage.url} alt={service.screenshotImage.alt || service.title} fill className="object-contain p-6 sm:p-10 drop-shadow-2xl" sizes="(max-width: 768px) 100vw, 50vw" />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/40">
                         <span className="text-sm font-medium uppercase tracking-widest">[ Device Mockup ]</span>
@@ -167,15 +167,25 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
                   transition={{ duration: 0.6, delay: i * 0.1 }}
                 >
                   <Link href={`/portfolio/${item.id || item}`} className="block">
-                    <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-muted mb-6 border">
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                      {item.images?.[0]?.url ? (
-                        <Image src={item.images[0].url} alt={item.images[0].alt || item.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/30">
-                          <Briefcase className="h-24 w-24" />
-                        </div>
-                      )}
+                    <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-muted mb-6 border flex items-center justify-center">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                      {(() => {
+                        const imgSrc = item.thumbnailImage?.url || item.coverImage?.url || item.images?.[0]?.url;
+                        const imgAlt = item.thumbnailImage?.alt || item.coverImage?.alt || item.images?.[0]?.alt || item.title;
+                        return imgSrc ? (
+                          <Image 
+                            src={imgSrc} 
+                            alt={imgAlt} 
+                            fill 
+                            className={`${item.category?.toLowerCase().includes('mobile') ? 'object-contain p-6 sm:p-10 drop-shadow-2xl' : 'object-cover'} group-hover:scale-105 transition-transform duration-500`} 
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" 
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/30">
+                            <Briefcase className="h-24 w-24" />
+                          </div>
+                        );
+                      })()}
                     </div>
                     <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">{item.title || `Client Project ${item}`}</h3>
                     <p className="text-muted-foreground">{item.category || "Web Platform"} &middot; {item.year || "2024"}</p>

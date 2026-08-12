@@ -31,15 +31,30 @@ interface Project {
   seoTitle?: string;
   seoDescription?: string;
   coverImage?: { url: string; alt: string; caption?: string; showCaption?: boolean };
+  thumbnailImage?: { url: string; alt: string; caption?: string; showCaption?: boolean };
+  challenge?: string;
+  approach?: string;
+  outcome?: string;
+  industry?: string;
+  techStack?: string[]; // Array of strings, handled as comma-separated string in form
+  liveLink?: string;
 }
+
+// Helper to safely join tech stack array to string
+const techStackToString = (stack?: string[]) => {
+  return Array.isArray(stack) ? stack.join(", ") : "";
+};
 
 export default function PortfolioAdminPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
+  const [mediaTarget, setMediaTarget] = useState<"cover" | "thumbnail" | null>(null);
   const [coverImage, setCoverImage] = useState<{ url: string, alt: string, caption?: string, showCaption?: boolean } | null>(null);
+  const [thumbnailImage, setThumbnailImage] = useState<{ url: string, alt: string, caption?: string, showCaption?: boolean } | null>(null);
   const [currentProject, setCurrentProject] = useState<Partial<Project>>({ status: "Draft", year: new Date().getFullYear().toString() });
+  const [techStackInput, setTechStackInput] = useState("");
 
   const fetchProjects = async () => {
     setIsLoading(true);
@@ -86,7 +101,9 @@ export default function PortfolioAdminPage() {
     try {
       const projectData = {
         ...currentProject,
-        coverImage
+        coverImage,
+        thumbnailImage,
+        techStack: techStackInput.split(",").map(s => s.trim()).filter(Boolean)
       };
       
       await saveWithVersionHistory("portfolio", docId, projectData);
@@ -95,6 +112,8 @@ export default function PortfolioAdminPage() {
       toast("Project saved successfully");
       setIsDialogOpen(false);
       setCoverImage(null);
+      setThumbnailImage(null);
+      setTechStackInput("");
       setCurrentProject({ status: "Draft", year: new Date().getFullYear().toString() });
       fetchProjects(); // Refresh the list
     } catch (error) {
@@ -110,15 +129,25 @@ export default function PortfolioAdminPage() {
     if (versionData.coverImage) {
       setCoverImage(versionData.coverImage);
     }
+    if (versionData.thumbnailImage) {
+      setThumbnailImage(versionData.thumbnailImage);
+    }
+    if (versionData.techStack) {
+      setTechStackInput(techStackToString(versionData.techStack));
+    }
   };
 
   const openEditModal = (project?: Project) => {
     if (project) {
       setCurrentProject(project);
       setCoverImage(project.coverImage || null);
+      setThumbnailImage(project.thumbnailImage || null);
+      setTechStackInput(techStackToString(project.techStack));
     } else {
       setCurrentProject({ status: "Draft", year: new Date().getFullYear().toString() });
       setCoverImage(null);
+      setThumbnailImage(null);
+      setTechStackInput("");
     }
     setIsDialogOpen(true);
   };
@@ -134,12 +163,16 @@ export default function PortfolioAdminPage() {
           <Button onClick={() => openEditModal()}>
             <Plus className="mr-2 h-4 w-4" /> Add Project
           </Button>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Project</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSave} className="space-y-6 py-4">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSave} className="space-y-8 py-4">
+              
+              {/* Basic Info */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">Basic Info</h3>
+                <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Project Title</Label>
                   <Input 
@@ -151,12 +184,18 @@ export default function PortfolioAdminPage() {
                 </div>
                 <div className="space-y-2">
                   <Label>Category</Label>
-                  <Input 
-                    placeholder="e.g. Web Development" 
-                    value={currentProject.category || ""} 
-                    onChange={e => setCurrentProject({...currentProject, category: e.target.value})}
-                    required 
-                  />
+                  <Select value={currentProject.category} onValueChange={(v: any) => setCurrentProject({...currentProject, category: v})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Web Application">Web Application</SelectItem>
+                      <SelectItem value="Mobile Application">Mobile Application</SelectItem>
+                      <SelectItem value="UI/UX Design">UI/UX Design</SelectItem>
+                      <SelectItem value="Branding">Branding</SelectItem>
+                      <SelectItem value="E-Commerce">E-Commerce</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -182,7 +221,88 @@ export default function PortfolioAdminPage() {
                   />
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Client Name</Label>
+                  <Input 
+                    placeholder="e.g. Acme Corp" 
+                    value={currentProject.client || ""} 
+                    onChange={e => setCurrentProject({...currentProject, client: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Industry</Label>
+                  <Input 
+                    placeholder="e.g. Healthcare" 
+                    value={currentProject.industry || ""} 
+                    onChange={e => setCurrentProject({...currentProject, industry: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              {/* Content & Story */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">Content & Story</h3>
+                <div className="space-y-2">
+                  <Label>Short Description (Grid View)</Label>
+                  <Textarea 
+                    placeholder="A brief summary for the portfolio grid..." 
+                    value={currentProject.description || ""} 
+                    onChange={e => setCurrentProject({...currentProject, description: e.target.value})}
+                    rows={2}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>The Challenge</Label>
+                  <Textarea 
+                    placeholder="What problem were we solving?" 
+                    value={currentProject.challenge || ""} 
+                    onChange={e => setCurrentProject({...currentProject, challenge: e.target.value})}
+                    rows={4}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>The Approach</Label>
+                  <Textarea 
+                    placeholder="How did we solve it?" 
+                    value={currentProject.approach || ""} 
+                    onChange={e => setCurrentProject({...currentProject, approach: e.target.value})}
+                    rows={4}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>The Outcome</Label>
+                  <Textarea 
+                    placeholder="What were the results?" 
+                    value={currentProject.outcome || ""} 
+                    onChange={e => setCurrentProject({...currentProject, outcome: e.target.value})}
+                    rows={4}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Tech Stack</Label>
+                    <Input 
+                      placeholder="e.g. React, Next.js, Firebase (comma separated)" 
+                      value={techStackInput} 
+                      onChange={e => setTechStackInput(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Live Project Link</Label>
+                    <Input 
+                      placeholder="e.g. https://example.com" 
+                      value={currentProject.liveLink || ""} 
+                      onChange={e => setCurrentProject({...currentProject, liveLink: e.target.value})}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* SEO */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">SEO Options</h3>
+                <div className="space-y-2">
                 <Label>SEO Title</Label>
                 <Input 
                   placeholder="Optional SEO Title" 
@@ -199,50 +319,85 @@ export default function PortfolioAdminPage() {
                   rows={3}
                 />
               </div>
-              <div className="space-y-2">
-                <Label>Cover Image</Label>
-                {coverImage ? (
-                  <div className="border rounded-lg p-4 bg-muted/30 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={coverImage.url} alt={coverImage.alt} className="h-16 w-16 object-cover rounded" />
-                        <div>
-                          <p className="text-sm font-medium line-clamp-1 max-w-[200px]">{coverImage.url.split('/').pop()}</p>
-                          <p className="text-xs text-muted-foreground">Alt: {coverImage.alt}</p>
-                          {coverImage.caption && (
-                            <p className="text-xs text-muted-foreground italic mt-1 line-clamp-1">Caption: {coverImage.caption}</p>
-                          )}
+              </div>
+
+              {/* Media */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">Media</h3>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label>Cover Image (Required) <br/><span className="text-xs text-muted-foreground font-normal">Shown at the top of the detail page.</span></Label>
+                    {coverImage ? (
+                      <div className="border rounded-lg p-4 bg-muted/30 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={coverImage.url} alt={coverImage.alt} className="h-16 w-16 object-cover rounded" />
+                            <div>
+                              <p className="text-sm font-medium line-clamp-1 max-w-[150px]">{coverImage.url.split('/').pop()}</p>
+                              <p className="text-xs text-muted-foreground">Alt: {coverImage.alt}</p>
+                              {coverImage.caption && (
+                                <p className="text-xs text-muted-foreground italic mt-1 line-clamp-1">Caption: {coverImage.caption}</p>
+                              )}
+                            </div>
+                          </div>
+                          <Button type="button" variant="ghost" size="sm" onClick={() => setCoverImage(null)}>
+                            Remove
+                          </Button>
                         </div>
+                        {coverImage.caption && (
+                          <div className="flex items-center gap-2 pt-2 border-t">
+                            <input
+                              type="checkbox"
+                              id="showCaption"
+                              checked={coverImage.showCaption || false}
+                              onChange={(e) => setCoverImage({ ...coverImage, showCaption: e.target.checked })}
+                              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                            />
+                            <Label htmlFor="showCaption" className="font-normal text-sm cursor-pointer">
+                              Show caption on site
+                            </Label>
+                          </div>
+                        )}
                       </div>
-                      <Button type="button" variant="ghost" size="sm" onClick={() => setCoverImage(null)}>
-                        Remove
-                      </Button>
-                    </div>
-                    {coverImage.caption && (
-                      <div className="flex items-center gap-2 pt-2 border-t">
-                        <input
-                          type="checkbox"
-                          id="showCaption"
-                          checked={coverImage.showCaption || false}
-                          onChange={(e) => setCoverImage({ ...coverImage, showCaption: e.target.checked })}
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                        />
-                        <Label htmlFor="showCaption" className="font-normal text-sm cursor-pointer">
-                          Show caption visibly under image on live site
-                        </Label>
+                    ) : (
+                      <div className="border-2 border-dashed rounded-lg p-8 text-center bg-muted/30 h-[140px] flex flex-col justify-center items-center">
+                        <Button type="button" variant="outline" onClick={() => { setMediaTarget("cover"); setIsMediaLibraryOpen(true); }}>
+                          <ImageIcon className="h-4 w-4 mr-2" />
+                          Open Media Library
+                        </Button>
                       </div>
                     )}
                   </div>
-                ) : (
-                  <div className="border-2 border-dashed rounded-lg p-8 text-center bg-muted/30">
-                    <p className="text-sm text-muted-foreground mb-4">Drag and drop an image here, or click to browse</p>
-                    <Button type="button" variant="outline" onClick={() => setIsMediaLibraryOpen(true)}>
-                      <ImageIcon className="h-4 w-4 mr-2" />
-                      Open Media Library
-                    </Button>
+                  
+                  <div className="space-y-2">
+                    <Label>Thumbnail Image (Optional) <br/><span className="text-xs text-muted-foreground font-normal">Shown on the grid. Falls back to Cover if empty.</span></Label>
+                    {thumbnailImage ? (
+                      <div className="border rounded-lg p-4 bg-muted/30 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={thumbnailImage.url} alt={thumbnailImage.alt} className="h-16 w-16 object-cover rounded" />
+                            <div>
+                              <p className="text-sm font-medium line-clamp-1 max-w-[150px]">{thumbnailImage.url.split('/').pop()}</p>
+                              <p className="text-xs text-muted-foreground">Alt: {thumbnailImage.alt}</p>
+                            </div>
+                          </div>
+                          <Button type="button" variant="ghost" size="sm" onClick={() => setThumbnailImage(null)}>
+                            Remove
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="border-2 border-dashed rounded-lg p-8 text-center bg-muted/30 h-[140px] flex flex-col justify-center items-center">
+                        <Button type="button" variant="outline" onClick={() => { setMediaTarget("thumbnail"); setIsMediaLibraryOpen(true); }}>
+                          <ImageIcon className="h-4 w-4 mr-2" />
+                          Open Media Library
+                        </Button>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
               <div className="flex justify-between items-center pt-4 border-t">
                 {currentProject.id ? (
@@ -267,7 +422,11 @@ export default function PortfolioAdminPage() {
           open={isMediaLibraryOpen} 
           onOpenChange={setIsMediaLibraryOpen}
           onSelect={(url, alt, caption) => {
-            setCoverImage({ url, alt, caption, showCaption: !!caption });
+            if (mediaTarget === "cover") {
+              setCoverImage({ url, alt, caption, showCaption: !!caption });
+            } else if (mediaTarget === "thumbnail") {
+              setThumbnailImage({ url, alt, caption, showCaption: false });
+            }
           }}
         />
       </div>

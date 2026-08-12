@@ -47,8 +47,8 @@ export default async function ServicesPage() {
                 <div className="md:col-span-4 space-y-6 sticky top-24">
                   {service.screenshotImage?.url && (
                     <div>
-                      <div className="relative h-24 w-24 rounded-2xl overflow-hidden border">
-                        <Image src={service.screenshotImage.url} alt={service.screenshotImage.alt || service.title} fill className="object-cover" sizes="96px" />
+                      <div className="relative h-24 w-24 rounded-2xl overflow-hidden border flex items-center justify-center bg-muted">
+                        <Image src={service.screenshotImage.url} alt={service.screenshotImage.alt || service.title} fill className="object-contain p-2" sizes="96px" />
                       </div>
                       {service.screenshotImage?.showCaption && service.screenshotImage?.caption && (
                         <p className="text-sm text-muted-foreground mt-2 italic">
