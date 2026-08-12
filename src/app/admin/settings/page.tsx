@@ -57,6 +57,9 @@ export default function SettingsPage() {
     siteName: "Agency.",
     primaryColor: "#0f172a",
     secondaryColor: "#f1f5f9",
+    headingColor: "",
+    textColor: "",
+    mutedTextColor: "",
     enableAnalytics: false,
     defaultSeoTitle: "Agency | Digital Product Studio",
     defaultSeoDescription: "We design and build websites and apps that deliver concrete outcomes.",
@@ -282,6 +285,81 @@ export default function SettingsPage() {
         <CardFooter className="border-t px-6 py-4">
           <Button onClick={handleSave} disabled={saving || !isPassing}>
             {saving ? "Saving..." : "Save Brand Settings"}
+          </Button>
+        </CardFooter>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Typography Colors</CardTitle>
+          <CardDescription>Configure the colors used for headings, standard text, and subtle text. Leave empty to use system defaults.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
+            <Label htmlFor="headingColor">Heading / Title Color</Label>
+            <div className="flex items-center gap-4">
+              <Input 
+                type="color" 
+                id="headingColor"
+                value={settings.headingColor || "#0f172a"}
+                onChange={(e) => setSettings({ ...settings, headingColor: e.target.value })}
+                className="w-16 h-12 p-1 cursor-pointer"
+              />
+              <Input 
+                type="text" 
+                value={settings.headingColor || ""}
+                onChange={(e) => setSettings({ ...settings, headingColor: e.target.value })}
+                className="w-32 font-mono"
+                placeholder="Default"
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">Used for main titles and page headers (H1-H6).</p>
+          </div>
+
+          <div className="space-y-4 pt-4 border-t">
+            <Label htmlFor="textColor">Body Text Color</Label>
+            <div className="flex items-center gap-4">
+              <Input 
+                type="color" 
+                id="textColor"
+                value={settings.textColor || "#0f172a"}
+                onChange={(e) => setSettings({ ...settings, textColor: e.target.value })}
+                className="w-16 h-12 p-1 cursor-pointer"
+              />
+              <Input 
+                type="text" 
+                value={settings.textColor || ""}
+                onChange={(e) => setSettings({ ...settings, textColor: e.target.value })}
+                className="w-32 font-mono"
+                placeholder="Default"
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">Used for standard paragraphs and generic body text.</p>
+          </div>
+
+          <div className="space-y-4 pt-4 border-t">
+            <Label htmlFor="mutedTextColor">Subheading / Muted Text Color</Label>
+            <div className="flex items-center gap-4">
+              <Input 
+                type="color" 
+                id="mutedTextColor"
+                value={settings.mutedTextColor || "#64748b"}
+                onChange={(e) => setSettings({ ...settings, mutedTextColor: e.target.value })}
+                className="w-16 h-12 p-1 cursor-pointer"
+              />
+              <Input 
+                type="text" 
+                value={settings.mutedTextColor || ""}
+                onChange={(e) => setSettings({ ...settings, mutedTextColor: e.target.value })}
+                className="w-32 font-mono"
+                placeholder="Default"
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">Used for subheadings, captions, and secondary descriptions.</p>
+          </div>
+        </CardContent>
+        <CardFooter className="border-t px-6 py-4">
+          <Button onClick={handleSave} disabled={saving}>
+            {saving ? "Saving..." : "Save Typography Colors"}
           </Button>
         </CardFooter>
       </Card>

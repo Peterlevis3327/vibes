@@ -33,15 +33,21 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
-        {(settings.primaryColor || settings.secondaryColor) && (
+        {(settings.primaryColor || settings.secondaryColor || settings.textColor || settings.headingColor || settings.mutedTextColor) && (
           <style>{`
             :root {
               ${settings.primaryColor ? `--primary: ${settings.primaryColor}; --primary-foreground: ${settings.primaryForeground || '#ffffff'};` : ''}
               ${settings.secondaryColor ? `--secondary: ${settings.secondaryColor}; --secondary-foreground: ${settings.secondaryForeground || '#0f172a'};` : ''}
+              ${settings.textColor ? `--foreground: ${settings.textColor};` : ''}
+              ${settings.headingColor ? `--heading: ${settings.headingColor};` : ''}
+              ${settings.mutedTextColor ? `--muted-foreground: ${settings.mutedTextColor};` : ''}
             }
             .dark {
               ${settings.primaryColor ? `--primary: ${settings.primaryColor}; --primary-foreground: ${settings.primaryForeground || '#ffffff'};` : ''}
               ${settings.secondaryColor ? `--secondary: ${settings.secondaryColor}; --secondary-foreground: ${settings.secondaryForeground || '#0f172a'};` : ''}
+              ${settings.textColor ? `--foreground: ${settings.textColor};` : ''}
+              ${settings.headingColor ? `--heading: ${settings.headingColor};` : ''}
+              ${settings.mutedTextColor ? `--muted-foreground: ${settings.mutedTextColor};` : ''}
             }
           `}</style>
         )}
