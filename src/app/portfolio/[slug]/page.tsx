@@ -4,6 +4,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Quote } from "lucide-react";
 import { getProjectBySlug, getTestimonials } from "@/lib/firebase/db";
+import { getLinkPreview } from "@/lib/utils/linkPreview";
+import { LinkPreviewCard } from "@/components/ui/LinkPreviewCard";
 import { notFound } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
@@ -29,6 +31,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   const allTestimonials = await getTestimonials();
   const relatedTestimonial = allTestimonials.find((t: any) => t.relatedProjectId === project.id);
+  
+  const linkPreview = project.liveLink ? await getLinkPreview(project.liveLink) : null;
 
   return (
     <div className="flex flex-col w-full">
@@ -180,9 +184,22 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               ))}
             </div>
             {project.liveLink && (
-              <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className={buttonVariants()}>
-                  Visit Live Site <ExternalLink className="ml-2 h-4 w-4" />
-              </a>
+              <div className="mt-8 pt-8 border-t">
+                <h3 className="text-xl font-bold mb-6">Live Project</h3>
+                {linkPreview ? (
+                  <LinkPreviewCard
+                    title={linkPreview.title || project.title}
+                    description={linkPreview.description || project.description}
+                    image={linkPreview.image}
+                    url={project.liveLink}
+                    domain={linkPreview.domain}
+                  />
+                ) : (
+                  <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className={buttonVariants({ variant: "outline", size: "lg" })}>
+                    Visit Live Site <ExternalLink className="ml-2 h-4 w-4" />
+                  </a>
+                )}
+              </div>
             )}
           </div>
 
