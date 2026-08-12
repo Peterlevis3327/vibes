@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function Navbar({ siteName = "Agency." }: { siteName?: string }) {
@@ -55,28 +55,32 @@ export function Navbar({ siteName = "Agency." }: { siteName?: string }) {
               </SheetTrigger>
               <SheetContent side="right">
                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-                <div className="flex flex-col space-y-6 mt-8">
-                  <Link href="/services" onClick={() => setIsOpen(false)} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
-                    Services
-                  </Link>
-                  <Link href="/portfolio" onClick={() => setIsOpen(false)} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
-                    Our Work
-                  </Link>
-                  <Link href="/process" onClick={() => setIsOpen(false)} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
-                    Process
-                  </Link>
-                  <Link href="/about" onClick={() => setIsOpen(false)} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
-                    About
-                  </Link>
-                  <Link href="/testimonials" onClick={() => setIsOpen(false)} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
-                    Testimonials
-                  </Link>
-                  <Link href="/posts" onClick={() => setIsOpen(false)} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
-                    Insights
-                  </Link>
-                  <Link href="/contact" onClick={() => setIsOpen(false)}>
-                    <Button className="w-full mt-4">Start a Project</Button>
-                  </Link>
+                <div className="flex flex-col space-y-1 mt-6">
+                  {[
+                    { href: "/services", label: "Services" },
+                    { href: "/portfolio", label: "Our Work" },
+                    { href: "/process", label: "Process" },
+                    { href: "/about", label: "About" },
+                    { href: "/testimonials", label: "Testimonials" },
+                    { href: "/posts", label: "Insights" },
+                  ].map((item) => (
+                    <Link 
+                      key={item.href}
+                      href={item.href} 
+                      onClick={() => setIsOpen(false)} 
+                      className="group flex items-center justify-between px-4 py-4 rounded-xl hover:bg-muted/60 transition-all active:scale-[0.98]"
+                    >
+                      <span className="text-xl font-semibold tracking-tight text-foreground/80 group-hover:text-foreground transition-colors">
+                        {item.label}
+                      </span>
+                      <ChevronRight className="h-5 w-5 text-muted-foreground/50 group-hover:text-foreground group-hover:translate-x-1 transition-all" />
+                    </Link>
+                  ))}
+                  <div className="pt-6 px-4">
+                    <Link href="/contact" onClick={() => setIsOpen(false)}>
+                      <Button size="lg" className="w-full text-base h-14 rounded-xl">Start a Project</Button>
+                    </Link>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
