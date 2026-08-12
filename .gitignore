@@ -43,3 +43,8 @@ serviceAccountKey.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# prompt files containing secrets
+prompt.txt
+latest_prompt.txt
+last_messages.txt
