@@ -16,14 +16,24 @@ const initialHomePageData = {
   seoTitle: "Agency | Digital Product Studio",
   seoDescription: "We design and build websites and apps that deliver concrete outcomes.",
   heroBackgroundImage: { url: "", alt: "", caption: "", showCaption: false },
-  showBackgroundImage: true
+  backgroundImageVisibility: 20
 };
 
 const initialGenericPageData = {
   title: "",
   subtitle: "",
   headerBackgroundImage: { url: "", alt: "", caption: "", showCaption: false },
-  showBackgroundImage: true
+  backgroundImageVisibility: 20
+};
+
+// Helper function to calculate overlay styles
+const getOverlayStyle = (visibility = 20) => {
+  const opacity = 1 - (visibility / 100);
+  const blur = opacity * 10;
+  return {
+    opacity,
+    backdropFilter: `blur(${blur}px)`
+  };
 };
 
 // Simplified preview component that mimics the home page hero
@@ -31,13 +41,16 @@ const HomePreview = ({ data }: { data: typeof initialHomePageData }) => {
   return (
     <div className="flex flex-col w-full font-sans">
       <section className="relative px-4 md:px-8 pt-24 pb-32 flex flex-col items-center text-center overflow-hidden">
-        {data.showBackgroundImage && data.heroBackgroundImage?.url && (
+        {data.heroBackgroundImage?.url && (
           <>
             <div 
               className="absolute inset-0 z-0 bg-cover bg-center" 
               style={{ backgroundImage: `url(${data.heroBackgroundImage.url})` }}
             />
-            <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px] z-0"></div>
+            <div 
+              className="absolute inset-0 bg-background z-0 transition-all duration-200"
+              style={getOverlayStyle(data.backgroundImageVisibility)}
+            ></div>
           </>
         )}
         <div className="max-w-4xl mx-auto space-y-8 relative z-10">
@@ -63,13 +76,16 @@ const GenericPagePreview = ({ data }: { data: typeof initialGenericPageData }) =
   return (
     <div className="flex flex-col w-full font-sans">
       <section className="relative px-4 md:px-8 py-24 md:py-32 flex flex-col items-center text-center overflow-hidden">
-        {data.showBackgroundImage && data.headerBackgroundImage?.url ? (
+        {data.headerBackgroundImage?.url ? (
           <>
             <div 
               className="absolute inset-0 z-0 bg-cover bg-center" 
               style={{ backgroundImage: `url(${data.headerBackgroundImage.url})` }}
             />
-            <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px] z-0"></div>
+            <div 
+              className="absolute inset-0 bg-background z-0 transition-all duration-200"
+              style={getOverlayStyle(data.backgroundImageVisibility)}
+            ></div>
           </>
         ) : (
           <div className="absolute inset-0 z-0 bg-muted/30"></div>

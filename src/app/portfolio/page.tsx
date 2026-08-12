@@ -35,7 +35,7 @@ export default async function PortfolioPage({ searchParams }: { searchParams: Pr
         title={pageData?.title || "Our Work"}
         subtitle={pageData?.subtitle || "A selection of recent projects where we've helped ambitious companies launch and scale their digital products."}
         backgroundImage={pageData?.headerBackgroundImage}
-        showBackgroundImage={pageData?.showBackgroundImage !== false}
+        backgroundImageVisibility={pageData?.backgroundImageVisibility}
       />
 
       <section className="px-4 md:px-8 py-24">

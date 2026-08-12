@@ -7,19 +7,25 @@ interface PageHeaderProps {
     url: string;
     alt?: string;
   };
-  showBackgroundImage?: boolean;
+  backgroundImageVisibility?: number;
 }
 
-export function PageHeader({ title, subtitle, backgroundImage, showBackgroundImage = true }: PageHeaderProps) {
+export function PageHeader({ title, subtitle, backgroundImage, backgroundImageVisibility = 20 }: PageHeaderProps) {
+  const opacity = 1 - (backgroundImageVisibility / 100);
+  const blur = opacity * 10;
+  
   return (
     <section className="relative px-4 md:px-8 py-24 md:py-32 flex flex-col items-center text-center overflow-hidden">
-      {showBackgroundImage && backgroundImage?.url ? (
+      {backgroundImage?.url ? (
         <>
           <div 
             className="absolute inset-0 z-0 bg-cover bg-center" 
             style={{ backgroundImage: `url(${backgroundImage.url})` }}
           />
-          <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px] z-0"></div>
+          <div 
+            className="absolute inset-0 bg-background z-0 transition-all duration-200"
+            style={{ opacity, backdropFilter: `blur(${blur}px)` }}
+          ></div>
         </>
       ) : (
         <div className="absolute inset-0 z-0 bg-muted/30"></div>

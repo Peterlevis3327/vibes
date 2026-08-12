@@ -27,6 +27,10 @@ const staggerContainer = {
 };
 
 export default function HomeClient({ data, services = [], portfolio = [], faqs = [] }: { data: any, services: any[], portfolio: any[], faqs?: any[] }) {
+  const visibility = data.backgroundImageVisibility ?? 20;
+  const opacity = 1 - (visibility / 100);
+  const blur = opacity * 10;
+
   return (
     <div className="flex flex-col w-full">
       {/* Hero Section */}
@@ -37,7 +41,10 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
               className="absolute inset-0 z-0 bg-cover bg-center" 
               style={{ backgroundImage: `url(${data.heroBackgroundImage.url})` }}
             />
-            <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px] z-0"></div>
+            <div 
+              className="absolute inset-0 bg-background z-0 transition-all duration-200"
+              style={{ opacity, backdropFilter: `blur(${blur}px)` }}
+            ></div>
           </>
         )}
         {/* Removed radial gradient for a cleaner editorial look */}

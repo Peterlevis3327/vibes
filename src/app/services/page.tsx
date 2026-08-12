@@ -29,7 +29,7 @@ export default async function ServicesPage() {
         title={pageData?.title || "Our Services"}
         subtitle={pageData?.subtitle || "Comprehensive digital solutions designed to help your business scale. From concept to deployment, we handle it all."}
         backgroundImage={pageData?.headerBackgroundImage}
-        showBackgroundImage={pageData?.showBackgroundImage !== false}
+        backgroundImageVisibility={pageData?.backgroundImageVisibility}
       />
 
       <section className="px-4 md:px-8 py-24">
