@@ -35,11 +35,15 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
     <div className="flex flex-col w-full">
       {/* Hero Section */}
       <section className="relative px-4 md:px-8 pt-24 pb-32 md:pt-32 md:pb-40 flex flex-col items-center text-center overflow-hidden">
-        {data.showBackgroundImage !== false && data.heroBackgroundImage?.url && (
+        {data.heroBackgroundImage?.url && (
           <>
-            <div 
-              className="absolute inset-0 z-0 bg-cover bg-center" 
-              style={{ backgroundImage: `url(${data.heroBackgroundImage.url})` }}
+            <Image
+              src={data.heroBackgroundImage.url}
+              alt={data.heroBackgroundImage.alt || "Background"}
+              fill
+              priority
+              className="object-cover object-center z-0"
+              sizes="100vw"
             />
             <div 
               className="absolute inset-0 bg-background z-0 transition-all duration-200"
