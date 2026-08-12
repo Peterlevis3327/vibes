@@ -50,7 +50,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <div className="mb-16">
             <div className="aspect-video bg-muted rounded-3xl w-full flex items-center justify-center text-muted-foreground/30 relative overflow-hidden">
               {post.coverImage?.url ? (
-                <Image src={post.coverImage.url} alt={post.coverImage.alt || post.title} fill className="object-cover" priority />
+                <Image src={post.coverImage.url} alt={post.coverImage.alt || post.title} fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 768px" />
               ) : (
                 <span>Cover Image</span>
               )}

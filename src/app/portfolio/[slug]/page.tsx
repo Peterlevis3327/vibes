@@ -61,26 +61,84 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         </div>
 
         {/* Hero Image */}
-        <div className="w-full max-w-7xl mx-auto px-4 md:px-8 mb-24">
-          <div className="aspect-video bg-muted rounded-3xl w-full flex items-center justify-center text-muted-foreground/30 relative overflow-hidden">
-            {(project.coverImage?.url || project.images?.[0]?.url) ? (
-              <Image 
-                src={project.coverImage?.url || project.images[0].url} 
-                alt={project.coverImage?.alt || project.images?.[0]?.alt || project.title} 
-                fill 
-                className="object-cover" 
-                priority 
-              />
-            ) : (
-              <span>Primary Project Image / Device Mockup</span>
-            )}
-          </div>
-          {project.coverImage?.showCaption && project.coverImage?.caption && (
-            <p className="text-center text-sm text-muted-foreground mt-4 italic">
-              {project.coverImage.caption}
-            </p>
-          )}
-        </div>
+        {(() => {
+          const isMobile = project.category?.toLowerCase().includes('mobile');
+          const imgSrc = project.coverImage?.url || project.images?.[0]?.url;
+          const imgAlt = project.coverImage?.alt || project.images?.[0]?.alt || project.title;
+          
+          return (
+            <div className="w-full max-w-7xl mx-auto px-4 md:px-8 mb-24">
+              {isMobile ? (
+                // Mobile Device Mockup
+                <div className="relative w-full max-w-sm mx-auto flex flex-col">
+                  <div className="relative aspect-[9/19] w-full rounded-[3rem] border-[14px] border-foreground/90 bg-foreground/90 shadow-2xl overflow-hidden ring-1 ring-border/20">
+                    {/* Top Notch */}
+                    <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-20 pointer-events-none">
+                      <div className="w-32 h-6 bg-foreground/90 rounded-b-3xl"></div>
+                    </div>
+                    {/* Screen Content */}
+                    <div className="relative w-full h-full bg-background overflow-hidden rounded-[2rem]">
+                      {imgSrc ? (
+                        <Image 
+                          src={imgSrc} 
+                          alt={imgAlt} 
+                          fill 
+                          className="object-cover" 
+                          priority 
+                          sizes="(max-width: 768px) 100vw, 400px"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
+                          <span>Mobile Mockup</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // Web Browser Mockup
+                <div className="relative w-full aspect-[16/10] md:aspect-video rounded-2xl md:rounded-3xl border shadow-xl bg-card overflow-hidden flex flex-col">
+                  {/* Browser Chrome */}
+                  <div className="h-10 border-b bg-muted/50 flex items-center px-4 gap-2 relative z-20">
+                    <div className="flex gap-2">
+                      <div className="w-3 h-3 rounded-full bg-red-400/80"></div>
+                      <div className="w-3 h-3 rounded-full bg-amber-400/80"></div>
+                      <div className="w-3 h-3 rounded-full bg-green-400/80"></div>
+                    </div>
+                    <div className="absolute inset-x-0 mx-auto flex justify-center pointer-events-none hidden sm:flex">
+                      <div className="h-6 bg-background rounded-md border text-[10px] font-medium flex items-center px-6 text-muted-foreground justify-center shadow-sm max-w-[200px] truncate">
+                        {project.title.toLowerCase().replace(/\s+/g, '')}.com
+                      </div>
+                    </div>
+                  </div>
+                  {/* Screen Content */}
+                  <div className="relative flex-1 bg-muted/20">
+                    {imgSrc ? (
+                      <Image 
+                        src={imgSrc} 
+                        alt={imgAlt} 
+                        fill 
+                        className="object-cover object-top" 
+                        priority 
+                        sizes="100vw"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
+                        <span>Web Mockup</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              {project.coverImage?.showCaption && project.coverImage?.caption && (
+                <p className="text-center text-sm text-muted-foreground mt-8 italic w-full">
+                  {project.coverImage.caption}
+                </p>
+              )}
+            </div>
+          );
+        })()}
 
         <div className="container mx-auto px-4 md:px-8 max-w-4xl space-y-24">
           {/* Content Sections */}
@@ -133,7 +191,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-primary-foreground/10 flex-shrink-0 flex items-center justify-center relative overflow-hidden">
                       {relatedTestimonial.avatar?.url ? (
-                        <Image src={relatedTestimonial.avatar.url} alt={relatedTestimonial.avatar.alt || relatedTestimonial.name} fill className="object-cover" />
+                        <Image src={relatedTestimonial.avatar.url} alt={relatedTestimonial.avatar.alt || relatedTestimonial.name} fill className="object-cover" sizes="48px" />
                       ) : (
                         <span className="text-xs">Photo</span>
                       )}

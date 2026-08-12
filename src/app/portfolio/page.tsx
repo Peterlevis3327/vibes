@@ -67,13 +67,21 @@ export default async function PortfolioPage({ searchParams }: { searchParams: Pr
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
-              {projects.map((project, i) => (
+              {projects.map((project: any, i: number) => {
+                const isMobile = project.category?.toLowerCase().includes('mobile');
+                return (
                 <div key={project.id} className={`group cursor-pointer ${i % 2 !== 0 ? 'md:mt-24' : ''}`}>
-                  <Link key={project.id} href={`/portfolio/${project.id}`} className="group block">
-                    <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-muted mb-6 border">
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <Link href={`/portfolio/${project.id}`} className="group block">
+                    <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-muted mb-6 border flex items-center justify-center">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                       {project.images?.[0]?.url ? (
-                        <Image src={project.images[0].url} alt={project.images[0].alt || project.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <Image 
+                          src={project.images[0].url} 
+                          alt={project.images[0].alt || project.title} 
+                          fill 
+                          className={`${isMobile ? 'object-contain p-6 sm:p-10 drop-shadow-2xl' : 'object-cover'} group-hover:scale-105 transition-transform duration-500`} 
+                          sizes="(max-width: 768px) 100vw, 50vw" 
+                        />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/30">
                           <Briefcase className="h-24 w-24" />
@@ -87,7 +95,7 @@ export default async function PortfolioPage({ searchParams }: { searchParams: Pr
                     <p className="text-foreground/80 line-clamp-2">{project.description}</p>
                   </Link>
                 </div>
-              ))}
+              )})}
             </div>
           )}
         </div>

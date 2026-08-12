@@ -48,7 +48,7 @@ export default async function ServicesPage() {
                   {service.screenshotImage?.url && (
                     <div>
                       <div className="relative h-24 w-24 rounded-2xl overflow-hidden border">
-                        <Image src={service.screenshotImage.url} alt={service.screenshotImage.alt || service.title} fill className="object-cover" />
+                        <Image src={service.screenshotImage.url} alt={service.screenshotImage.alt || service.title} fill className="object-cover" sizes="96px" />
                       </div>
                       {service.screenshotImage?.showCaption && service.screenshotImage?.caption && (
                         <p className="text-sm text-muted-foreground mt-2 italic">
@@ -101,7 +101,7 @@ export default async function ServicesPage() {
                         <Link key={item.id} href={`/portfolio/${item.id}`} className="block group">
                           <div className="aspect-[4/3] bg-background rounded-xl border border-muted flex items-center justify-center overflow-hidden relative mb-3">
                             {item.images?.[0]?.url ? (
-                              <Image src={item.images[0].url} alt={item.images[0].alt || item.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                              <Image src={item.images[0].url} alt={item.images[0].alt || item.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 100vw, 33vw" />
                             ) : (
                               <span className="text-muted-foreground">{item.title}</span>
                             )}

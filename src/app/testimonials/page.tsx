@@ -44,7 +44,7 @@ export default async function TestimonialsPage() {
                     <div className="flex items-center gap-4">
                       <div className="h-12 w-12 rounded-full bg-muted flex-shrink-0 flex items-center justify-center text-muted-foreground/30 relative overflow-hidden">
                         {testimonial.avatar?.url ? (
-                          <Image src={testimonial.avatar.url} alt={testimonial.avatar.alt || testimonial.name} fill className="object-cover" />
+                          <Image src={testimonial.avatar.url} alt={testimonial.avatar.alt || testimonial.name} fill className="object-cover" sizes="48px" />
                         ) : (
                           <span className="text-xs">Photo</span>
                         )}

@@ -128,7 +128,7 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
                   </div>
                   <div className="aspect-[4/3] bg-muted rounded-2xl overflow-hidden relative border">
                     {service.screenshotImage?.url ? (
-                      <Image src={service.screenshotImage.url} alt={service.screenshotImage.alt || service.title} fill className="object-cover" />
+                      <Image src={service.screenshotImage.url} alt={service.screenshotImage.alt || service.title} fill className="object-cover" sizes="96px" />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/40">
                         <span className="text-sm font-medium uppercase tracking-widest">[ Device Mockup ]</span>
@@ -170,7 +170,7 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
                     <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-muted mb-6 border">
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       {item.images?.[0]?.url ? (
-                        <Image src={item.images[0].url} alt={item.images[0].alt || item.title} fill className="object-cover" />
+                        <Image src={item.images[0].url} alt={item.images[0].alt || item.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/30">
                           <Briefcase className="h-24 w-24" />

@@ -42,6 +42,7 @@ export default async function AboutPage() {
                 alt="Our creative team collaborating in a modern office space" 
                 fill 
                 className="object-cover" 
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
           </div>
@@ -62,7 +63,7 @@ export default async function AboutPage() {
                 <div key={member.id} className="group">
                     <div className="aspect-[4/5] bg-background/10 rounded-2xl mb-6 overflow-hidden relative">
                        {member.avatar?.url ? (
-                         <Image src={member.avatar.url} alt={member.avatar.alt || member.name} fill className="object-cover" />
+                         <Image src={member.avatar.url} alt={member.avatar.alt || member.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw" />
                        ) : (
                          <div className="absolute inset-0 flex items-center justify-center text-background/30">
                           <span>Portrait</span>
