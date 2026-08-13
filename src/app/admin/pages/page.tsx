@@ -53,6 +53,10 @@ const getOverlayStyle = (visibility = 20) => {
     backdropFilter: `blur(${blur}px)`
   };
 };
+const HomePreview = ({ data, onChange, isEditing }: { data: typeof initialHomePageData & any, onChange?: any, isEditing?: boolean }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const subheadlineRef = useRef<HTMLParagraphElement>(null);
 
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
