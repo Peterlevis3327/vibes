@@ -32,8 +32,8 @@ export default async function PortfolioPage({ searchParams }: { searchParams: Pr
   return (
     <div className="flex flex-col w-full">
       <PageHeader 
-        title={pageData?.title || "Our Work"}
-        subtitle={pageData?.subtitle || "A selection of recent projects where we've helped ambitious companies launch and scale their digital products."}
+        title={pageData?.title ?? "Our Work"}
+        subtitle={pageData?.subtitle ?? "A selection of recent projects where we've helped ambitious companies launch and scale their digital products."}
         backgroundImage={pageData?.headerBackgroundImage}
         backgroundImageVisibility={pageData?.backgroundImageVisibility}
         titleColor={pageData?.titleColor}

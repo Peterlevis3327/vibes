@@ -46,7 +46,7 @@ const initialHomePageData = {
 };
 
 const initialGenericPageData = {
-  title: "",
+  title: null,
   titleColor: "",
   titleFontSize: 48,
   titleX: 0,
@@ -59,7 +59,7 @@ const initialGenericPageData = {
   titleMobileWidth: 100,
   titleMobileFontSize: 28,
 
-  subtitle: "",
+  subtitle: null,
   subtitleColor: "",
   subtitleFontSize: 18,
   subtitleX: 0,
@@ -444,8 +444,8 @@ const GenericPagePreview = ({
   const subW = (isPreviewMobile && subtitleOverride ? data.subtitleMobileWidth : data.subtitleWidth) as number ?? 100;
   const subFs = (isPreviewMobile && subtitleOverride ? data.subtitleMobileFontSize : data.subtitleFontSize) as number;
 
-  const titleContent = <h1 className="font-bold tracking-tight w-full text-center">{(data.title as string) || "Page Title"}</h1>;
-  const subContent = <p className="w-full text-center">{(data.subtitle as string) || "Page subtitle goes here."}</p>;
+  const titleContent = <h1 className="font-bold tracking-tight w-full text-center">{(data.title as string) ?? "Page Title"}</h1>;
+  const subContent = <p className="w-full text-center">{(data.subtitle as string) ?? "Page subtitle goes here."}</p>;
 
   return (
     <div className={`flex flex-col w-full font-sans ${isEditing ? "select-none" : ""}`}>

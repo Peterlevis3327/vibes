@@ -59,8 +59,8 @@ export default async function ProcessPage() {
   return (
     <div className="flex flex-col w-full">
       <PageHeader 
-        title={pageData?.title || "Our Process"}
-        subtitle={pageData?.subtitle || "A transparent, proven methodology to take your project from initial concept to a successful launch, without the guesswork."}
+        title={pageData?.title ?? "Our Process"}
+        subtitle={pageData?.subtitle ?? "A transparent, proven methodology to take your project from initial concept to a successful launch, without the guesswork."}
         backgroundImage={pageData?.headerBackgroundImage}
         backgroundImageVisibility={pageData?.backgroundImageVisibility}
         titleColor={pageData?.titleColor}

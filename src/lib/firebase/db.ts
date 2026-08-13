@@ -49,8 +49,8 @@ export async function getPageData(pageId: string) {
         const docSnap = await getDoc(docRef);
         return docSnap.exists() ? docSnap.data() : null;
     }, {
-        title: "",
-        subtitle: "",
+        title: null,
+        subtitle: null,
         headerBackgroundImage: { url: "", alt: "", caption: "", showCaption: false }
     });
 }

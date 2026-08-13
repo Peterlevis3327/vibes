@@ -22,7 +22,11 @@ export async function revalidatePublicRoutes(collectionName: string, docId?: str
     revalidatePath("/process");
     revalidatePath("/");
   } else if (collectionName === "pages") { 
-    revalidatePath("/");
+    if (docId === "home") {
+      revalidatePath("/");
+    } else if (docId) {
+      revalidatePath(`/${docId}`);
+    }
   } else if (collectionName === "settings") {
     revalidatePath("/", "layout");
   } else if (collectionName === "process") {

@@ -20,8 +20,8 @@ export default async function AboutPage() {
   return (
     <div className="flex flex-col w-full">
       <PageHeader 
-        title={pageData?.title || "About Agency."}
-        subtitle={pageData?.subtitle || "We are a collective of designers, engineers, and strategists dedicated to building digital products that matter."}
+        title={pageData?.title ?? "About Agency."}
+        subtitle={pageData?.subtitle ?? "We are a collective of designers, engineers, and strategists dedicated to building digital products that matter."}
         backgroundImage={pageData?.headerBackgroundImage}
         backgroundImageVisibility={pageData?.backgroundImageVisibility}
         titleColor={pageData?.titleColor}

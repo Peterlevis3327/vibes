@@ -30,8 +30,8 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
   return (
     <div className="flex flex-col w-full">
       <PageHeader 
-        title={pageData?.title || "Insights"}
-        subtitle={pageData?.subtitle || "Thoughts, learnings, and strategies on product design, software engineering, and growing digital businesses."}
+        title={pageData?.title ?? "Insights"}
+        subtitle={pageData?.subtitle ?? "Thoughts, learnings, and strategies on product design, software engineering, and growing digital businesses."}
         backgroundImage={pageData?.headerBackgroundImage}
         backgroundImageVisibility={pageData?.backgroundImageVisibility}
         titleColor={pageData?.titleColor}
