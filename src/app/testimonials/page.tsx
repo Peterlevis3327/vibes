@@ -24,6 +24,12 @@ export default async function TestimonialsPage() {
         subtitle={pageData?.subtitle || "Don't just take our word for it. Here's what our partners have to say about working with us."}
         backgroundImage={pageData?.headerBackgroundImage}
         backgroundImageVisibility={pageData?.backgroundImageVisibility}
+        titleColor={pageData?.titleColor}
+        titleX={pageData?.titleX}
+        titleY={pageData?.titleY}
+        subtitleColor={pageData?.subtitleColor}
+        subtitleX={pageData?.subtitleX}
+        subtitleY={pageData?.subtitleY}
       />
 
       <section className="px-4 md:px-8 py-24">

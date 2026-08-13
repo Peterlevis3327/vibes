@@ -34,7 +34,7 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
   return (
     <div className="flex flex-col w-full">
       {/* Hero Section */}
-      <section className="relative px-4 md:px-8 pt-24 pb-32 md:pt-32 md:pb-40 flex flex-col items-center text-center overflow-hidden">
+      <section className="relative px-4 md:px-8 pt-24 pb-32 md:pt-32 md:pb-40 flex flex-col items-center text-center overflow-hidden min-h-[600px]">
         {data.heroBackgroundImage?.url && (
           <>
             <Image
@@ -53,20 +53,37 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
           </>
         )}
         {/* Removed radial gradient for a cleaner editorial look */}
+        {/* Text Container */}
         <motion.div 
-          className="max-w-4xl mx-auto space-y-8 relative z-10"
+          className="absolute inset-0 z-10 overflow-hidden"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight">
-            {data.heroHeadline.includes("drive results.") ? (
-              <>We design and build products that <span className="text-muted-foreground">drive results.</span></>
+          <h1 
+            className="absolute text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight w-full max-w-4xl text-center"
+            style={{ 
+              left: `${data.heroHeadlineX ?? 50}%`, 
+              top: `${data.heroHeadlineY ?? 50}%`,
+              transform: 'translate(-50%, -50%)',
+              color: data.heroHeadlineColor || 'var(--heading)'
+            }}
+          >
+            {data.heroHeadline?.includes("drive results.") ? (
+              <>We design and build products that <span className="opacity-70">drive results.</span></>
             ) : (
               data.heroHeadline
             )}
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto text-balance">
+          <p 
+            className="absolute text-xl md:text-2xl w-full max-w-2xl text-center text-balance"
+            style={{ 
+              left: `${data.heroSubheadlineX ?? 50}%`, 
+              top: `${data.heroSubheadlineY ?? 70}%`,
+              transform: 'translate(-50%, -50%)',
+              color: data.heroSubheadlineColor || 'var(--muted-foreground)'
+            }}
+          >
             {data.heroSubheadline}
           </p>
         </motion.div>

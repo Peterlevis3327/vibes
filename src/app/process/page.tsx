@@ -63,6 +63,12 @@ export default async function ProcessPage() {
         subtitle={pageData?.subtitle || "A transparent, proven methodology to take your project from initial concept to a successful launch, without the guesswork."}
         backgroundImage={pageData?.headerBackgroundImage}
         backgroundImageVisibility={pageData?.backgroundImageVisibility}
+        titleColor={pageData?.titleColor}
+        titleX={pageData?.titleX}
+        titleY={pageData?.titleY}
+        subtitleColor={pageData?.subtitleColor}
+        subtitleX={pageData?.subtitleX}
+        subtitleY={pageData?.subtitleY}
       />
 
       <section className="px-4 md:px-8 py-24">

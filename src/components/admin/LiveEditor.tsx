@@ -8,9 +8,78 @@ import { Textarea } from "@/components/ui/textarea";
 import { getDocumentVersions } from "@/lib/firebase/db";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { MediaLibraryModal } from "@/components/admin/MediaLibraryModal";
-import { Image as ImageIcon } from "lucide-react";
+import { Image as ImageIcon, AlertCircle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
+import { getContrastRatio, getLuminance } from "@/lib/utils/colorUtils";
+
+function ColorControl({ value, onChange, hasBackgroundImage }: { value: string, onChange: (val: string) => void, hasBackgroundImage?: boolean }) {
+  const [showCustom, setShowCustom] = useState(false);
+  const brandColors = [
+    { label: "Dark (Heading)", hex: "#0f172a" },
+    { label: "Light (Background)", hex: "#ffffff" },
+    { label: "Muted", hex: "#64748b" },
+    { label: "Primary", hex: "#3b82f6" },
+  ];
+
+  // Contrast against typical background (light overlay or dark overlay)
+  const contrast = value ? getContrastRatio(getLuminance(value), getLuminance("#ffffff")) : 21;
+  const showWarning = contrast < 4.5 && value !== "";
+
+  return (
+    <div className="space-y-3">
+      <div className="flex justify-between items-center">
+        <Label className="text-xs">Text Color</Label>
+        <Button variant="ghost" size="sm" className="h-6 text-[10px]" onClick={() => setShowCustom(!showCustom)}>
+          {showCustom ? "Use Brand Palette" : "Custom Hex"}
+        </Button>
+      </div>
+
+      {!showCustom ? (
+        <div className="flex gap-2 flex-wrap">
+          {brandColors.map(c => (
+            <button 
+              key={c.hex} 
+              type="button"
+              onClick={() => onChange(c.hex)}
+              className={`h-8 w-8 rounded-full border border-border transition-all ${value === c.hex ? 'ring-2 ring-primary ring-offset-2' : ''}`}
+              style={{ backgroundColor: c.hex }}
+              title={c.label}
+            />
+          ))}
+          <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => onChange("")}>Default</Button>
+        </div>
+      ) : (
+        <div className="flex gap-2 items-center">
+          <input 
+            type="color" 
+            value={value || "#ffffff"} 
+            onChange={(e) => onChange(e.target.value)} 
+            className="h-8 w-14 cursor-pointer rounded border"
+          />
+          <Input 
+            value={value} 
+            onChange={(e) => onChange(e.target.value)} 
+            placeholder="#hex"
+            className="h-8 flex-1 text-sm"
+          />
+        </div>
+      )}
+      
+      {hasBackgroundImage ? (
+        <div className="flex items-start gap-2 text-muted-foreground text-xs mt-1 bg-muted/30 p-2 rounded border">
+          <AlertCircle className="h-3 w-3 flex-shrink-0 mt-0.5" />
+          <span>Background image present — contrast can't be automatically verified. Use the mobile/desktop preview to check readability visually, and increase the "Visibility" slider to dim the background if needed.</span>
+        </div>
+      ) : showWarning && value !== "" ? (
+        <div className="flex items-start gap-2 text-amber-600 text-xs mt-1 bg-amber-50 p-2 rounded border border-amber-200">
+          <AlertCircle className="h-3 w-3 flex-shrink-0 mt-0.5" />
+          <span>Low contrast against the baseline background color.</span>
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 // A generic wrapper component that provides a split view for editing page content
 export function LiveEditor({ 
@@ -23,7 +92,7 @@ export function LiveEditor({
 }: { 
   initialData: any, 
   onSave: (data: any) => void, 
-  PreviewComponent: React.ComponentType<{ data: any }>,
+  PreviewComponent: React.ComponentType<{ data: any, onChange?: (key: string, value: any) => void, isEditing?: boolean }>,
   title: string,
   collectionName?: string,
   docId?: string
@@ -33,6 +102,7 @@ export function LiveEditor({
   const [serverVersions, setServerVersions] = useState<any[]>([]);
   const [isVersionsOpen, setIsVersionsOpen] = useState(false);
   const [mediaLibraryKey, setMediaLibraryKey] = useState<string | null>(null);
+  const [isPreviewMobile, setIsPreviewMobile] = useState(false);
 
   const handleChange = (key: string, value: any) => {
     setData((prev: any) => ({ ...prev, [key]: value }));
@@ -108,8 +178,11 @@ export function LiveEditor({
           </div>
         </div>
         <div className="p-4 overflow-y-auto flex-1 space-y-6">
-          {Object.keys(data).map((key) => (
-            <div key={key} className="space-y-2">
+          {Object.keys(data).map((key) => {
+            if (key.endsWith('X') || key.endsWith('Y')) return null;
+
+            return (
+              <div key={key} className="space-y-2">
               <Label className="capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</Label>
               {typeof data[key] === 'object' && data[key] !== null ? (
                 <div className="border rounded-lg p-4 bg-muted/30 space-y-4">
@@ -161,6 +234,33 @@ export function LiveEditor({
                     onValueChange={(val: any) => handleChange(key, Array.isArray(val) ? val[0] : val)} 
                   />
                 </div>
+              ) : key.toLowerCase().includes('color') ? (
+                <div key={key} className="space-y-4 border rounded-lg p-4 bg-muted/30">
+                   <Label className="capitalize font-semibold text-base">
+                     {key.replace('Color', '')} Styling & Position
+                   </Label>
+                   <ColorControl 
+                      value={data[key]} 
+                      onChange={(val) => handleChange(key, val)} 
+                      hasBackgroundImage={!!(data.heroBackgroundImage?.url || data.headerBackgroundImage?.url)}
+                   />
+                   
+                   {/* Numeric Inputs */}
+                   <div className="flex gap-4 items-center">
+                      <div className="flex-1 space-y-1">
+                        <Label className="text-xs">Left X (%)</Label>
+                        <Input type="number" min={0} max={100} value={data[`${key.replace('Color', '')}X`] ?? 50} onChange={(e) => handleChange(`${key.replace('Color', '')}X`, Number(e.target.value))} />
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <Label className="text-xs">Top Y (%)</Label>
+                        <Input type="number" min={0} max={100} value={data[`${key.replace('Color', '')}Y`] ?? 50} onChange={(e) => handleChange(`${key.replace('Color', '')}Y`, Number(e.target.value))} />
+                      </div>
+                   </div>
+                   <Button variant="outline" size="sm" className="w-full" onClick={() => {
+                      handleChange(`${key.replace('Color', '')}X`, 50);
+                      handleChange(`${key.replace('Color', '')}Y`, 50);
+                   }}>Reset to Center</Button>
+                </div>
               ) : typeof data[key] === 'string' && (data[key].length > 100 || key.toLowerCase().includes('description') || key.toLowerCase().includes('headline')) ? (
                 <Textarea 
                   value={data[key]} 
@@ -174,7 +274,8 @@ export function LiveEditor({
                 />
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -182,13 +283,17 @@ export function LiveEditor({
       <div className="flex-1 bg-muted/30 overflow-y-auto">
         <div className="p-4 border-b bg-background sticky top-0 z-10 flex justify-between items-center">
           <span className="text-sm font-medium text-muted-foreground">Live Preview</span>
-          <div className="flex gap-2">
-            <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+          <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-1 mr-4 border rounded-md p-1 bg-muted/50">
+               <Button variant={!isPreviewMobile ? "secondary" : "ghost"} size="sm" className="h-7 text-xs px-3" onClick={() => setIsPreviewMobile(false)}>Desktop</Button>
+               <Button variant={isPreviewMobile ? "secondary" : "ghost"} size="sm" className="h-7 text-xs px-3" onClick={() => setIsPreviewMobile(true)}>Mobile</Button>
+            </div>
+            <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" title="Live Sync Active"></span>
           </div>
         </div>
-        <div className="bg-background shadow-lg mx-auto transform scale-[0.8] origin-top border">
-          <div className="pointer-events-none">
-            <PreviewComponent data={data} />
+        <div className={`bg-background shadow-lg mx-auto transform origin-top border transition-all duration-300 ${isPreviewMobile ? 'w-[375px] mt-8 min-h-[667px]' : 'w-full scale-[0.8]'}`}>
+          <div className="relative w-full h-full">
+            <PreviewComponent data={data} onChange={handleChange} isEditing={true} />
           </div>
         </div>
       </div>

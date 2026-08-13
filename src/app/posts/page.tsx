@@ -34,6 +34,12 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
         subtitle={pageData?.subtitle || "Thoughts, learnings, and strategies on product design, software engineering, and growing digital businesses."}
         backgroundImage={pageData?.headerBackgroundImage}
         backgroundImageVisibility={pageData?.backgroundImageVisibility}
+        titleColor={pageData?.titleColor}
+        titleX={pageData?.titleX}
+        titleY={pageData?.titleY}
+        subtitleColor={pageData?.subtitleColor}
+        subtitleX={pageData?.subtitleX}
+        subtitleY={pageData?.subtitleY}
       />
 
       <section className="px-4 md:px-8 py-24">

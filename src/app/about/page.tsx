@@ -24,6 +24,12 @@ export default async function AboutPage() {
         subtitle={pageData?.subtitle || "We are a collective of designers, engineers, and strategists dedicated to building digital products that matter."}
         backgroundImage={pageData?.headerBackgroundImage}
         backgroundImageVisibility={pageData?.backgroundImageVisibility}
+        titleColor={pageData?.titleColor}
+        titleX={pageData?.titleX}
+        titleY={pageData?.titleY}
+        subtitleColor={pageData?.subtitleColor}
+        subtitleX={pageData?.subtitleX}
+        subtitleY={pageData?.subtitleY}
       />
 
       <section className="px-4 md:px-8 py-24">
