@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
+import { Rnd } from "react-rnd";
 import { LiveEditor } from "@/components/admin/LiveEditor";
 import { revalidatePublicRoutes } from "@/app/actions/revalidate";
 import { Button } from "@/components/ui/button";
@@ -53,40 +54,22 @@ const getOverlayStyle = (visibility = 20) => {
   };
 };
 
-const HomePreview = ({ data, onChange, isEditing }: { data: typeof initialHomePageData & any, onChange?: any, isEditing?: boolean }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
-  const subheadlineRef = useRef<HTMLParagraphElement>(null);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
-  const handleDragEnd = (keyX: string, keyY: string, nodeRef: React.RefObject<HTMLElement | null>) => {
-    if (!onChange || !containerRef.current || !nodeRef.current) return;
-    const container = containerRef.current.getBoundingClientRect();
-    const node = nodeRef.current.getBoundingClientRect();
-    
-    // Calculate top-left of node relative to container as percentage
-    const relativeX = ((node.left - container.left) / container.width) * 100;
-    const relativeY = ((node.top - container.top) / container.height) * 100;
-    
-    onChange(keyX, relativeX);
-    onChange(keyY, relativeY);
-  };
-
-  const handleResize = (e: React.UIEvent<HTMLElement>, keyWidth: string) => {
-    if (!onChange || !containerRef.current) return;
-    const containerWidth = containerRef.current.getBoundingClientRect().width;
-    const newWidth = (e.currentTarget.offsetWidth / containerWidth) * 100;
-    // Don't spam onChange during resize, but this is a simple approach
-    // We will just let the mouseup handle the final save if needed, or update continuously
-  };
-
-  const handleMouseUp = (e: React.MouseEvent<HTMLElement>, keyWidth: string, keyHeight: string) => {
-    if (!onChange || !containerRef.current) return;
-    const container = containerRef.current.getBoundingClientRect();
-    const newWidth = (e.currentTarget.offsetWidth / container.width) * 100;
-    const newHeight = (e.currentTarget.offsetHeight / container.height) * 100;
-    onChange(keyWidth, newWidth);
-    onChange(keyHeight, newHeight);
-  };
+  useEffect(() => {
+    if (containerRef.current) {
+      const resizeObserver = new ResizeObserver((entries) => {
+        if (entries[0]) {
+          setContainerSize({ 
+            width: entries[0].contentRect.width, 
+            height: entries[0].contentRect.height 
+          });
+        }
+      });
+      resizeObserver.observe(containerRef.current);
+      return () => resizeObserver.disconnect();
+    }
+  }, []);
 
   return (
     <div className={`flex flex-col w-full font-sans ${isEditing ? 'select-none' : ''}`}>
@@ -103,63 +86,137 @@ const HomePreview = ({ data, onChange, isEditing }: { data: typeof initialHomePa
             ></div>
           </>
         )}
-        <div className="absolute inset-0 z-10 overflow-hidden">
-          <motion.div 
-            ref={headlineRef}
-            drag={isEditing}
-            dragConstraints={containerRef}
-            dragMomentum={false}
-            onDragEnd={() => handleDragEnd('heroHeadlineX', 'heroHeadlineY', headlineRef)}
-            onMouseUp={(e) => handleMouseUp(e, 'heroHeadlineWidth', 'heroHeadlineHeight')}
-            className={`absolute ${isEditing ? 'cursor-grab active:cursor-grabbing border-2 border-dashed border-primary/50 bg-background/5 p-2' : ''}`}
-            style={{ 
-              left: `${data.heroHeadlineX ?? 0}%`, 
-              top: `${data.heroHeadlineY ?? 30}%`,
-              width: `${data.heroHeadlineWidth ?? 100}%`,
-              height: data.heroHeadlineHeight ? `${data.heroHeadlineHeight}%` : 'auto',
-              minWidth: '10%',
-              minHeight: 'max-content',
-              resize: isEditing ? 'both' : 'none',
-              overflow: isEditing ? 'auto' : 'visible'
-            }}
-          >
-            <h1 
-              className="text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight w-full text-center"
-              style={{ color: data.heroHeadlineColor || 'var(--heading)' }}
-            >
-              {data.heroHeadline?.includes("drive results.") ? (
-                <>We design and build products that <span className="opacity-70">drive results.</span></>
-              ) : (
-                data.heroHeadline
-              )}
-            </h1>
-          </motion.div>
-          <motion.div 
-            ref={subheadlineRef}
-            drag={isEditing}
-            dragConstraints={containerRef}
-            dragMomentum={false}
-            onDragEnd={() => handleDragEnd('heroSubheadlineX', 'heroSubheadlineY', subheadlineRef)}
-            onMouseUp={(e) => handleMouseUp(e, 'heroSubheadlineWidth', 'heroSubheadlineHeight')}
-            className={`absolute ${isEditing ? 'cursor-grab active:cursor-grabbing border-2 border-dashed border-primary/50 bg-background/5 p-2' : ''}`}
-            style={{ 
-              left: `${data.heroSubheadlineX ?? 0}%`, 
-              top: `${data.heroSubheadlineY ?? 60}%`,
-              width: `${data.heroSubheadlineWidth ?? 100}%`,
-              height: data.heroSubheadlineHeight ? `${data.heroSubheadlineHeight}%` : 'auto',
-              minWidth: '10%',
-              minHeight: 'max-content',
-              resize: isEditing ? 'both' : 'none',
-              overflow: isEditing ? 'auto' : 'visible'
-            }}
-          >
-            <p 
-              className="text-xl md:text-2xl w-full text-center text-balance"
-              style={{ color: data.heroSubheadlineColor || 'var(--muted-foreground)' }}
-            >
-              {data.heroSubheadline}
-            </p>
-          </motion.div>
+        <div className="absolute inset-0 z-10 overflow-hidden pointer-events-none">
+          {!isEditing ? (
+            <>
+              {/* Static View for when not editing (exact match to live view) */}
+              <div 
+                className="absolute pointer-events-auto"
+                style={{ 
+                  left: `${data.heroHeadlineX ?? 0}%`, 
+                  top: `${data.heroHeadlineY ?? 30}%`,
+                  width: `${data.heroHeadlineWidth ?? 100}%`,
+                  height: data.heroHeadlineHeight ? `${data.heroHeadlineHeight}%` : 'auto',
+                  minWidth: '10%',
+                  minHeight: 'max-content'
+                }}
+              >
+                <h1 
+                  className="text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight w-full text-center"
+                  style={{ color: data.heroHeadlineColor || 'var(--heading)' }}
+                >
+                  {data.heroHeadline?.includes("drive results.") ? (
+                    <>We design and build products that <span className="opacity-70">drive results.</span></>
+                  ) : (
+                    data.heroHeadline
+                  )}
+                </h1>
+              </div>
+              <div 
+                className="absolute pointer-events-auto"
+                style={{ 
+                  left: `${data.heroSubheadlineX ?? 0}%`, 
+                  top: `${data.heroSubheadlineY ?? 60}%`,
+                  width: `${data.heroSubheadlineWidth ?? 100}%`,
+                  height: data.heroSubheadlineHeight ? `${data.heroSubheadlineHeight}%` : 'auto',
+                  minWidth: '10%',
+                  minHeight: 'max-content'
+                }}
+              >
+                <p 
+                  className="text-xl md:text-2xl w-full text-center text-balance"
+                  style={{ color: data.heroSubheadlineColor || 'var(--muted-foreground)' }}
+                >
+                  {data.heroSubheadline}
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Rnd Editors for exact control */}
+              <Rnd
+                bounds="parent"
+                disableDragging={!isEditing}
+                enableResizing={isEditing}
+                className={`pointer-events-auto ${isEditing ? 'border-2 border-dashed border-primary/50 bg-background/5' : ''}`}
+                size={{
+                  width: `${data.heroHeadlineWidth ?? 100}%`,
+                  height: data.heroHeadlineHeight ? `${data.heroHeadlineHeight}%` : 'auto'
+                }}
+                position={{
+                  x: containerSize.width ? (containerSize.width * (data.heroHeadlineX ?? 0)) / 100 : 0,
+                  y: containerSize.height ? (containerSize.height * (data.heroHeadlineY ?? 30)) / 100 : 0
+                }}
+                onDragStop={(e, d) => {
+                  if (onChange && containerSize.width && containerSize.height) {
+                    onChange('heroHeadlineX', (d.x / containerSize.width) * 100);
+                    onChange('heroHeadlineY', (d.y / containerSize.height) * 100);
+                  }
+                }}
+                onResizeStop={(e, direction, ref, delta, position) => {
+                  if (onChange && containerSize.width && containerSize.height) {
+                    onChange('heroHeadlineWidth', (ref.offsetWidth / containerSize.width) * 100);
+                    onChange('heroHeadlineHeight', (ref.offsetHeight / containerSize.height) * 100);
+                    onChange('heroHeadlineX', (position.x / containerSize.width) * 100);
+                    onChange('heroHeadlineY', (position.y / containerSize.height) * 100);
+                  }
+                }}
+                minWidth="10%"
+                minHeight="max-content"
+                style={{ zIndex: 20 }}
+              >
+                <h1 
+                  className="text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight w-full text-center"
+                  style={{ color: data.heroHeadlineColor || 'var(--heading)' }}
+                >
+                  {data.heroHeadline?.includes("drive results.") ? (
+                    <>We design and build products that <span className="opacity-70">drive results.</span></>
+                  ) : (
+                    data.heroHeadline
+                  )}
+                </h1>
+              </Rnd>
+
+              <Rnd
+                bounds="parent"
+                disableDragging={!isEditing}
+                enableResizing={isEditing}
+                className={`pointer-events-auto ${isEditing ? 'border-2 border-dashed border-primary/50 bg-background/5' : ''}`}
+                size={{
+                  width: `${data.heroSubheadlineWidth ?? 100}%`,
+                  height: data.heroSubheadlineHeight ? `${data.heroSubheadlineHeight}%` : 'auto'
+                }}
+                position={{
+                  x: containerSize.width ? (containerSize.width * (data.heroSubheadlineX ?? 0)) / 100 : 0,
+                  y: containerSize.height ? (containerSize.height * (data.heroSubheadlineY ?? 60)) / 100 : 0
+                }}
+                onDragStop={(e, d) => {
+                  if (onChange && containerSize.width && containerSize.height) {
+                    onChange('heroSubheadlineX', (d.x / containerSize.width) * 100);
+                    onChange('heroSubheadlineY', (d.y / containerSize.height) * 100);
+                  }
+                }}
+                onResizeStop={(e, direction, ref, delta, position) => {
+                  if (onChange && containerSize.width && containerSize.height) {
+                    onChange('heroSubheadlineWidth', (ref.offsetWidth / containerSize.width) * 100);
+                    onChange('heroSubheadlineHeight', (ref.offsetHeight / containerSize.height) * 100);
+                    onChange('heroSubheadlineX', (position.x / containerSize.width) * 100);
+                    onChange('heroSubheadlineY', (position.y / containerSize.height) * 100);
+                  }
+                }}
+                minWidth="10%"
+                minHeight="max-content"
+                style={{ zIndex: 20 }}
+              >
+                <p 
+                  className="text-xl md:text-2xl w-full text-center text-balance"
+                  style={{ color: data.heroSubheadlineColor || 'var(--muted-foreground)' }}
+                >
+                  {data.heroSubheadline}
+                </p>
+              </Rnd>
+            </>
+          )}
         </div>
       </section>
     </div>
@@ -167,29 +224,22 @@ const HomePreview = ({ data, onChange, isEditing }: { data: typeof initialHomePa
 };
 
 // Preview component for generic pages
-const GenericPagePreview = ({ data, onChange, isEditing }: { data: typeof initialGenericPageData & any, onChange?: any, isEditing?: boolean }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
-  const handleDragEnd = (keyX: string, keyY: string, nodeRef: React.RefObject<HTMLElement | null>) => {
-    if (!onChange || !containerRef.current || !nodeRef.current) return;
-    const container = containerRef.current.getBoundingClientRect();
-    const node = nodeRef.current.getBoundingClientRect();
-    const relativeX = ((node.left - container.left) / container.width) * 100;
-    const relativeY = ((node.top - container.top) / container.height) * 100;
-    onChange(keyX, relativeX);
-    onChange(keyY, relativeY);
-  };
-
-  const handleMouseUp = (e: React.MouseEvent<HTMLElement>, keyWidth: string, keyHeight: string) => {
-    if (!onChange || !containerRef.current) return;
-    const container = containerRef.current.getBoundingClientRect();
-    const newWidth = (e.currentTarget.offsetWidth / container.width) * 100;
-    const newHeight = (e.currentTarget.offsetHeight / container.height) * 100;
-    onChange(keyWidth, newWidth);
-    onChange(keyHeight, newHeight);
-  };
+  useEffect(() => {
+    if (containerRef.current) {
+      const resizeObserver = new ResizeObserver((entries) => {
+        if (entries[0]) {
+          setContainerSize({ 
+            width: entries[0].contentRect.width, 
+            height: entries[0].contentRect.height 
+          });
+        }
+      });
+      resizeObserver.observe(containerRef.current);
+      return () => resizeObserver.disconnect();
+    }
+  }, []);
 
   return (
     <div className={`flex flex-col w-full font-sans ${isEditing ? 'select-none' : ''}`}>
@@ -208,59 +258,127 @@ const GenericPagePreview = ({ data, onChange, isEditing }: { data: typeof initia
         ) : (
           <div className="absolute inset-0 z-0 bg-muted/30"></div>
         )}
-        <div className="absolute inset-0 z-10 overflow-hidden">
-          <motion.div 
-            ref={titleRef}
-            drag={isEditing}
-            dragConstraints={containerRef}
-            dragMomentum={false}
-            onDragEnd={() => handleDragEnd('titleX', 'titleY', titleRef)}
-            onMouseUp={(e) => handleMouseUp(e, 'titleWidth', 'titleHeight')}
-            className={`absolute ${isEditing ? 'cursor-grab active:cursor-grabbing border-2 border-dashed border-primary/50 bg-background/5 p-2' : ''}`}
-            style={{ 
-              left: `${data.titleX ?? 0}%`, 
-              top: `${data.titleY ?? 30}%`,
-              width: `${data.titleWidth ?? 100}%`,
-              height: data.titleHeight ? `${data.titleHeight}%` : 'auto',
-              minWidth: '10%',
-              minHeight: 'max-content',
-              resize: isEditing ? 'both' : 'none',
-              overflow: isEditing ? 'auto' : 'visible'
-            }}
-          >
-            <h1 
-              className="text-4xl md:text-6xl font-bold tracking-tight w-full text-center"
-              style={{ color: data.titleColor || 'var(--heading)' }}
-            >
-              {data.title || "Page Title"}
-            </h1>
-          </motion.div>
-          <motion.div 
-            ref={subtitleRef}
-            drag={isEditing}
-            dragConstraints={containerRef}
-            dragMomentum={false}
-            onDragEnd={() => handleDragEnd('subtitleX', 'subtitleY', subtitleRef)}
-            onMouseUp={(e) => handleMouseUp(e, 'subtitleWidth', 'subtitleHeight')}
-            className={`absolute ${isEditing ? 'cursor-grab active:cursor-grabbing border-2 border-dashed border-primary/50 bg-background/5 p-2' : ''}`}
-            style={{ 
-              left: `${data.subtitleX ?? 0}%`, 
-              top: `${data.subtitleY ?? 60}%`,
-              width: `${data.subtitleWidth ?? 100}%`,
-              height: data.subtitleHeight ? `${data.subtitleHeight}%` : 'auto',
-              minWidth: '10%',
-              minHeight: 'max-content',
-              resize: isEditing ? 'both' : 'none',
-              overflow: isEditing ? 'auto' : 'visible'
-            }}
-          >
-            <p 
-              className="text-xl w-full text-center"
-              style={{ color: data.subtitleColor || 'var(--muted-foreground)' }}
-            >
-              {data.subtitle || "Page subtitle goes here."}
-            </p>
-          </motion.div>
+        <div className="absolute inset-0 z-10 overflow-hidden pointer-events-none">
+          {!isEditing ? (
+            <>
+              <div 
+                className="absolute pointer-events-auto"
+                style={{ 
+                  left: `${data.titleX ?? 0}%`, 
+                  top: `${data.titleY ?? 30}%`,
+                  width: `${data.titleWidth ?? 100}%`,
+                  height: data.titleHeight ? `${data.titleHeight}%` : 'auto',
+                  minWidth: '10%',
+                  minHeight: 'max-content'
+                }}
+              >
+                <h1 
+                  className="text-4xl md:text-6xl font-bold tracking-tight w-full text-center"
+                  style={{ color: data.titleColor || 'var(--heading)' }}
+                >
+                  {data.title || "Page Title"}
+                </h1>
+              </div>
+              <div 
+                className="absolute pointer-events-auto"
+                style={{ 
+                  left: `${data.subtitleX ?? 0}%`, 
+                  top: `${data.subtitleY ?? 60}%`,
+                  width: `${data.subtitleWidth ?? 100}%`,
+                  height: data.subtitleHeight ? `${data.subtitleHeight}%` : 'auto',
+                  minWidth: '10%',
+                  minHeight: 'max-content'
+                }}
+              >
+                <p 
+                  className="text-xl w-full text-center"
+                  style={{ color: data.subtitleColor || 'var(--muted-foreground)' }}
+                >
+                  {data.subtitle || "Page subtitle goes here."}
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <Rnd
+                bounds="parent"
+                disableDragging={!isEditing}
+                enableResizing={isEditing}
+                className={`pointer-events-auto ${isEditing ? 'border-2 border-dashed border-primary/50 bg-background/5' : ''}`}
+                size={{
+                  width: `${data.titleWidth ?? 100}%`,
+                  height: data.titleHeight ? `${data.titleHeight}%` : 'auto'
+                }}
+                position={{
+                  x: containerSize.width ? (containerSize.width * (data.titleX ?? 0)) / 100 : 0,
+                  y: containerSize.height ? (containerSize.height * (data.titleY ?? 30)) / 100 : 0
+                }}
+                onDragStop={(e, d) => {
+                  if (onChange && containerSize.width && containerSize.height) {
+                    onChange('titleX', (d.x / containerSize.width) * 100);
+                    onChange('titleY', (d.y / containerSize.height) * 100);
+                  }
+                }}
+                onResizeStop={(e, direction, ref, delta, position) => {
+                  if (onChange && containerSize.width && containerSize.height) {
+                    onChange('titleWidth', (ref.offsetWidth / containerSize.width) * 100);
+                    onChange('titleHeight', (ref.offsetHeight / containerSize.height) * 100);
+                    onChange('titleX', (position.x / containerSize.width) * 100);
+                    onChange('titleY', (position.y / containerSize.height) * 100);
+                  }
+                }}
+                minWidth="10%"
+                minHeight="max-content"
+                style={{ zIndex: 20 }}
+              >
+                <h1 
+                  className="text-4xl md:text-6xl font-bold tracking-tight w-full text-center"
+                  style={{ color: data.titleColor || 'var(--heading)' }}
+                >
+                  {data.title || "Page Title"}
+                </h1>
+              </Rnd>
+
+              <Rnd
+                bounds="parent"
+                disableDragging={!isEditing}
+                enableResizing={isEditing}
+                className={`pointer-events-auto ${isEditing ? 'border-2 border-dashed border-primary/50 bg-background/5' : ''}`}
+                size={{
+                  width: `${data.subtitleWidth ?? 100}%`,
+                  height: data.subtitleHeight ? `${data.subtitleHeight}%` : 'auto'
+                }}
+                position={{
+                  x: containerSize.width ? (containerSize.width * (data.subtitleX ?? 0)) / 100 : 0,
+                  y: containerSize.height ? (containerSize.height * (data.subtitleY ?? 60)) / 100 : 0
+                }}
+                onDragStop={(e, d) => {
+                  if (onChange && containerSize.width && containerSize.height) {
+                    onChange('subtitleX', (d.x / containerSize.width) * 100);
+                    onChange('subtitleY', (d.y / containerSize.height) * 100);
+                  }
+                }}
+                onResizeStop={(e, direction, ref, delta, position) => {
+                  if (onChange && containerSize.width && containerSize.height) {
+                    onChange('subtitleWidth', (ref.offsetWidth / containerSize.width) * 100);
+                    onChange('subtitleHeight', (ref.offsetHeight / containerSize.height) * 100);
+                    onChange('subtitleX', (position.x / containerSize.width) * 100);
+                    onChange('subtitleY', (position.y / containerSize.height) * 100);
+                  }
+                }}
+                minWidth="10%"
+                minHeight="max-content"
+                style={{ zIndex: 20 }}
+              >
+                <p 
+                  className="text-xl w-full text-center"
+                  style={{ color: data.subtitleColor || 'var(--muted-foreground)' }}
+                >
+                  {data.subtitle || "Page subtitle goes here."}
+                </p>
+              </Rnd>
+            </>
+          )}
         </div>
       </section>
     </div>
