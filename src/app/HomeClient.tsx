@@ -60,32 +60,46 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <h1 
-            className="absolute text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight w-full max-w-4xl text-center"
+          <div 
+            className="absolute"
             style={{ 
-              left: `${data.heroHeadlineX ?? 50}%`, 
-              top: `${data.heroHeadlineY ?? 50}%`,
-              transform: 'translate(-50%, -50%)',
-              color: data.heroHeadlineColor || 'var(--heading)'
+              left: `${data.heroHeadlineX ?? 0}%`, 
+              top: `${data.heroHeadlineY ?? 30}%`,
+              width: `${data.heroHeadlineWidth ?? 100}%`,
+              height: data.heroHeadlineHeight ? `${data.heroHeadlineHeight}%` : 'auto',
+              minWidth: '10%',
+              minHeight: 'max-content'
             }}
           >
-            {data.heroHeadline?.includes("drive results.") ? (
-              <>We design and build products that <span className="opacity-70">drive results.</span></>
-            ) : (
-              data.heroHeadline
-            )}
-          </h1>
-          <p 
-            className="absolute text-xl md:text-2xl w-full max-w-2xl text-center text-balance"
+            <h1 
+              className="text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight w-full text-center"
+              style={{ color: data.heroHeadlineColor || 'var(--heading)' }}
+            >
+              {data.heroHeadline?.includes("drive results.") ? (
+                <>We design and build products that <span className="opacity-70">drive results.</span></>
+              ) : (
+                data.heroHeadline
+              )}
+            </h1>
+          </div>
+          <div 
+            className="absolute"
             style={{ 
-              left: `${data.heroSubheadlineX ?? 50}%`, 
-              top: `${data.heroSubheadlineY ?? 70}%`,
-              transform: 'translate(-50%, -50%)',
-              color: data.heroSubheadlineColor || 'var(--muted-foreground)'
+              left: `${data.heroSubheadlineX ?? 0}%`, 
+              top: `${data.heroSubheadlineY ?? 60}%`,
+              width: `${data.heroSubheadlineWidth ?? 100}%`,
+              height: data.heroSubheadlineHeight ? `${data.heroSubheadlineHeight}%` : 'auto',
+              minWidth: '10%',
+              minHeight: 'max-content'
             }}
           >
-            {data.heroSubheadline}
-          </p>
+            <p 
+              className="text-xl md:text-2xl w-full text-center text-balance"
+              style={{ color: data.heroSubheadlineColor || 'var(--muted-foreground)' }}
+            >
+              {data.heroSubheadline}
+            </p>
+          </div>
         </motion.div>
 
         {/* Trust Signals */}

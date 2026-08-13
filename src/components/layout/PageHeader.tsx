@@ -6,10 +6,14 @@ interface PageHeaderProps {
   titleColor?: string;
   titleX?: number;
   titleY?: number;
+  titleWidth?: number;
+  titleHeight?: number;
   subtitle?: string;
   subtitleColor?: string;
   subtitleX?: number;
   subtitleY?: number;
+  subtitleWidth?: number;
+  subtitleHeight?: number;
   backgroundImage?: {
     url: string;
     alt?: string;
@@ -18,8 +22,8 @@ interface PageHeaderProps {
 }
 
 export function PageHeader({ 
-  title, titleColor, titleX, titleY,
-  subtitle, subtitleColor, subtitleX, subtitleY,
+  title, titleColor, titleX, titleY, titleWidth, titleHeight,
+  subtitle, subtitleColor, subtitleX, subtitleY, subtitleWidth, subtitleHeight,
   backgroundImage, backgroundImageVisibility = 20 
 }: PageHeaderProps) {
   const opacity = 1 - (backgroundImageVisibility / 100);
@@ -47,29 +51,43 @@ export function PageHeader({
           <div className="absolute inset-0 z-0 bg-muted/30"></div>
         )}
         <div className="absolute inset-0 z-10 overflow-hidden">
-          <h1 
-            className="absolute text-4xl md:text-6xl font-bold tracking-tight w-full max-w-4xl text-center"
+          <div 
+            className="absolute"
             style={{ 
-              left: `${titleX ?? 50}%`, 
-              top: `${titleY ?? 45}%`,
-              transform: 'translate(-50%, -50%)',
-              color: titleColor || 'var(--heading)'
+              left: `${titleX ?? 0}%`, 
+              top: `${titleY ?? 30}%`,
+              width: `${titleWidth ?? 100}%`,
+              height: titleHeight ? `${titleHeight}%` : 'auto',
+              minWidth: '10%',
+              minHeight: 'max-content'
             }}
           >
-            {title}
-          </h1>
+            <h1 
+              className="text-4xl md:text-6xl font-bold tracking-tight w-full text-center"
+              style={{ color: titleColor || 'var(--heading)' }}
+            >
+              {title}
+            </h1>
+          </div>
           {subtitle && (
-            <p 
-              className="absolute text-xl w-full max-w-2xl text-center"
+            <div 
+              className="absolute"
               style={{ 
-                left: `${subtitleX ?? 50}%`, 
+                left: `${subtitleX ?? 0}%`, 
                 top: `${subtitleY ?? 60}%`,
-                transform: 'translate(-50%, -50%)',
-                color: subtitleColor || 'var(--muted-foreground)'
+                width: `${subtitleWidth ?? 100}%`,
+                height: subtitleHeight ? `${subtitleHeight}%` : 'auto',
+                minWidth: '10%',
+                minHeight: 'max-content'
               }}
             >
-              {subtitle}
-            </p>
+              <p 
+                className="text-xl w-full text-center"
+                style={{ color: subtitleColor || 'var(--muted-foreground)' }}
+              >
+                {subtitle}
+              </p>
+            </div>
           )}
         </div>
       </section>

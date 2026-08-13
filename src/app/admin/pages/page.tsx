@@ -14,12 +14,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const initialHomePageData = {
   heroHeadline: "We design and build products that drive results.",
   heroHeadlineColor: "",
-  heroHeadlineX: 50,
-  heroHeadlineY: 50,
+  heroHeadlineX: 0,
+  heroHeadlineY: 30,
+  heroHeadlineWidth: 100,
   heroSubheadline: "An independent digital agency crafting high-performance websites and mobile apps for ambitious brands.",
   heroSubheadlineColor: "",
-  heroSubheadlineX: 50,
-  heroSubheadlineY: 70,
+  heroSubheadlineX: 0,
+  heroSubheadlineY: 60,
+  heroSubheadlineWidth: 100,
   seoTitle: "Agency | Digital Product Studio",
   seoDescription: "We design and build websites and apps that deliver concrete outcomes.",
   heroBackgroundImage: { url: "", alt: "", caption: "", showCaption: false },
@@ -29,12 +31,14 @@ const initialHomePageData = {
 const initialGenericPageData = {
   title: "",
   titleColor: "",
-  titleX: 50,
-  titleY: 45,
+  titleX: 0,
+  titleY: 30,
+  titleWidth: 100,
   subtitle: "",
   subtitleColor: "",
-  subtitleX: 50,
+  subtitleX: 0,
   subtitleY: 60,
+  subtitleWidth: 100,
   headerBackgroundImage: { url: "", alt: "", caption: "", showCaption: false },
   backgroundImageVisibility: 20
 };
@@ -59,12 +63,29 @@ const HomePreview = ({ data, onChange, isEditing }: { data: typeof initialHomePa
     const container = containerRef.current.getBoundingClientRect();
     const node = nodeRef.current.getBoundingClientRect();
     
-    // Calculate center of node relative to container as percentage
-    const relativeX = ((node.left + node.width / 2 - container.left) / container.width) * 100;
-    const relativeY = ((node.top + node.height / 2 - container.top) / container.height) * 100;
+    // Calculate top-left of node relative to container as percentage
+    const relativeX = ((node.left - container.left) / container.width) * 100;
+    const relativeY = ((node.top - container.top) / container.height) * 100;
     
     onChange(keyX, relativeX);
     onChange(keyY, relativeY);
+  };
+
+  const handleResize = (e: React.UIEvent<HTMLElement>, keyWidth: string) => {
+    if (!onChange || !containerRef.current) return;
+    const containerWidth = containerRef.current.getBoundingClientRect().width;
+    const newWidth = (e.currentTarget.offsetWidth / containerWidth) * 100;
+    // Don't spam onChange during resize, but this is a simple approach
+    // We will just let the mouseup handle the final save if needed, or update continuously
+  };
+
+  const handleMouseUp = (e: React.MouseEvent<HTMLElement>, keyWidth: string, keyHeight: string) => {
+    if (!onChange || !containerRef.current) return;
+    const container = containerRef.current.getBoundingClientRect();
+    const newWidth = (e.currentTarget.offsetWidth / container.width) * 100;
+    const newHeight = (e.currentTarget.offsetHeight / container.height) * 100;
+    onChange(keyWidth, newWidth);
+    onChange(keyHeight, newHeight);
   };
 
   return (
@@ -83,42 +104,62 @@ const HomePreview = ({ data, onChange, isEditing }: { data: typeof initialHomePa
           </>
         )}
         <div className="absolute inset-0 z-10 overflow-hidden">
-          <motion.h1 
+          <motion.div 
             ref={headlineRef}
             drag={isEditing}
             dragConstraints={containerRef}
             dragMomentum={false}
             onDragEnd={() => handleDragEnd('heroHeadlineX', 'heroHeadlineY', headlineRef)}
-            className={`absolute text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight w-full max-w-4xl text-center ${isEditing ? 'cursor-grab active:cursor-grabbing' : ''}`}
+            onMouseUp={(e) => handleMouseUp(e, 'heroHeadlineWidth', 'heroHeadlineHeight')}
+            className={`absolute ${isEditing ? 'cursor-grab active:cursor-grabbing border-2 border-dashed border-primary/50 bg-background/5 p-2' : ''}`}
             style={{ 
-              left: `${data.heroHeadlineX ?? 50}%`, 
-              top: `${data.heroHeadlineY ?? 50}%`,
-              transform: 'translate(-50%, -50%)',
-              color: data.heroHeadlineColor || 'var(--heading)'
+              left: `${data.heroHeadlineX ?? 0}%`, 
+              top: `${data.heroHeadlineY ?? 30}%`,
+              width: `${data.heroHeadlineWidth ?? 100}%`,
+              height: data.heroHeadlineHeight ? `${data.heroHeadlineHeight}%` : 'auto',
+              minWidth: '10%',
+              minHeight: 'max-content',
+              resize: isEditing ? 'both' : 'none',
+              overflow: isEditing ? 'auto' : 'visible'
             }}
           >
-            {data.heroHeadline?.includes("drive results.") ? (
-              <>We design and build products that <span className="opacity-70">drive results.</span></>
-            ) : (
-              data.heroHeadline
-            )}
-          </motion.h1>
-          <motion.p 
+            <h1 
+              className="text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight w-full text-center"
+              style={{ color: data.heroHeadlineColor || 'var(--heading)' }}
+            >
+              {data.heroHeadline?.includes("drive results.") ? (
+                <>We design and build products that <span className="opacity-70">drive results.</span></>
+              ) : (
+                data.heroHeadline
+              )}
+            </h1>
+          </motion.div>
+          <motion.div 
             ref={subheadlineRef}
             drag={isEditing}
             dragConstraints={containerRef}
             dragMomentum={false}
             onDragEnd={() => handleDragEnd('heroSubheadlineX', 'heroSubheadlineY', subheadlineRef)}
-            className={`absolute text-xl md:text-2xl w-full max-w-2xl text-center text-balance ${isEditing ? 'cursor-grab active:cursor-grabbing' : ''}`}
+            onMouseUp={(e) => handleMouseUp(e, 'heroSubheadlineWidth', 'heroSubheadlineHeight')}
+            className={`absolute ${isEditing ? 'cursor-grab active:cursor-grabbing border-2 border-dashed border-primary/50 bg-background/5 p-2' : ''}`}
             style={{ 
-              left: `${data.heroSubheadlineX ?? 50}%`, 
-              top: `${data.heroSubheadlineY ?? 70}%`,
-              transform: 'translate(-50%, -50%)',
-              color: data.heroSubheadlineColor || 'var(--muted-foreground)'
+              left: `${data.heroSubheadlineX ?? 0}%`, 
+              top: `${data.heroSubheadlineY ?? 60}%`,
+              width: `${data.heroSubheadlineWidth ?? 100}%`,
+              height: data.heroSubheadlineHeight ? `${data.heroSubheadlineHeight}%` : 'auto',
+              minWidth: '10%',
+              minHeight: 'max-content',
+              resize: isEditing ? 'both' : 'none',
+              overflow: isEditing ? 'auto' : 'visible'
             }}
           >
-            {data.heroSubheadline}
-          </motion.p>
+            <p 
+              className="text-xl md:text-2xl w-full text-center text-balance"
+              style={{ color: data.heroSubheadlineColor || 'var(--muted-foreground)' }}
+            >
+              {data.heroSubheadline}
+            </p>
+          </motion.div>
         </div>
       </section>
     </div>
@@ -135,10 +176,19 @@ const GenericPagePreview = ({ data, onChange, isEditing }: { data: typeof initia
     if (!onChange || !containerRef.current || !nodeRef.current) return;
     const container = containerRef.current.getBoundingClientRect();
     const node = nodeRef.current.getBoundingClientRect();
-    const relativeX = ((node.left + node.width / 2 - container.left) / container.width) * 100;
-    const relativeY = ((node.top + node.height / 2 - container.top) / container.height) * 100;
+    const relativeX = ((node.left - container.left) / container.width) * 100;
+    const relativeY = ((node.top - container.top) / container.height) * 100;
     onChange(keyX, relativeX);
     onChange(keyY, relativeY);
+  };
+
+  const handleMouseUp = (e: React.MouseEvent<HTMLElement>, keyWidth: string, keyHeight: string) => {
+    if (!onChange || !containerRef.current) return;
+    const container = containerRef.current.getBoundingClientRect();
+    const newWidth = (e.currentTarget.offsetWidth / container.width) * 100;
+    const newHeight = (e.currentTarget.offsetHeight / container.height) * 100;
+    onChange(keyWidth, newWidth);
+    onChange(keyHeight, newHeight);
   };
 
   return (
@@ -159,38 +209,58 @@ const GenericPagePreview = ({ data, onChange, isEditing }: { data: typeof initia
           <div className="absolute inset-0 z-0 bg-muted/30"></div>
         )}
         <div className="absolute inset-0 z-10 overflow-hidden">
-          <motion.h1 
+          <motion.div 
             ref={titleRef}
             drag={isEditing}
             dragConstraints={containerRef}
             dragMomentum={false}
             onDragEnd={() => handleDragEnd('titleX', 'titleY', titleRef)}
-            className={`absolute text-4xl md:text-6xl font-bold tracking-tight w-full max-w-4xl text-center ${isEditing ? 'cursor-grab active:cursor-grabbing' : ''}`}
+            onMouseUp={(e) => handleMouseUp(e, 'titleWidth', 'titleHeight')}
+            className={`absolute ${isEditing ? 'cursor-grab active:cursor-grabbing border-2 border-dashed border-primary/50 bg-background/5 p-2' : ''}`}
             style={{ 
-              left: `${data.titleX ?? 50}%`, 
-              top: `${data.titleY ?? 45}%`,
-              transform: 'translate(-50%, -50%)',
-              color: data.titleColor || 'var(--heading)'
+              left: `${data.titleX ?? 0}%`, 
+              top: `${data.titleY ?? 30}%`,
+              width: `${data.titleWidth ?? 100}%`,
+              height: data.titleHeight ? `${data.titleHeight}%` : 'auto',
+              minWidth: '10%',
+              minHeight: 'max-content',
+              resize: isEditing ? 'both' : 'none',
+              overflow: isEditing ? 'auto' : 'visible'
             }}
           >
-            {data.title || "Page Title"}
-          </motion.h1>
-          <motion.p 
+            <h1 
+              className="text-4xl md:text-6xl font-bold tracking-tight w-full text-center"
+              style={{ color: data.titleColor || 'var(--heading)' }}
+            >
+              {data.title || "Page Title"}
+            </h1>
+          </motion.div>
+          <motion.div 
             ref={subtitleRef}
             drag={isEditing}
             dragConstraints={containerRef}
             dragMomentum={false}
             onDragEnd={() => handleDragEnd('subtitleX', 'subtitleY', subtitleRef)}
-            className={`absolute text-xl w-full max-w-2xl text-center ${isEditing ? 'cursor-grab active:cursor-grabbing' : ''}`}
+            onMouseUp={(e) => handleMouseUp(e, 'subtitleWidth', 'subtitleHeight')}
+            className={`absolute ${isEditing ? 'cursor-grab active:cursor-grabbing border-2 border-dashed border-primary/50 bg-background/5 p-2' : ''}`}
             style={{ 
-              left: `${data.subtitleX ?? 50}%`, 
+              left: `${data.subtitleX ?? 0}%`, 
               top: `${data.subtitleY ?? 60}%`,
-              transform: 'translate(-50%, -50%)',
-              color: data.subtitleColor || 'var(--muted-foreground)'
+              width: `${data.subtitleWidth ?? 100}%`,
+              height: data.subtitleHeight ? `${data.subtitleHeight}%` : 'auto',
+              minWidth: '10%',
+              minHeight: 'max-content',
+              resize: isEditing ? 'both' : 'none',
+              overflow: isEditing ? 'auto' : 'visible'
             }}
           >
-            {data.subtitle || "Page subtitle goes here."}
-          </motion.p>
+            <p 
+              className="text-xl w-full text-center"
+              style={{ color: data.subtitleColor || 'var(--muted-foreground)' }}
+            >
+              {data.subtitle || "Page subtitle goes here."}
+            </p>
+          </motion.div>
         </div>
       </section>
     </div>

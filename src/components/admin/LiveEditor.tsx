@@ -16,15 +16,36 @@ import { getContrastRatio, getLuminance } from "@/lib/utils/colorUtils";
 function ColorControl({ value, onChange, hasBackgroundImage }: { value: string, onChange: (val: string) => void, hasBackgroundImage?: boolean }) {
   const [showCustom, setShowCustom] = useState(false);
   const brandColors = [
-    { label: "Dark (Heading)", hex: "#0f172a" },
-    { label: "Light (Background)", hex: "#ffffff" },
-    { label: "Muted", hex: "#64748b" },
-    { label: "Primary", hex: "#3b82f6" },
+    { label: "Dark (Heading)", hex: "#0f172a", value: "var(--heading)" },
+    { label: "Light (Background)", hex: "#ffffff", value: "var(--background)" },
+    { label: "Muted", hex: "#64748b", value: "var(--muted-foreground)" },
+    { label: "Primary", hex: "#3b82f6", value: "var(--primary)" },
   ];
 
+  const [resolvedValue, setResolvedValue] = useState(value);
+
+  useEffect(() => {
+    if (value?.startsWith('var(')) {
+      // Extract variable name, e.g., var(--primary) -> --primary
+      const varMatch = value.match(/var\((--[^)]+)\)/);
+      if (varMatch && varMatch[1]) {
+        // Read from document.body or documentElement where variables are injected
+        const computed = getComputedStyle(document.body).getPropertyValue(varMatch[1]).trim();
+        if (computed) {
+          // ensure we pad hex if it returns something weird, though usually it's hex or rgb
+          setResolvedValue(computed);
+        } else {
+          setResolvedValue(value);
+        }
+      }
+    } else {
+      setResolvedValue(value);
+    }
+  }, [value]);
+
   // Contrast against typical background (light overlay or dark overlay)
-  const contrast = value ? getContrastRatio(getLuminance(value), getLuminance("#ffffff")) : 21;
-  const showWarning = contrast < 4.5 && value !== "";
+  const contrast = resolvedValue ? getContrastRatio(getLuminance(resolvedValue), getLuminance("#ffffff")) : 21;
+  const showWarning = contrast < 4.5 && resolvedValue !== "";
 
   return (
     <div className="space-y-3">
@@ -41,8 +62,8 @@ function ColorControl({ value, onChange, hasBackgroundImage }: { value: string, 
             <button 
               key={c.hex} 
               type="button"
-              onClick={() => onChange(c.hex)}
-              className={`h-8 w-8 rounded-full border border-border transition-all ${value === c.hex ? 'ring-2 ring-primary ring-offset-2' : ''}`}
+              onClick={() => onChange(c.value)}
+              className={`h-8 w-8 rounded-full border border-border transition-all ${value === c.value ? 'ring-2 ring-primary ring-offset-2' : ''}`}
               style={{ backgroundColor: c.hex }}
               title={c.label}
             />
@@ -53,7 +74,7 @@ function ColorControl({ value, onChange, hasBackgroundImage }: { value: string, 
         <div className="flex gap-2 items-center">
           <input 
             type="color" 
-            value={value || "#ffffff"} 
+            value={value?.startsWith('var(') ? "#ffffff" : (value || "#ffffff")} 
             onChange={(e) => onChange(e.target.value)} 
             className="h-8 w-14 cursor-pointer rounded border"
           />
@@ -246,14 +267,22 @@ export function LiveEditor({
                    />
                    
                    {/* Numeric Inputs */}
-                   <div className="flex gap-4 items-center">
-                      <div className="flex-1 space-y-1">
+                   <div className="flex gap-2 items-center flex-wrap">
+                      <div className="flex-1 min-w-[45%] space-y-1">
                         <Label className="text-xs">Left X (%)</Label>
                         <Input type="number" min={0} max={100} value={data[`${key.replace('Color', '')}X`] ?? 50} onChange={(e) => handleChange(`${key.replace('Color', '')}X`, Number(e.target.value))} />
                       </div>
-                      <div className="flex-1 space-y-1">
+                      <div className="flex-1 min-w-[45%] space-y-1">
                         <Label className="text-xs">Top Y (%)</Label>
                         <Input type="number" min={0} max={100} value={data[`${key.replace('Color', '')}Y`] ?? 50} onChange={(e) => handleChange(`${key.replace('Color', '')}Y`, Number(e.target.value))} />
+                      </div>
+                      <div className="flex-1 min-w-[45%] space-y-1">
+                        <Label className="text-xs">Width (%)</Label>
+                        <Input type="number" min={10} max={100} value={data[`${key.replace('Color', '')}Width`] ?? 100} onChange={(e) => handleChange(`${key.replace('Color', '')}Width`, Math.max(10, Number(e.target.value)))} />
+                      </div>
+                      <div className="flex-1 min-w-[45%] space-y-1">
+                        <Label className="text-xs">Height (%)</Label>
+                        <Input type="number" min={10} max={100} value={data[`${key.replace('Color', '')}Height`] ?? 100} onChange={(e) => handleChange(`${key.replace('Color', '')}Height`, Math.max(10, Number(e.target.value)))} />
                       </div>
                    </div>
                    <Button variant="outline" size="sm" className="w-full" onClick={() => {
