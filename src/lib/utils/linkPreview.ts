@@ -31,6 +31,12 @@ const fetchMetadata = async (url: string): Promise<LinkPreviewData | null> => {
       return null;
     }
 
+    // Only parse HTML responses — bail out for binary files (APK, PDF, images, etc.)
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('text/html') && !contentType.includes('application/xhtml')) {
+      return null;
+    }
+
     const html = await response.text();
     const $ = cheerio.load(html);
 
