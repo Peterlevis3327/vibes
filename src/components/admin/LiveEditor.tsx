@@ -256,7 +256,8 @@ export function LiveEditor({
   const [serverVersions, setServerVersions] = useState<any[]>([]);
   const [isVersionsOpen, setIsVersionsOpen] = useState(false);
   const [mediaLibraryKey, setMediaLibraryKey] = useState<string | null>(null);
-  const [isPreviewMobile, setIsPreviewMobile] = useState(false);
+  const [previewWidth, setPreviewWidth] = useState<number | null>(null);
+  const isPreviewMobile = previewWidth !== null;
 
   const handleChange = (key: string, value: any) => {
     setData((prev: any) => ({ ...prev, [key]: value }));
@@ -414,14 +415,20 @@ export function LiveEditor({
         <div className="p-4 border-b bg-background sticky top-0 z-10 flex justify-between items-center">
           <span className="text-sm font-medium text-muted-foreground">Live Preview</span>
           <div className="flex gap-2 items-center">
+            <span className="text-xs text-muted-foreground mr-2 font-medium uppercase tracking-wider">Preview Width</span>
             <div className="flex items-center gap-1 mr-4 border rounded-md p-1 bg-muted/50">
-               <Button variant={!isPreviewMobile ? "secondary" : "ghost"} size="sm" className="h-7 text-xs px-3" onClick={() => setIsPreviewMobile(false)}>Desktop</Button>
-               <Button variant={isPreviewMobile ? "secondary" : "ghost"} size="sm" className="h-7 text-xs px-3" onClick={() => setIsPreviewMobile(true)}>Mobile</Button>
+               <Button variant={previewWidth === null ? "secondary" : "ghost"} size="sm" className="h-7 text-xs px-3" onClick={() => setPreviewWidth(null)}>Desktop</Button>
+               <Button variant={previewWidth === 767 ? "secondary" : "ghost"} size="sm" className="h-7 text-xs px-2 font-mono" onClick={() => setPreviewWidth(767)}>767</Button>
+               <Button variant={previewWidth === 600 ? "secondary" : "ghost"} size="sm" className="h-7 text-xs px-2 font-mono" onClick={() => setPreviewWidth(600)}>600</Button>
+               <Button variant={previewWidth === 375 ? "secondary" : "ghost"} size="sm" className="h-7 text-xs px-2 font-mono" onClick={() => setPreviewWidth(375)}>375</Button>
             </div>
             <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" title="Live Sync Active"></span>
           </div>
         </div>
-        <div className={`bg-background shadow-lg mx-auto border transition-all duration-300 ${isPreviewMobile ? 'w-[375px] mt-8 min-h-[667px]' : 'w-full'}`}>
+        <div 
+          className={`bg-background shadow-lg mx-auto border transition-all duration-300 ${previewWidth !== null ? 'mt-8 min-h-[667px]' : 'w-full'}`}
+          style={previewWidth ? { width: previewWidth } : undefined}
+        >
           <div className="relative w-full h-full">
             <PreviewComponent data={data} onChange={handleChange} isEditing={true} isPreviewMobile={isPreviewMobile} />
           </div>

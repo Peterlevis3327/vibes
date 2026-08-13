@@ -139,8 +139,24 @@ function CanvasTextBox({
   const minW = toPx(10, containerWidth);
   const maxH = containerHeight - y;
 
+  const rndRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (rndRef.current && containerWidth && containerHeight) {
+      rndRef.current.updatePosition({
+        x: toPx(xPct ?? 0, containerWidth),
+        y: toPx(yPct ?? 0, containerHeight),
+      });
+      rndRef.current.updateSize({
+        width: toPx(widthPct ?? 100, containerWidth),
+        height: "auto",
+      });
+    }
+  }, [xPct, yPct, widthPct, containerWidth, containerHeight, toPx]);
+
   return (
     <Rnd
+      ref={rndRef}
       key={stableKey}
       default={{ x, y, width: w, height: "auto" as unknown as number }}
       minWidth={minW}
