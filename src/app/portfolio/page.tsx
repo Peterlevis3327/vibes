@@ -104,7 +104,7 @@ export default async function PortfolioPage({ searchParams }: { searchParams: Pr
                       <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">{project.title}</h3>
                     </div>
                     <p className="text-muted-foreground font-medium mb-3">{project.category} &middot; {project.year}</p>
-                    <p className="text-foreground/80 line-clamp-2">{project.description}</p>
+                    <p className="text-foreground/80 leading-relaxed">{project.description}</p>
                   </Link>
                 </div>
               )})}
