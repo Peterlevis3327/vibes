@@ -100,7 +100,7 @@ export default function ImportPortfolioPage() {
         alt: project.title,
         caption: "",
         showCaption: false
-      } : undefined;
+      } : null;
 
       // 5. Construct Tech254 project data
       const mappedData = {
