@@ -102,6 +102,8 @@ function CanvasTextBox({
   const y = toPx(yPct ?? 0, containerHeight);
   const w = toPx(widthPct ?? 100, containerWidth);
   const minW = toPx(10, containerWidth);
+  // Maximum height this box can grow to before hitting the section's bottom edge
+  const maxH = containerHeight - y;
 
   return (
     <Rnd
@@ -116,6 +118,7 @@ function CanvasTextBox({
       }}
       minWidth={minW}
       minHeight={50}
+      maxHeight={maxH}
       bounds="parent"
       disableDragging={!isEditing}
       enableResizing={
@@ -156,10 +159,11 @@ function CanvasTextBox({
     >
       <div
         style={{
-          fontSize: fontSize ? `${fontSize}px` : undefined,
+          fontSize: fontSize ? `clamp(${Math.max(14, Math.round(fontSize * 0.4))}px, ${(fontSize / 16).toFixed(2)}vw + 1rem, ${fontSize}px)` : undefined,
           color: color || undefined,
           width: "100%",
-          height: "100%",
+          // Clip content that would exceed the section boundary
+          maxHeight: maxH,
           overflow: "hidden",
         }}
       >
@@ -193,7 +197,7 @@ function StaticTextBox({
         left: `${xPct ?? 0}%`,
         top: `${yPct ?? 0}%`,
         width: `${widthPct ?? 100}%`,
-        fontSize: fontSize ? `${fontSize}px` : undefined,
+        fontSize: fontSize ? `clamp(${Math.max(14, Math.round(fontSize * 0.4))}px, ${(fontSize / 16).toFixed(2)}vw + 1rem, ${fontSize}px)` : undefined,
         color: color || undefined,
         minWidth: "10%",
       }}
