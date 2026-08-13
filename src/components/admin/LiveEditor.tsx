@@ -102,6 +102,84 @@ function ColorControl({ value, onChange, hasBackgroundImage }: { value: string, 
   );
 }
 
+function ColorCard({
+  fieldKey,
+  data,
+  handleChange,
+}: {
+  fieldKey: string;
+  data: any;
+  handleChange: (key: string, value: any) => void;
+}) {
+  const prefix = fieldKey.replace('Color', '');
+  const fontSizeKey = `${prefix}FontSize`;
+  const hasFontSize = fontSizeKey in data;
+  const hasBackgroundImage = !!(data.heroBackgroundImage?.url || data.headerBackgroundImage?.url);
+
+  return (
+    <div className="space-y-4 border rounded-lg p-4 bg-muted/30">
+      <Label className="capitalize font-semibold text-base">
+        {prefix.replace(/([A-Z])/g, ' $1').trim()} Styling &amp; Position
+
+      </Label>
+      <ColorControl
+        value={data[fieldKey]}
+        onChange={(val) => handleChange(fieldKey, val)}
+        hasBackgroundImage={hasBackgroundImage}
+      />
+
+      {hasFontSize && (
+        <div className="space-y-2">
+          <div className="flex justify-between">
+            <Label className="text-xs">Font Size</Label>
+            <span className="text-xs text-muted-foreground">{data[fontSizeKey] ?? 48}px</span>
+          </div>
+          <Slider
+            value={[Number(data[fontSizeKey] ?? 48)]}
+            min={12}
+            max={96}
+            step={1}
+            onValueChange={(val) => handleChange(fontSizeKey, Array.isArray(val) ? val[0] : val)}
+
+          />
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-1">
+          <Label className="text-xs">Left X (%)</Label>
+          <Input
+            type="number" min={0} max={100}
+            value={data[`${prefix}X`] ?? 0}
+            onChange={(e) => handleChange(`${prefix}X`, Number(e.target.value))}
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Top Y (%)</Label>
+          <Input
+            type="number" min={0} max={100}
+            value={data[`${prefix}Y`] ?? 0}
+            onChange={(e) => handleChange(`${prefix}Y`, Number(e.target.value))}
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Width (%)</Label>
+          <Input
+            type="number" min={10} max={100}
+            value={data[`${prefix}Width`] ?? 100}
+            onChange={(e) => handleChange(`${prefix}Width`, Math.max(10, Number(e.target.value)))}
+          />
+        </div>
+      </div>
+      <Button variant="outline" size="sm" className="w-full" onClick={() => {
+        handleChange(`${prefix}X`, 0);
+        handleChange(`${prefix}Y`, 30);
+        handleChange(`${prefix}Width`, 100);
+      }}>Reset Position</Button>
+    </div>
+  );
+}
+
 // A generic wrapper component that provides a split view for editing page content
 export function LiveEditor({ 
   initialData, 
@@ -200,7 +278,8 @@ export function LiveEditor({
         </div>
         <div className="p-4 overflow-y-auto flex-1 space-y-6">
           {Object.keys(data).map((key) => {
-            if (key.endsWith('X') || key.endsWith('Y')) return null;
+            // Position, dimension and font-size fields are rendered inside the Color card below
+            if (key.endsWith('X') || key.endsWith('Y') || key.endsWith('Width') || key.endsWith('Height') || key.endsWith('FontSize')) return null;
 
             return (
               <div key={key} className="space-y-2">
@@ -256,40 +335,7 @@ export function LiveEditor({
                   />
                 </div>
               ) : key.toLowerCase().includes('color') ? (
-                <div key={key} className="space-y-4 border rounded-lg p-4 bg-muted/30">
-                   <Label className="capitalize font-semibold text-base">
-                     {key.replace('Color', '')} Styling & Position
-                   </Label>
-                   <ColorControl 
-                      value={data[key]} 
-                      onChange={(val) => handleChange(key, val)} 
-                      hasBackgroundImage={!!(data.heroBackgroundImage?.url || data.headerBackgroundImage?.url)}
-                   />
-                   
-                   {/* Numeric Inputs */}
-                   <div className="flex gap-2 items-center flex-wrap">
-                      <div className="flex-1 min-w-[45%] space-y-1">
-                        <Label className="text-xs">Left X (%)</Label>
-                        <Input type="number" min={0} max={100} value={data[`${key.replace('Color', '')}X`] ?? 50} onChange={(e) => handleChange(`${key.replace('Color', '')}X`, Number(e.target.value))} />
-                      </div>
-                      <div className="flex-1 min-w-[45%] space-y-1">
-                        <Label className="text-xs">Top Y (%)</Label>
-                        <Input type="number" min={0} max={100} value={data[`${key.replace('Color', '')}Y`] ?? 50} onChange={(e) => handleChange(`${key.replace('Color', '')}Y`, Number(e.target.value))} />
-                      </div>
-                      <div className="flex-1 min-w-[45%] space-y-1">
-                        <Label className="text-xs">Width (%)</Label>
-                        <Input type="number" min={10} max={100} value={data[`${key.replace('Color', '')}Width`] ?? 100} onChange={(e) => handleChange(`${key.replace('Color', '')}Width`, Math.max(10, Number(e.target.value)))} />
-                      </div>
-                      <div className="flex-1 min-w-[45%] space-y-1">
-                        <Label className="text-xs">Height (%)</Label>
-                        <Input type="number" min={10} max={100} value={data[`${key.replace('Color', '')}Height`] ?? 100} onChange={(e) => handleChange(`${key.replace('Color', '')}Height`, Math.max(10, Number(e.target.value)))} />
-                      </div>
-                   </div>
-                   <Button variant="outline" size="sm" className="w-full" onClick={() => {
-                      handleChange(`${key.replace('Color', '')}X`, 50);
-                      handleChange(`${key.replace('Color', '')}Y`, 50);
-                   }}>Reset to Center</Button>
-                </div>
+                <ColorCard key={key} fieldKey={key} data={data} handleChange={handleChange} />
               ) : typeof data[key] === 'string' && (data[key].length > 100 || key.toLowerCase().includes('description') || key.toLowerCase().includes('headline')) ? (
                 <Textarea 
                   value={data[key]} 
@@ -320,7 +366,7 @@ export function LiveEditor({
             <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" title="Live Sync Active"></span>
           </div>
         </div>
-        <div className={`bg-background shadow-lg mx-auto transform origin-top border transition-all duration-300 ${isPreviewMobile ? 'w-[375px] mt-8 min-h-[667px]' : 'w-full scale-[0.8]'}`}>
+        <div className={`bg-background shadow-lg mx-auto border transition-all duration-300 ${isPreviewMobile ? 'w-[375px] mt-8 min-h-[667px]' : 'w-full'}`}>
           <div className="relative w-full h-full">
             <PreviewComponent data={data} onChange={handleChange} isEditing={true} />
           </div>
