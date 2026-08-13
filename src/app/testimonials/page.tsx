@@ -20,8 +20,8 @@ export default async function TestimonialsPage() {
   return (
     <div className="flex flex-col w-full">
       <PageHeader 
-        title={pageData?.title ?? "Client Testimonials"}
-        subtitle={pageData?.subtitle ?? "Don't just take our word for it. Here's what our partners have to say about working with us."}
+        title={pageData?.title ?? null}
+        subtitle={pageData?.subtitle ?? undefined}
         backgroundImage={pageData?.headerBackgroundImage}
         backgroundImageVisibility={pageData?.backgroundImageVisibility}
         titleColor={pageData?.titleColor}

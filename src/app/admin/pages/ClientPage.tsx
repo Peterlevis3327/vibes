@@ -79,9 +79,8 @@ const initialGenericPageData = {
 // ---------- Helpers ----------
 
 const getOverlayStyle = (visibility = 20) => {
-  const opacity = 1 - visibility / 100;
-  const blur = opacity * 10;
-  return { opacity, backdropFilter: `blur(${blur}px)` };
+  const overlayOpacity = 1 - visibility / 100;
+  return { backgroundColor: `rgba(0,0,0,${overlayOpacity * 0.7})` };
 };
 
 /** Converts a flat pixel font size to a responsive clamp() string */
@@ -444,8 +443,8 @@ const GenericPagePreview = ({
   const subW = (isPreviewMobile && subtitleOverride ? data.subtitleMobileWidth : data.subtitleWidth) as number ?? 100;
   const subFs = (isPreviewMobile && subtitleOverride ? data.subtitleMobileFontSize : data.subtitleFontSize) as number;
 
-  const titleContent = <h1 className="font-bold tracking-tight w-full text-center">{(data.title as string) ?? "Page Title"}</h1>;
-  const subContent = <p className="w-full text-center">{(data.subtitle as string) ?? "Page subtitle goes here."}</p>;
+  const titleContent = <h1 className="font-bold tracking-tight w-full text-center">{(data.title as string | null) ?? "Page Title"}</h1>;
+  const subContent = <p className="w-full text-center">{(data.subtitle as string | null) ?? "Page subtitle goes here."}</p>;
 
   return (
     <div className={`flex flex-col w-full font-sans ${isEditing ? "select-none" : ""}`}>

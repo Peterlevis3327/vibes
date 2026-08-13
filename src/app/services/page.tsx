@@ -26,8 +26,8 @@ export default async function ServicesPage() {
   return (
     <div className="flex flex-col w-full">
       <PageHeader 
-        title={pageData?.title ?? "Our Services"}
-        subtitle={pageData?.subtitle ?? "Comprehensive digital solutions designed to help your business scale. From concept to deployment, we handle it all."}
+        title={pageData?.title ?? null}
+        subtitle={pageData?.subtitle ?? undefined}
         backgroundImage={pageData?.headerBackgroundImage}
         backgroundImageVisibility={pageData?.backgroundImageVisibility}
         titleColor={pageData?.titleColor}

@@ -1,11 +1,10 @@
 "use client";
 
 import React from 'react';
-import Image from 'next/image';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 interface PageHeaderProps {
-  title: string;
+  title: string | null;
   titleColor?: string;
   titleX?: number;
   titleY?: number;
@@ -45,8 +44,8 @@ export function PageHeader({
   subtitleMobileOverride, subtitleMobileX, subtitleMobileY, subtitleMobileWidth, subtitleMobileFontSize,
   backgroundImage, backgroundImageVisibility = 20 
 }: PageHeaderProps) {
-  const opacity = 1 - (backgroundImageVisibility / 100);
-  const blur = opacity * 10;
+  // Convert visibility (0–100) to overlay opacity (0 = fully transparent overlay = fully visible image)
+  const overlayOpacity = 1 - (backgroundImageVisibility / 100);
   const isMobile = useMediaQuery("(max-width: 767px)");
 
   // Resolve effective values
@@ -64,14 +63,13 @@ export function PageHeader({
     <section className="relative px-4 md:px-8 py-24 md:py-32 flex flex-col items-center text-center overflow-hidden min-h-[400px]">
       {backgroundImage?.url ? (
         <>
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={backgroundImage.url}
             alt={backgroundImage.alt || "Background"}
-            fill priority quality={100}
-            className="object-cover object-center z-0"
-            sizes="100vw"
+            className="absolute inset-0 w-full h-full object-cover object-center z-0"
           />
-          <div className="absolute inset-0 bg-background z-0 transition-all duration-200" style={{ opacity, backdropFilter: `blur(${blur}px)` }} />
+          <div className="absolute inset-0 z-0 transition-all duration-200" style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity * 0.7})` }} />
         </>
       ) : (
         <div className="absolute inset-0 z-0 bg-muted/30" />
@@ -90,7 +88,7 @@ export function PageHeader({
           }}
         >
           <h1 className="font-bold tracking-tight w-full text-center" style={{ color: titleColor || 'var(--heading)' }}>
-            {title}
+            {title ?? ""}
           </h1>
         </div>
 
