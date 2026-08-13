@@ -322,7 +322,7 @@ const HomePreview = ({
 
   return (
     <div className={`flex flex-col w-full font-sans ${isEditing ? "select-none" : ""}`}>
-      <section ref={containerRef} className="relative overflow-hidden" style={{ minHeight: 600 }}>
+      <section ref={containerRef} className="relative overflow-hidden" style={{ height: 'clamp(300px, 40vw, 560px)' }}>
         {data.heroBackgroundImage?.url && (
           <>
             <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: `url(${data.heroBackgroundImage.url})` }} />
@@ -448,7 +448,7 @@ const GenericPagePreview = ({
 
   return (
     <div className={`flex flex-col w-full font-sans ${isEditing ? "select-none" : ""}`}>
-      <section ref={containerRef} className="relative overflow-hidden" style={{ minHeight: 400 }}>
+      <section ref={containerRef} className="relative overflow-hidden" style={{ height: 'clamp(300px, 40vw, 560px)' }}>
         {data.headerBackgroundImage?.url ? (
           <>
             <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: `url(${(data.headerBackgroundImage as unknown as Record<string, string>).url})` }} />

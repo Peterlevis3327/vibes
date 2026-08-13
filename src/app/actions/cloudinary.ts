@@ -38,6 +38,7 @@ const getCachedImages = unstable_cache(
       // Note: To use the Admin API to list resources, you need the API key and secret.
     const result = await cloudinary.api.resources({
       type: 'upload',
+      resource_type: 'image',
       prefix: 'portfolio/', // folder
       max_results: 50,
       context: true, // gets context (alt text)

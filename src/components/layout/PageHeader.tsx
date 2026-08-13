@@ -60,7 +60,7 @@ export function PageHeader({
   const resolvedSubFs = isMobile && subtitleMobileOverride ? subtitleMobileFontSize : subtitleFontSize;
 
   return (
-    <section className="relative px-4 md:px-8 py-24 md:py-32 flex flex-col items-center text-center overflow-hidden min-h-[400px]">
+    <section className="relative w-full overflow-hidden" style={{ height: 'clamp(300px, 40vw, 560px)' }}>
       {backgroundImage?.url ? (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
