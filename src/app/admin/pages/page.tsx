@@ -224,6 +224,11 @@ const getOverlayStyle = (visibility = 20) => {
 };
 
 // Preview component for generic pages
+const GenericPagePreview = ({ data, onChange, isEditing }: { data: typeof initialGenericPageData & any, onChange?: any, isEditing?: boolean }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
