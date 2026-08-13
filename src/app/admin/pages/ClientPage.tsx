@@ -131,14 +131,6 @@ function CanvasTextBox({
     []
   );
 
-  if (!containerWidth || !containerHeight) return null;
-
-  const x = toPx(xPct ?? 0, containerWidth);
-  const y = toPx(yPct ?? 0, containerHeight);
-  const w = toPx(widthPct ?? 100, containerWidth);
-  const minW = toPx(10, containerWidth);
-  const maxH = containerHeight - y;
-
   const rndRef = useRef<any>(null);
 
   useEffect(() => {
@@ -153,6 +145,16 @@ function CanvasTextBox({
       });
     }
   }, [xPct, yPct, widthPct, containerWidth, containerHeight, toPx]);
+
+  if (!containerWidth || !containerHeight) return null;
+
+  const x = toPx(xPct ?? 0, containerWidth);
+  const y = toPx(yPct ?? 0, containerHeight);
+  const w = toPx(widthPct ?? 100, containerWidth);
+  const minW = toPx(10, containerWidth);
+  const maxH = containerHeight - y;
+
+
 
   return (
     <Rnd
