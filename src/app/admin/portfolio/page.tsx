@@ -1,5 +1,8 @@
 "use client";
 
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+
 import { useState } from "react";
 import { revalidatePublicRoutes } from "@/app/actions/revalidate";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -39,6 +42,7 @@ interface Project {
   techStack?: string[]; // Array of strings, handled as comma-separated string in form
   liveLink?: string;
   galleryImages?: { url: string; alt: string; caption?: string; showCaption?: boolean }[];
+  importedFromId?: string;
 }
 
 // Helper to safely join tech stack array to string
@@ -46,7 +50,9 @@ const techStackToString = (stack?: string[]) => {
   return Array.isArray(stack) ? stack.join(", ") : "";
 };
 
-export default function PortfolioAdminPage() {
+import { Suspense } from "react";
+
+function PortfolioAdminContent() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -65,9 +71,23 @@ export default function PortfolioAdminPage() {
     setIsLoading(false);
   };
 
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    const editId = searchParams?.get("edit");
+    if (editId && projects.length > 0) {
+      const projectToEdit = projects.find(p => p.id === editId);
+      if (projectToEdit) {
+        openEditModal(projectToEdit);
+        // Clean up the URL so it doesn't reopen on refresh
+        window.history.replaceState(null, '', '/admin/portfolio');
+      }
+    }
+  }, [searchParams, projects]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this project?")) return;
@@ -170,11 +190,17 @@ export default function PortfolioAdminPage() {
           <h1 className="text-3xl font-bold tracking-tight">Portfolio Projects</h1>
           <p className="text-muted-foreground">Manage your case studies and past work.</p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <Button onClick={() => openEditModal()}>
-            <Plus className="mr-2 h-4 w-4" /> Add Project
-          </Button>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center gap-2">
+          <Link href="/admin/portfolio/import">
+            <Button variant="outline">
+              <Plus className="mr-2 h-4 w-4" /> Import from Personal Portfolio
+            </Button>
+          </Link>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <Button onClick={() => openEditModal()}>
+              <Plus className="mr-2 h-4 w-4" /> Add Project
+            </Button>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Project</DialogTitle>
             </DialogHeader>
@@ -519,5 +545,13 @@ export default function PortfolioAdminPage() {
         </Table>
       </div>
     </div>
+  );
+}
+
+export default function PortfolioAdminPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+      <PortfolioAdminContent />
+    </Suspense>
   );
 }
