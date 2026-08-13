@@ -508,7 +508,7 @@ function PortfolioAdminContent() {
           }}
         />
       </div>
-
+    </div>
       <div className="border rounded-lg bg-background">
         <Table>
           <TableHeader>
