@@ -234,17 +234,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             </div>
           )}
           
-          {/* Next Project Nav */}
-          <div className="border-t pt-12 flex justify-between items-center">
-            <div>
-              <span className="text-sm text-muted-foreground font-medium uppercase tracking-wider block mb-2">Previous Project</span>
-              <Link href="#" className="text-xl font-bold hover:text-primary transition-colors">Health & Wellness Tracker</Link>
-            </div>
-            <div className="text-right">
-              <span className="text-sm text-muted-foreground font-medium uppercase tracking-wider block mb-2">Next Project</span>
-              <Link href="#" className="text-xl font-bold hover:text-primary transition-colors">Global E-commerce</Link>
-            </div>
-          </div>
+
         </div>
       </article>
     </div>
