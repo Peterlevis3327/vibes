@@ -176,6 +176,61 @@ function ColorCard({
         handleChange(`${prefix}Y`, 30);
         handleChange(`${prefix}Width`, 100);
       }}>Reset Position</Button>
+
+      {/* Mobile Override Section */}
+      {`${prefix}MobileOverride` in data && (
+        <div className="border-t pt-4 mt-2 space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <Label className="text-xs font-semibold text-blue-600">📱 Mobile Override</Label>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Custom values for screens &lt;768px</p>
+            </div>
+            <Switch
+              checked={!!data[`${prefix}MobileOverride`]}
+              onCheckedChange={(checked) => handleChange(`${prefix}MobileOverride`, checked)}
+            />
+          </div>
+
+          {!!data[`${prefix}MobileOverride`] && (
+            <div className="space-y-3 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/50 rounded-lg p-3">
+              {/* Mobile font size */}
+              {`${prefix}MobileFontSize` in data && (
+                <div className="space-y-1">
+                  <div className="flex justify-between">
+                    <Label className="text-xs">Mobile Font Size</Label>
+                    <span className="text-xs text-muted-foreground">{data[`${prefix}MobileFontSize`] ?? 32}px</span>
+                  </div>
+                  <Slider
+                    value={[Number(data[`${prefix}MobileFontSize`] ?? 32)]}
+                    min={12} max={72} step={1}
+                    onValueChange={(val) => handleChange(`${prefix}MobileFontSize`, Array.isArray(val) ? val[0] : val)}
+                  />
+                </div>
+              )}
+              {/* Mobile position */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Mobile X (%)</Label>
+                  <Input type="number" min={0} max={100} value={data[`${prefix}MobileX`] ?? 0} onChange={(e) => handleChange(`${prefix}MobileX`, Number(e.target.value))} />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Mobile Y (%)</Label>
+                  <Input type="number" min={0} max={100} value={data[`${prefix}MobileY`] ?? 20} onChange={(e) => handleChange(`${prefix}MobileY`, Number(e.target.value))} />
+                </div>
+                <div className="space-y-1 col-span-2">
+                  <Label className="text-xs">Mobile Width (%)</Label>
+                  <Input type="number" min={10} max={100} value={data[`${prefix}MobileWidth`] ?? 100} onChange={(e) => handleChange(`${prefix}MobileWidth`, Math.max(10, Number(e.target.value)))} />
+                </div>
+              </div>
+              <Button variant="outline" size="sm" className="w-full text-xs" onClick={() => {
+                handleChange(`${prefix}MobileX`, 0);
+                handleChange(`${prefix}MobileY`, 20);
+                handleChange(`${prefix}MobileWidth`, 100);
+              }}>Reset Mobile Position</Button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -191,7 +246,7 @@ export function LiveEditor({
 }: { 
   initialData: any, 
   onSave: (data: any) => void, 
-  PreviewComponent: React.ComponentType<{ data: any, onChange?: (key: string, value: any) => void, isEditing?: boolean }>,
+  PreviewComponent: React.ComponentType<{ data: any, onChange?: (key: string, value: any) => void, isEditing?: boolean, isPreviewMobile?: boolean }>,
   title: string,
   collectionName?: string,
   docId?: string
@@ -368,7 +423,7 @@ export function LiveEditor({
         </div>
         <div className={`bg-background shadow-lg mx-auto border transition-all duration-300 ${isPreviewMobile ? 'w-[375px] mt-8 min-h-[667px]' : 'w-full'}`}>
           <div className="relative w-full h-full">
-            <PreviewComponent data={data} onChange={handleChange} isEditing={true} />
+            <PreviewComponent data={data} onChange={handleChange} isEditing={true} isPreviewMobile={isPreviewMobile} />
           </div>
         </div>
       </div>

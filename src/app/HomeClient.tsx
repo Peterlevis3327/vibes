@@ -11,6 +11,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -30,6 +32,21 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
   const visibility = data.backgroundImageVisibility ?? 20;
   const opacity = 1 - (visibility / 100);
   const blur = opacity * 10;
+  const isMobile = useMediaQuery("(max-width: 767px)");
+
+  // Resolve hero headline — use mobile override values on narrow viewports
+  const headlineX = isMobile && data.heroHeadlineMobileOverride ? (data.heroHeadlineMobileX ?? 0) : (data.heroHeadlineX ?? 0);
+  const headlineY = isMobile && data.heroHeadlineMobileOverride ? (data.heroHeadlineMobileY ?? 20) : (data.heroHeadlineY ?? 30);
+  const headlineW = isMobile && data.heroHeadlineMobileOverride ? (data.heroHeadlineMobileWidth ?? 100) : (data.heroHeadlineWidth ?? 100);
+  const headlineFs = isMobile && data.heroHeadlineMobileOverride ? data.heroHeadlineMobileFontSize : data.heroHeadlineFontSize;
+
+  // Resolve hero subheadline
+  const subX = isMobile && data.heroSubheadlineMobileOverride ? (data.heroSubheadlineMobileX ?? 0) : (data.heroSubheadlineX ?? 0);
+  const subY = isMobile && data.heroSubheadlineMobileOverride ? (data.heroSubheadlineMobileY ?? 55) : (data.heroSubheadlineY ?? 60);
+  const subW = isMobile && data.heroSubheadlineMobileOverride ? (data.heroSubheadlineMobileWidth ?? 100) : (data.heroSubheadlineWidth ?? 100);
+  const subFs = isMobile && data.heroSubheadlineMobileOverride ? data.heroSubheadlineMobileFontSize : data.heroSubheadlineFontSize;
+
+  const toClamp = (px?: number) => px ? `clamp(${Math.max(14, Math.round(px * 0.4))}px, ${(px / 16).toFixed(2)}vw + 1rem, ${px}px)` : undefined;
 
   return (
     <div className="flex flex-col w-full">
@@ -63,16 +80,16 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
           <div 
             className="absolute"
             style={{ 
-              left: `${data.heroHeadlineX ?? 0}%`, 
-              top: `${data.heroHeadlineY ?? 30}%`,
-              width: `${data.heroHeadlineWidth ?? 100}%`,
-              height: data.heroHeadlineHeight ? `${data.heroHeadlineHeight}%` : 'auto',
+              left: `${headlineX}%`, 
+              top: `${headlineY}%`,
+              width: `${headlineW}%`,
               minWidth: '10%',
-              minHeight: 'max-content'
+              minHeight: 'max-content',
+              fontSize: toClamp(headlineFs),
             }}
           >
             <h1 
-              className="text-5xl md:text-7xl font-bold tracking-tight text-balance leading-tight w-full text-center"
+              className="font-bold tracking-tight text-balance leading-tight w-full text-center"
               style={{ color: data.heroHeadlineColor || 'var(--heading)' }}
             >
               {data.heroHeadline?.includes("drive results.") ? (
@@ -85,16 +102,16 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
           <div 
             className="absolute"
             style={{ 
-              left: `${data.heroSubheadlineX ?? 0}%`, 
-              top: `${data.heroSubheadlineY ?? 60}%`,
-              width: `${data.heroSubheadlineWidth ?? 100}%`,
-              height: data.heroSubheadlineHeight ? `${data.heroSubheadlineHeight}%` : 'auto',
+              left: `${subX}%`, 
+              top: `${subY}%`,
+              width: `${subW}%`,
               minWidth: '10%',
-              minHeight: 'max-content'
+              minHeight: 'max-content',
+              fontSize: toClamp(subFs),
             }}
           >
             <p 
-              className="text-xl md:text-2xl w-full text-center text-balance"
+              className="w-full text-center text-balance"
               style={{ color: data.heroSubheadlineColor || 'var(--muted-foreground)' }}
             >
               {data.heroSubheadline}
