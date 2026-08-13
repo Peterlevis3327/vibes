@@ -42,6 +42,7 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
               alt={data.heroBackgroundImage.alt || "Background"}
               fill
               priority
+              quality={100}
               className="object-cover object-center z-0"
               sizes="100vw"
             />

@@ -24,6 +24,7 @@ export function PageHeader({ title, subtitle, backgroundImage, backgroundImageVi
             alt={backgroundImage.alt || "Background"}
             fill
             priority
+            quality={100}
             className="object-cover object-center z-0"
             sizes="100vw"
           />
