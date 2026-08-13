@@ -102,9 +102,9 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 </div>
               ) : (
                 // Web Browser Mockup
-                <div className="relative w-full aspect-[16/10] md:aspect-video rounded-2xl md:rounded-3xl border shadow-xl bg-card overflow-hidden flex flex-col">
+                <div className="relative w-full rounded-2xl md:rounded-3xl border shadow-xl bg-card overflow-hidden flex flex-col">
                   {/* Browser Chrome */}
-                  <div className="h-10 border-b bg-muted/50 flex items-center px-4 gap-2 relative z-20">
+                  <div className="h-10 border-b bg-muted/50 flex items-center px-4 gap-2 relative z-20 flex-shrink-0">
                     <div className="flex gap-2">
                       <div className="w-3 h-3 rounded-full bg-red-400/80"></div>
                       <div className="w-3 h-3 rounded-full bg-amber-400/80"></div>
@@ -116,14 +116,14 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                       </div>
                     </div>
                   </div>
-                  {/* Screen Content */}
-                  <div className="relative flex-1 bg-muted/20">
+                  {/* Screen Content — fixed aspect ratio so image always fits */}
+                  <div className="relative w-full aspect-[16/9] bg-muted/20">
                     {imgSrc ? (
                       <Image 
                         src={imgSrc} 
                         alt={imgAlt} 
                         fill 
-                        className="object-cover object-top" 
+                        className="object-contain object-top" 
                         priority 
                         sizes="100vw"
                       />
