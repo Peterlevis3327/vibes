@@ -52,21 +52,19 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
     <div className="flex flex-col w-full">
       {/* Hero Section */}
       <section 
-        className="relative w-full overflow-hidden flex flex-col items-center text-center"
-        style={{ height: 'clamp(400px, 60vw, 800px)' }}
+        className="relative w-full overflow-hidden"
+        style={{ height: 'clamp(300px, 40vw, 560px)' }}
       >
         {data.heroBackgroundImage?.url && (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={data.heroBackgroundImage.url}
-              alt={data.heroBackgroundImage.alt || "Background"}
-              className="absolute inset-0 w-full h-full object-cover object-center z-0"
+            <div 
+              className="absolute inset-0 z-0 bg-cover bg-center" 
+              style={{ backgroundImage: `url(${data.heroBackgroundImage.url})` }} 
             />
             <div 
-              className="absolute inset-0 z-0 transition-all duration-200"
+              className="absolute inset-0 bg-background z-0 transition-all duration-200"
               style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity * 0.7})` }}
-            ></div>
+            />
           </>
         )}
         {/* Removed radial gradient for a cleaner editorial look */}
