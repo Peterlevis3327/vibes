@@ -12,6 +12,7 @@ import { Image as ImageIcon, AlertCircle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { getContrastRatio, getLuminance } from "@/lib/utils/colorUtils";
+import { TipTapEditor } from "@/components/admin/TipTapEditor";
 
 function ColorControl({ value, onChange, hasBackgroundImage }: { value: string, onChange: (val: string) => void, hasBackgroundImage?: boolean }) {
   const [showCustom, setShowCustom] = useState(false);
@@ -392,6 +393,13 @@ export function LiveEditor({
                 </div>
               ) : key.toLowerCase().includes('color') ? (
                 <ColorCard key={key} fieldKey={key} data={data} handleChange={handleChange} />
+              ) : key.toLowerCase() === 'content' ? (
+                <div className="w-full">
+                  <TipTapEditor
+                    content={data[key] as string || ""}
+                    onChange={(html) => handleChange(key, html)}
+                  />
+                </div>
               ) : typeof data[key] === 'string' && (data[key].length > 100 || key.toLowerCase().includes('description') || key.toLowerCase().includes('headline')) ? (
                 <Textarea 
                   value={data[key]} 

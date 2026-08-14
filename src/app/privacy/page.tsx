@@ -42,12 +42,11 @@ export default async function PrivacyPage() {
       />
 
       <section className="px-4 md:px-8 py-16">
-        <div className="container mx-auto max-w-3xl prose prose-slate dark:prose-invert">
-          <p>
-            We take your privacy seriously. This privacy policy describes how we collect, use, and protect your personal information. 
-            (This is a placeholder page. Please update with your actual legal privacy policy.)
-          </p>
-        </div>
+        <div className="container mx-auto max-w-3xl prose prose-slate dark:prose-invert" 
+          dangerouslySetInnerHTML={{ 
+            __html: pageData?.content || `<p>We take your privacy seriously. This privacy policy describes how we collect, use, and protect your personal information. (This is a placeholder page. Please update with your actual legal privacy policy.)</p>` 
+          }} 
+        />
       </section>
     </div>
   );

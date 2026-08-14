@@ -42,12 +42,11 @@ export default async function TermsPage() {
       />
 
       <section className="px-4 md:px-8 py-16">
-        <div className="container mx-auto max-w-3xl prose prose-slate dark:prose-invert">
-          <p>
-            These terms of service govern your use of our website and services.
-            (This is a placeholder page. Please update with your actual legal terms of service.)
-          </p>
-        </div>
+        <div className="container mx-auto max-w-3xl prose prose-slate dark:prose-invert" 
+          dangerouslySetInnerHTML={{ 
+            __html: pageData?.content || `<p>These terms of service govern your use of our website and services. (This is a placeholder page. Please update with your actual legal terms of service.)</p>` 
+          }} 
+        />
       </section>
     </div>
   );

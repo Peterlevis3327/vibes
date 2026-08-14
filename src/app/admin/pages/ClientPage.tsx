@@ -76,6 +76,17 @@ const initialGenericPageData = {
   backgroundImageVisibility: 20,
 };
 
+const initialContentPageData = {
+  ...initialGenericPageData,
+  content: "",
+};
+
+const initialContactPageData = {
+  ...initialGenericPageData,
+  email: "",
+  phone: ""
+};
+
 // ---------- Helpers ----------
 
 const getOverlayStyle = (visibility = 20) => {
@@ -511,6 +522,24 @@ const GenericPagePreview = ({
           )}
         </div>
       </section>
+
+      {/* Render content if it exists */}
+      {data.content && (
+        <section className="container mx-auto px-4 py-16">
+          <div className="prose prose-lg dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: data.content as string }} />
+        </section>
+      )}
+
+      {/* Render contact info if it exists */}
+      {(data.email || data.phone) && (
+        <section className="container mx-auto px-4 py-16 text-center">
+          <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
+          <div className="flex flex-col gap-4 items-center">
+            {data.email && <div className="text-lg"><strong>Email:</strong> {data.email as string}</div>}
+            {data.phone && <div className="text-lg"><strong>Phone:</strong> {data.phone as string}</div>}
+          </div>
+        </section>
+      )}
     </div>
   );
 };
@@ -571,9 +600,9 @@ export default function AdminPages() {
     { id: "about", label: "About", initialData: initialGenericPageData as unknown as Record<string, unknown>, Preview: GenericPagePreview as React.ComponentType<{ data: Record<string, unknown>; onChange?: (key: string, value: unknown) => void; isEditing?: boolean; isPreviewMobile?: boolean }>, fetcher: (id: string) => getPageData(id) },
     { id: "testimonials", label: "Testimonials", initialData: initialGenericPageData as unknown as Record<string, unknown>, Preview: GenericPagePreview as React.ComponentType<{ data: Record<string, unknown>; onChange?: (key: string, value: unknown) => void; isEditing?: boolean; isPreviewMobile?: boolean }>, fetcher: (id: string) => getPageData(id) },
     { id: "posts", label: "Posts", initialData: initialGenericPageData as unknown as Record<string, unknown>, Preview: GenericPagePreview as React.ComponentType<{ data: Record<string, unknown>; onChange?: (key: string, value: unknown) => void; isEditing?: boolean; isPreviewMobile?: boolean }>, fetcher: (id: string) => getPageData(id) },
-    { id: "contact", label: "Contact", initialData: initialGenericPageData as unknown as Record<string, unknown>, Preview: GenericPagePreview as React.ComponentType<{ data: Record<string, unknown>; onChange?: (key: string, value: unknown) => void; isEditing?: boolean; isPreviewMobile?: boolean }>, fetcher: (id: string) => getPageData(id) },
-    { id: "terms", label: "Terms", initialData: initialGenericPageData as unknown as Record<string, unknown>, Preview: GenericPagePreview as React.ComponentType<{ data: Record<string, unknown>; onChange?: (key: string, value: unknown) => void; isEditing?: boolean; isPreviewMobile?: boolean }>, fetcher: (id: string) => getPageData(id) },
-    { id: "privacy", label: "Privacy", initialData: initialGenericPageData as unknown as Record<string, unknown>, Preview: GenericPagePreview as React.ComponentType<{ data: Record<string, unknown>; onChange?: (key: string, value: unknown) => void; isEditing?: boolean; isPreviewMobile?: boolean }>, fetcher: (id: string) => getPageData(id) },
+    { id: "contact", label: "Contact", initialData: initialContactPageData as unknown as Record<string, unknown>, Preview: GenericPagePreview as React.ComponentType<{ data: Record<string, unknown>; onChange?: (key: string, value: unknown) => void; isEditing?: boolean; isPreviewMobile?: boolean }>, fetcher: (id: string) => getPageData(id) },
+    { id: "terms", label: "Terms", initialData: initialContentPageData as unknown as Record<string, unknown>, Preview: GenericPagePreview as React.ComponentType<{ data: Record<string, unknown>; onChange?: (key: string, value: unknown) => void; isEditing?: boolean; isPreviewMobile?: boolean }>, fetcher: (id: string) => getPageData(id) },
+    { id: "privacy", label: "Privacy", initialData: initialContentPageData as unknown as Record<string, unknown>, Preview: GenericPagePreview as React.ComponentType<{ data: Record<string, unknown>; onChange?: (key: string, value: unknown) => void; isEditing?: boolean; isPreviewMobile?: boolean }>, fetcher: (id: string) => getPageData(id) },
   ];
 
   return (

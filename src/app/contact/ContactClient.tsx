@@ -65,9 +65,9 @@ export default function ContactClient({ whatsappNumber, whatsappMessage, pageDat
         subtitleMobileFontSize={pageData?.subtitleMobileFontSize}
       >
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-muted/80">
-          <p>hello@agency.com</p>
-          <p className="hidden sm:block">•</p>
-          <p>+1 (555) 123-4567</p>
+          {pageData?.email && <p>{pageData.email}</p>}
+          {pageData?.email && pageData?.phone && <p className="hidden sm:block">•</p>}
+          {pageData?.phone && <p>{pageData.phone}</p>}
         </div>
         
         {whatsappNumber && whatsappMessage && (
