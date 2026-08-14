@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Mail, Phone } from "lucide-react";
 import { submitContactForm } from "@/app/actions/contact";
 import { toast } from "sonner";import { PageHeader } from "@/components/layout/PageHeader";
 
@@ -72,11 +72,28 @@ export default function ContactClient({ whatsappNumber, whatsappMessage, pageDat
         subtitleMobileWidth={pageData?.subtitleMobileWidth}
         subtitleMobileFontSize={pageData?.subtitleMobileFontSize}
       >
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-muted/80">
-          {pageData?.email && <p>{pageData.email}</p>}
-          {pageData?.email && pageData?.phone && <p className="hidden sm:block">•</p>}
-          {pageData?.phone && <p>{pageData.phone}</p>}
-        </div>
+        {(pageData?.email || pageData?.phone) && (
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4 relative z-10">
+            {pageData?.email && (
+              <a
+                href={`mailto:${pageData.email}`}
+                className={buttonVariants({ variant: "secondary", className: "gap-2" })}
+              >
+                <Mail className="h-4 w-4" />
+                {pageData.email}
+              </a>
+            )}
+            {pageData?.phone && (
+              <a
+                href={`tel:${pageData.phone}`}
+                className={buttonVariants({ variant: "secondary", className: "gap-2" })}
+              >
+                <Phone className="h-4 w-4" />
+                {pageData.phone}
+              </a>
+            )}
+          </div>
+        )}
         
         {whatsappNumber && whatsappMessage && (
           <div className="mt-8 flex justify-center relative z-10">

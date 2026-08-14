@@ -5,7 +5,7 @@ import { db } from "@/lib/firebase/client";
 import { doc, runTransaction } from "firebase/firestore";
 
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
-const MAX_REQUESTS_PER_WINDOW = 3;
+const MAX_REQUESTS_PER_WINDOW = 5;
 
 export async function submitContactForm(formData: FormData) {
   // 1. Honeypot check
