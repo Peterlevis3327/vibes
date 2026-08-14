@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Edit, Plus, Trash2, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { MediaLibraryModal } from "@/components/admin/MediaLibraryModal";
-import { getAllTeamMembers, saveWithVersionHistory } from "@/lib/firebase/db";
+import { getAllTeamMembers, saveWithVersionHistory, getPageData } from "@/lib/firebase/db";
 import { doc, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -24,6 +24,7 @@ interface TeamMember {
   bio: string;
   avatar?: { url: string; alt: string; caption?: string; showCaption?: boolean };
   socialLinks?: { linkedin?: string; twitter?: string };
+  roleColor?: string;
   status: "Draft" | "Published";
 }
 
@@ -34,6 +35,9 @@ export default function TeamAdminPage() {
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
   const [avatar, setAvatar] = useState<{ url: string, alt: string, caption?: string, showCaption?: boolean } | null>(null);
   const [currentMember, setCurrentMember] = useState<Partial<TeamMember>>({ status: "Draft", socialLinks: {} });
+  
+  const [missionData, setMissionData] = useState({ missionTitle: "", missionText1: "", missionText2: "" });
+  const [isSavingMission, setIsSavingMission] = useState(false);
 
   const fetchTeamMembers = async () => {
     setIsLoading(true);
@@ -42,8 +46,20 @@ export default function TeamAdminPage() {
     setIsLoading(false);
   };
 
+  const fetchMissionData = async () => {
+    const data = await getPageData("about");
+    if (data) {
+      setMissionData({
+        missionTitle: data.missionTitle || "",
+        missionText1: data.missionText1 || "",
+        missionText2: data.missionText2 || ""
+      });
+    }
+  };
+
   useEffect(() => {
     fetchTeamMembers();
+    fetchMissionData();
   }, []);
 
   const handleDelete = async (id: string) => {
@@ -108,12 +124,63 @@ export default function TeamAdminPage() {
     setIsDialogOpen(true);
   };
 
+  const handleSaveMission = async () => {
+    setIsSavingMission(true);
+    try {
+      const existingData = await getPageData("about") || {};
+      const updatedData = { ...existingData, ...missionData };
+      await saveWithVersionHistory("pages", "about", updatedData);
+      await revalidatePublicRoutes("pages", "about");
+      toast.success("Mission saved successfully");
+    } catch (error) {
+      toast.error("Failed to save mission");
+    }
+    setIsSavingMission(false);
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Team & Mission</h1>
+        <p className="text-muted-foreground">Manage your company mission and team members.</p>
+      </div>
+
+      <div className="border rounded-lg bg-background p-6 space-y-4">
+        <h2 className="text-xl font-semibold">Company Mission</h2>
+        <div className="space-y-2">
+          <Label>Mission Title</Label>
+          <Input 
+            placeholder="e.g. Our Mission" 
+            value={missionData.missionTitle}
+            onChange={(e) => setMissionData({ ...missionData, missionTitle: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Mission Paragraph 1</Label>
+          <Textarea 
+            placeholder="First paragraph of the mission..." 
+            value={missionData.missionText1}
+            onChange={(e) => setMissionData({ ...missionData, missionText1: e.target.value })}
+            rows={3}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Mission Paragraph 2</Label>
+          <Textarea 
+            placeholder="Second paragraph of the mission..." 
+            value={missionData.missionText2}
+            onChange={(e) => setMissionData({ ...missionData, missionText2: e.target.value })}
+            rows={3}
+          />
+        </div>
+        <Button onClick={handleSaveMission} disabled={isSavingMission}>
+          {isSavingMission ? "Saving..." : "Save Mission"}
+        </Button>
+      </div>
+
+      <div className="flex justify-between items-center pt-6 border-t">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Team</h1>
-          <p className="text-muted-foreground">Manage your team members and staff.</p>
+          <h2 className="text-2xl font-semibold">Team Members</h2>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <Button onClick={() => openEditModal()}>
@@ -147,14 +214,25 @@ export default function TeamAdminPage() {
                   </Select>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Role</Label>
-                <Input 
-                  placeholder="e.g. Lead Designer" 
-                  value={currentMember.role || ""} 
-                  onChange={e => setCurrentMember({...currentMember, role: e.target.value})}
-                  required 
-                />
+              <div className="flex gap-4">
+                <div className="space-y-2 flex-1">
+                  <Label>Role</Label>
+                  <Input 
+                    placeholder="e.g. Lead Designer" 
+                    value={currentMember.role || ""} 
+                    onChange={e => setCurrentMember({...currentMember, role: e.target.value})}
+                    required 
+                  />
+                </div>
+                <div className="space-y-2 w-24">
+                  <Label>Role Color</Label>
+                  <Input 
+                    type="color"
+                    className="h-10 w-full p-1 cursor-pointer"
+                    value={currentMember.roleColor || "#000000"} 
+                    onChange={e => setCurrentMember({...currentMember, roleColor: e.target.value})}
+                  />
+                </div>
               </div>
               <div className="space-y-2">
                 <Label>Bio</Label>

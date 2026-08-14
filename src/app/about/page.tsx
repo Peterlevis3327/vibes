@@ -36,12 +36,12 @@ export default async function AboutPage() {
         <div className="container mx-auto max-w-5xl">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
+              <h2 className="text-3xl font-bold mb-6">{pageData?.missionTitle || "Our Mission"}</h2>
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-                We believe that great software shouldn't just look good—it should solve real business problems and deliver measurable results. Too many agencies focus on the superficial. We focus on the fundamental.
+                {pageData?.missionText1 || "We believe that great software shouldn't just look good—it should solve real business problems and deliver measurable results. Too many agencies focus on the superficial. We focus on the fundamental."}
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Founded in 2024, our team brings together decades of combined experience across design, development, and product strategy to help ambitious companies scale.
+                {pageData?.missionText2 || "Founded in 2024, our team brings together decades of combined experience across design, development, and product strategy to help ambitious companies scale."}
               </p>
             </div>
             <div className="aspect-square bg-muted rounded-3xl overflow-hidden relative">
@@ -84,7 +84,7 @@ export default async function AboutPage() {
                       </p>
                     )}
                   <h3 className="text-xl font-bold">{member.name}</h3>
-                  <p className="text-primary font-medium mb-3">{member.role}</p>
+                  <p className="font-medium mb-3" style={{ color: member.roleColor || 'hsl(var(--primary))' }}>{member.role}</p>
                   <p className="text-background/70 text-sm leading-relaxed">{member.bio}</p>
                 </div>
               ))}
