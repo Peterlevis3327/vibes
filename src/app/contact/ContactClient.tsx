@@ -24,15 +24,23 @@ export default function ContactClient({ whatsappNumber, whatsappMessage, pageDat
     e.preventDefault();
     setIsSubmitting(true);
     
-    const formData = new FormData(e.currentTarget);
-    const result = await submitContactForm(formData);
+    try {
+      const formData = new FormData(e.currentTarget);
+      const result = await submitContactForm(formData);
 
-    setIsSubmitting(false);
-
-    if (result.success) {
-      setSubmitted(true);
-    } else {
-      toast.error(result.error || "An error occurred during submission.");
+      if (result.success) {
+        toast.success("Message sent! We'll get back to you shortly.");
+        setSubmitted(true);
+      } else {
+        const errorMsg = result.error || "An error occurred during submission.";
+        console.error("Contact form error:", errorMsg);
+        toast.error(errorMsg);
+      }
+    } catch (err) {
+      console.error("Unexpected contact form error:", err);
+      toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
