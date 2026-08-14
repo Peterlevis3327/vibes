@@ -24,6 +24,8 @@ interface Service {
   fullDescription: string;
   screenshotImage?: { url: string; alt: string; caption?: string; showCaption?: boolean };
   order?: number;
+  timeline?: string;
+  idealFor?: string;
   features: string[];
   status: "Draft" | "Published";
   category?: string;
@@ -191,7 +193,24 @@ export default function ServicesAdminPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Screenshot Image</Label>
+                  <Label>Typical Timeline</Label>
+                  <Input 
+                    placeholder="e.g. 2-4 weeks" 
+                    value={currentService.timeline || ""} 
+                    onChange={e => setCurrentService({...currentService, timeline: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Ideal For</Label>
+                <Input 
+                  placeholder="e.g. Startups, E-commerce..." 
+                  value={currentService.idealFor || ""} 
+                  onChange={e => setCurrentService({...currentService, idealFor: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Screenshot Image</Label>
                   {screenshotImage ? (
                     <div className="border rounded-lg p-4 bg-muted/30 space-y-4">
                       <div className="flex items-center justify-between">
