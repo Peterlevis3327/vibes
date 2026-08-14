@@ -70,11 +70,41 @@ export async function submitContactForm(formData: FormData) {
     return { success: false, error: "Missing required fields." };
   }
 
-  // TODO: Send email, save to database, etc.
-  console.log("Form submission received:", { name, email, projectType, budget, message });
+  try {
+    const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
+    if (!accessKey) {
+      console.error("Missing WEB3FORMS_ACCESS_KEY environment variable.");
+      return { success: false, error: "Server configuration error. Please try again later." };
+    }
 
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        access_key: accessKey,
+        name: name,
+        email: email,
+        projectType: projectType,
+        budget: budget,
+        message: message,
+        subject: "New Contact Form Submission",
+        from_name: "Agency Portfolio Contact Form",
+      }),
+    });
 
-  return { success: true };
+    const result = await response.json();
+    
+    if (result.success) {
+      return { success: true };
+    } else {
+      console.error("Web3Forms error:", result);
+      return { success: false, error: "Failed to send message. Please try again later." };
+    }
+  } catch (error) {
+    console.error("Email sending error:", error);
+    return { success: false, error: "An unexpected error occurred. Please try again later." };
+  }
 }

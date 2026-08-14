@@ -39,8 +39,8 @@ export default function ContactClient({ whatsappNumber, whatsappMessage, pageDat
   return (
     <div className="flex flex-col w-full font-sans">
       <PageHeader 
-        title={pageData?.title ?? "Let's build something."}
-        subtitle={pageData?.subtitle ?? "Whether you have a clear vision or just a rough idea, we're here to help you bring it to life."}
+        title={pageData?.title ?? ""}
+        subtitle={pageData?.subtitle ?? ""}
         backgroundImage={pageData?.headerBackgroundImage}
         backgroundImageVisibility={pageData?.backgroundImageVisibility}
         titleColor={pageData?.titleColor}
