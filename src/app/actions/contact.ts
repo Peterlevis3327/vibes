@@ -52,9 +52,9 @@ export async function submitContactForm(formData: FormData) {
       console.error("Web3Forms error:", result);
       return { success: false, error: "Failed to send message. Please try again later." };
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Email sending error:", error);
-    return { success: false, error: "An unexpected error occurred. Please try again later." };
+    return { success: false, error: `An unexpected error occurred: ${error?.message || String(error)}` };
   }
 }
 
