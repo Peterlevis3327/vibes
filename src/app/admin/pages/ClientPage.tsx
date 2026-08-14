@@ -41,6 +41,40 @@ const initialHomePageData = {
   seoTitle: "Agency | Digital Product Studio",
   seoDescription:
     "We design and build websites and apps that deliver concrete outcomes.",
+  
+  trustSignal1Value: "50+",
+  trustSignal1Label: "Projects Delivered",
+  trustSignal2Value: "10+",
+  trustSignal2Label: "Years Combined Experience",
+  trustSignal3Value: "98%",
+  trustSignal3Label: "Client Retention",
+  trustSignal4Value: "24/7",
+  trustSignal4Label: "Support Available",
+  
+  capabilitiesTitle: "Capabilities",
+  capabilitiesDescription: "We focus on what we do best: building exceptional digital products from scratch.",
+  
+  selectedWorkTitle: "Selected Work",
+  selectedWorkDescription: "A glimpse into our recent partnerships and the results we've delivered.",
+  
+  processTitle: "How we work",
+  processDescription: "We don't believe in black boxes. Our process is transparent, collaborative, and designed to eliminate surprises while maximizing impact.",
+  processStep1Title: "Discovery",
+  processStep1Description: "Understanding your business, audience, and goals.",
+  processStep2Title: "Design",
+  processStep2Description: "Crafting intuitive, beautiful interfaces that align with your brand.",
+  processStep3Title: "Development",
+  processStep3Description: "Writing clean, scalable code to bring the designs to life.",
+  processStep4Title: "Launch",
+  processStep4Description: "Rigorous testing and a smooth deployment to production.",
+
+  faqTitle: "Frequently Asked Questions",
+  faqDescription: "Everything you need to know about working with us.",
+
+  ctaTitle: "Ready to build something extraordinary?",
+  ctaDescription: "Let's discuss how we can help your business achieve its goals through exceptional digital products.",
+  ctaButtonText: "Start a Conversation",
+
   heroBackgroundImage: { url: "", alt: "", caption: "", showCaption: false },
   backgroundImageVisibility: 20,
 };

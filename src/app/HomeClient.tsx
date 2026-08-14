@@ -92,11 +92,7 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
               className="font-bold tracking-tight text-balance leading-tight w-full text-center"
               style={{ color: data.heroHeadlineColor || 'var(--heading)' }}
             >
-              {data.heroHeadline?.includes("drive results.") ? (
-                <>We design and build products that <span className="opacity-70">drive results.</span></>
-              ) : (
-                data.heroHeadline
-              )}
+              {data.heroHeadline}
             </h1>
           </div>
           <div 
@@ -127,20 +123,20 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
           transition={{ delay: 0.5, duration: 0.7 }}
         >
           <div className="flex flex-col items-center space-y-2">
-            <h3 className="text-3xl font-bold">50+</h3>
-            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Projects Delivered</p>
+            <h3 className="text-3xl font-bold">{data.trustSignal1Value ?? "50+"}</h3>
+            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{data.trustSignal1Label ?? "Projects Delivered"}</p>
           </div>
           <div className="flex flex-col items-center space-y-2">
-            <h3 className="text-3xl font-bold">10+</h3>
-            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Years Combined Experience</p>
+            <h3 className="text-3xl font-bold">{data.trustSignal2Value ?? "10+"}</h3>
+            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{data.trustSignal2Label ?? "Years Combined Experience"}</p>
           </div>
           <div className="flex flex-col items-center space-y-2">
-            <h3 className="text-3xl font-bold">98%</h3>
-            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Client Retention</p>
+            <h3 className="text-3xl font-bold">{data.trustSignal3Value ?? "98%"}</h3>
+            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{data.trustSignal3Label ?? "Client Retention"}</p>
           </div>
           <div className="flex flex-col items-center space-y-2">
-            <h3 className="text-3xl font-bold">24/7</h3>
-            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Support Available</p>
+            <h3 className="text-3xl font-bold">{data.trustSignal4Value ?? "24/7"}</h3>
+            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{data.trustSignal4Label ?? "Support Available"}</p>
           </div>
         </motion.div>
       </section>
@@ -150,8 +146,8 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
         <div className="container mx-auto max-w-6xl">
           <motion.div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6" {...fadeUp}>
             <div className="max-w-2xl">
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Capabilities</h2>
-              <p className="text-lg text-muted-foreground">We focus on what we do best: building exceptional digital products from scratch.</p>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">{data.capabilitiesTitle ?? "Capabilities"}</h2>
+              <p className="text-lg text-muted-foreground">{data.capabilitiesDescription ?? "We focus on what we do best: building exceptional digital products from scratch."}</p>
             </div>
             <Link href="/services" className={buttonVariants({ variant: "ghost", className: "group" })}>
               View all services <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -203,8 +199,8 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
       <section className="px-4 md:px-8 py-32">
         <div className="container mx-auto max-w-6xl">
           <motion.div className="mb-16" {...fadeUp}>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Selected Work</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl">A glimpse into our recent partnerships and the results we've delivered.</p>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">{data.selectedWorkTitle ?? "Selected Work"}</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl">{data.selectedWorkDescription ?? "A glimpse into our recent partnerships and the results we've delivered."}</p>
           </motion.div>
 
           {portfolio.length === 0 ? (
@@ -265,9 +261,9 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
         <div className="container mx-auto max-w-6xl">
           <motion.div className="grid md:grid-cols-2 gap-16 items-center" initial="initial" whileInView="whileInView" viewport={{ once: true }} variants={staggerContainer}>
             <motion.div variants={fadeUp} className="max-w-xl">
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">How we work</h2>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">{data.processTitle ?? "How we work"}</h2>
               <p className="text-lg text-muted/80 mb-8 leading-relaxed">
-                We don't believe in black boxes. Our process is transparent, collaborative, and designed to eliminate surprises while maximizing impact.
+                {data.processDescription ?? "We don't believe in black boxes. Our process is transparent, collaborative, and designed to eliminate surprises while maximizing impact."}
               </p>
               <Link href="/process" className={buttonVariants({ variant: "secondary", size: "lg" })}>
                 View our full process
@@ -276,10 +272,10 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
             
             <motion.div variants={fadeUp} className="space-y-8">
               {[
-                { num: "01", title: "Discovery", desc: "Understanding your business, audience, and goals." },
-                { num: "02", title: "Design", desc: "Crafting intuitive, beautiful interfaces that align with your brand." },
-                { num: "03", title: "Development", desc: "Writing clean, scalable code to bring the designs to life." },
-                { num: "04", title: "Launch", desc: "Rigorous testing and a smooth deployment to production." }
+                { num: "01", title: data.processStep1Title ?? "Discovery", desc: data.processStep1Description ?? "Understanding your business, audience, and goals." },
+                { num: "02", title: data.processStep2Title ?? "Design", desc: data.processStep2Description ?? "Crafting intuitive, beautiful interfaces that align with your brand." },
+                { num: "03", title: data.processStep3Title ?? "Development", desc: data.processStep3Description ?? "Writing clean, scalable code to bring the designs to life." },
+                { num: "04", title: data.processStep4Title ?? "Launch", desc: data.processStep4Description ?? "Rigorous testing and a smooth deployment to production." }
               ].map((step) => (
                 <div key={step.num} className="flex gap-6 border-b border-background/20 pb-8 last:border-0 last:pb-0">
                   <span className="text-3xl font-light text-muted/50">{step.num}</span>
@@ -299,8 +295,8 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
         <section className="px-4 md:px-8 py-24 bg-muted/30">
           <div className="container mx-auto max-w-3xl">
             <motion.div className="text-center mb-12" {...fadeUp}>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Frequently Asked Questions</h2>
-              <p className="text-lg text-muted-foreground">Everything you need to know about working with us.</p>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">{data.faqTitle ?? "Frequently Asked Questions"}</h2>
+              <p className="text-lg text-muted-foreground">{data.faqDescription ?? "Everything you need to know about working with us."}</p>
             </motion.div>
 
             <motion.div {...fadeUp} className="bg-background rounded-3xl p-6 md:p-8 border">
@@ -322,11 +318,11 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
       {/* Final CTA */}
       <section className="px-4 md:px-8 py-32 text-center">
         <motion.div className="max-w-3xl mx-auto space-y-8" {...fadeUp}>
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-balance">Ready to build something extraordinary?</h2>
-          <p className="text-xl text-muted-foreground text-balance">Let's discuss how we can help your business achieve its goals through exceptional digital products.</p>
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-balance">{data.ctaTitle ?? "Ready to build something extraordinary?"}</h2>
+          <p className="text-xl text-muted-foreground text-balance">{data.ctaDescription ?? "Let's discuss how we can help your business achieve its goals through exceptional digital products."}</p>
           <div className="pt-8">
             <Link href="/contact" className={buttonVariants({ size: "lg", className: "text-lg px-10 h-14 rounded-full" })}>
-              Start a Conversation
+              {data.ctaButtonText ?? "Start a Conversation"}
             </Link>
           </div>
         </motion.div>
