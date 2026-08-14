@@ -26,6 +26,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound();
   }
 
+  const displayDate = post.date?.toDate 
+    ? post.date.toDate().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) 
+    : String(post.date || "");
+
   return (
     <div className="flex flex-col w-full">
       <article className="pt-24 pb-32">
@@ -38,7 +42,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-muted-foreground uppercase tracking-wider mb-6">
               <span className="text-primary">{post.category}</span>
               <span>&middot;</span>
-              <span>{post.date}</span>
+              <span>{displayDate}</span>
               <span>&middot;</span>
               <span>By {post.author}</span>
             </div>

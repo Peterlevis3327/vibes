@@ -74,13 +74,17 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
           ) : (
             <>
               <div className="space-y-16">
-                {posts.map((post: any) => (
+                {posts.map((post: any) => {
+                  const displayDate = post.date?.toDate 
+                    ? post.date.toDate().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) 
+                    : String(post.date || "");
+                  return (
                   <article key={post.id} className="group border-b pb-16 last:border-0 last:pb-0">
                     <Link href={`/posts/${post.id}`} className="group block">
                       <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
                         <span className="text-primary">{post.category}</span>
                         <span>&middot;</span>
-                        <span>{post.date}</span>
+                        <span>{displayDate}</span>
                       </div>
                       <h2 className="text-3xl md:text-4xl font-bold mb-4 group-hover:text-primary transition-colors">
                         {post.title}
@@ -93,7 +97,8 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                       </div>
                     </Link>
                   </article>
-                ))}
+                  );
+                })}
               </div>
               
               <div className="mt-24 text-center">
