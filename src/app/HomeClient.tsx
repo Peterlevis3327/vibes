@@ -30,8 +30,8 @@ const staggerContainer = {
 
 export default function HomeClient({ data, services = [], portfolio = [], faqs = [] }: { data: any, services: any[], portfolio: any[], faqs?: any[] }) {
   const visibility = data.backgroundImageVisibility ?? 20;
-  const opacity = 1 - (visibility / 100);
-  const blur = opacity * 10;
+  const overlayOpacity = 1 - (visibility / 100);
+
   const isMobile = useMediaQuery("(max-width: 767px)");
 
   // Resolve hero headline — use mobile override values on narrow viewports
@@ -57,18 +57,15 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
       >
         {data.heroBackgroundImage?.url && (
           <>
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={data.heroBackgroundImage.url}
               alt={data.heroBackgroundImage.alt || "Background"}
-              fill
-              priority
-              quality={100}
-              className="object-cover object-center z-0"
-              sizes="100vw"
+              className="absolute inset-0 w-full h-full object-cover object-center z-0"
             />
             <div 
-              className="absolute inset-0 bg-background z-0 transition-all duration-200"
-              style={{ opacity, backdropFilter: `blur(${blur}px)` }}
+              className="absolute inset-0 z-0 transition-all duration-200"
+              style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity * 0.7})` }}
             ></div>
           </>
         )}
