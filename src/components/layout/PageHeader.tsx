@@ -62,7 +62,7 @@ export function PageHeader({
   const resolvedSubFs = isMobile && subtitleMobileOverride ? subtitleMobileFontSize : subtitleFontSize;
 
   return (
-    <section className="relative w-full overflow-hidden aspect-[4/3] md:aspect-video lg:aspect-[21/9]">
+    <section className="relative w-full overflow-hidden" style={{ height: 'clamp(300px, 40vw, 560px)' }}>
       {backgroundImage?.url ? (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}

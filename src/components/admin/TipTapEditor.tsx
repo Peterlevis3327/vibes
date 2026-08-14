@@ -165,7 +165,6 @@ export function TipTapEditor({ content, onChange }: TipTapEditorProps) {
       {showSearch && (
         <div className="flex flex-wrap gap-2 p-2 border-b bg-muted/30 items-center text-sm">
           <Input 
-            size="sm" 
             placeholder="Find..." 
             value={searchTerm} 
             onChange={(e) => {
@@ -175,7 +174,6 @@ export function TipTapEditor({ content, onChange }: TipTapEditorProps) {
             className="w-40 h-8"
           />
           <Input 
-            size="sm" 
             placeholder="Replace with..." 
             value={replaceTerm} 
             onChange={(e) => {

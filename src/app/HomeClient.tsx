@@ -52,7 +52,8 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
     <div className="flex flex-col w-full">
       {/* Hero Section */}
       <section 
-        className="relative w-full overflow-hidden flex flex-col items-center text-center aspect-[4/3] md:aspect-video"
+        className="relative w-full overflow-hidden flex flex-col items-center text-center"
+        style={{ height: 'clamp(400px, 60vw, 800px)' }}
       >
         {data.heroBackgroundImage?.url && (
           <>
