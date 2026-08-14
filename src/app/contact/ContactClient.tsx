@@ -8,14 +8,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { MessageCircle } from "lucide-react";
 import { submitContactForm } from "@/app/actions/contact";
-import { toast } from "sonner";
+import { toast } from "sonner";import { PageHeader } from "@/components/layout/PageHeader";
 
 interface ContactClientProps {
   whatsappNumber?: string;
   whatsappMessage?: string;
+  pageData?: any;
 }
 
-export default function ContactClient({ whatsappNumber, whatsappMessage }: ContactClientProps) {
+export default function ContactClient({ whatsappNumber, whatsappMessage, pageData }: ContactClientProps) {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -37,33 +38,52 @@ export default function ContactClient({ whatsappNumber, whatsappMessage }: Conta
 
   return (
     <div className="flex flex-col w-full font-sans">
-      <section className="relative px-4 md:px-8 pt-24 pb-20 md:pb-32 bg-foreground text-background text-center">
-        <div className="container mx-auto max-w-4xl">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">Let's build something.</h1>
-          <p className="text-xl text-muted/80 max-w-2xl mx-auto">
-            Whether you have a clear vision or just a rough idea, we're here to help you bring it to life.
-          </p>
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-muted/80">
-            <p>hello@agency.com</p>
-            <p className="hidden sm:block">•</p>
-            <p>+1 (555) 123-4567</p>
-          </div>
-          
-          {whatsappNumber && whatsappMessage && (
-            <div className="mt-8 flex justify-center">
-              <a 
-                href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(whatsappMessage)}`} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className={buttonVariants({ variant: "secondary", className: "gap-2" })}
-              >
-                  <MessageCircle className="h-4 w-4" />
-                  Chat on WhatsApp
-              </a>
-            </div>
-          )}
+      <PageHeader 
+        title={pageData?.title ?? "Let's build something."}
+        subtitle={pageData?.subtitle ?? "Whether you have a clear vision or just a rough idea, we're here to help you bring it to life."}
+        backgroundImage={pageData?.headerBackgroundImage}
+        backgroundImageVisibility={pageData?.backgroundImageVisibility}
+        titleColor={pageData?.titleColor}
+        titleFontSize={pageData?.titleFontSize}
+        titleX={pageData?.titleX}
+        titleY={pageData?.titleY}
+        titleWidth={pageData?.titleWidth}
+        titleMobileOverride={pageData?.titleMobileOverride}
+        titleMobileX={pageData?.titleMobileX}
+        titleMobileY={pageData?.titleMobileY}
+        titleMobileWidth={pageData?.titleMobileWidth}
+        titleMobileFontSize={pageData?.titleMobileFontSize}
+        subtitleColor={pageData?.subtitleColor}
+        subtitleFontSize={pageData?.subtitleFontSize}
+        subtitleX={pageData?.subtitleX}
+        subtitleY={pageData?.subtitleY}
+        subtitleWidth={pageData?.subtitleWidth}
+        subtitleMobileOverride={pageData?.subtitleMobileOverride}
+        subtitleMobileX={pageData?.subtitleMobileX}
+        subtitleMobileY={pageData?.subtitleMobileY}
+        subtitleMobileWidth={pageData?.subtitleMobileWidth}
+        subtitleMobileFontSize={pageData?.subtitleMobileFontSize}
+      >
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-muted/80">
+          <p>hello@agency.com</p>
+          <p className="hidden sm:block">•</p>
+          <p>+1 (555) 123-4567</p>
         </div>
-      </section>
+        
+        {whatsappNumber && whatsappMessage && (
+          <div className="mt-8 flex justify-center relative z-10">
+            <a 
+              href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(whatsappMessage)}`} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className={buttonVariants({ variant: "secondary", className: "gap-2" })}
+            >
+                <MessageCircle className="h-4 w-4" />
+                Chat on WhatsApp
+            </a>
+          </div>
+        )}
+      </PageHeader>
 
       <section className="px-4 md:px-8 py-20 bg-background">
         <div className="container mx-auto max-w-2xl">

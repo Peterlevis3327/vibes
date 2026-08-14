@@ -1,7 +1,7 @@
 
 
 import { Metadata } from "next";
-import { getGlobalSettings } from "@/lib/firebase/db";
+import { getGlobalSettings, getPageData } from "@/lib/firebase/db";
 import ContactClient from "./ContactClient";
 
 export const metadata: Metadata = {
@@ -10,6 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const settings = await getGlobalSettings();
-  return <ContactClient whatsappNumber={settings.whatsappNumber} whatsappMessage={settings.whatsappMessage} />;
+  const [settings, pageData] = await Promise.all([
+    getGlobalSettings(),
+    getPageData("contact")
+  ]);
+
+  return <ContactClient whatsappNumber={settings.whatsappNumber} whatsappMessage={settings.whatsappMessage} pageData={pageData} />;
 }
