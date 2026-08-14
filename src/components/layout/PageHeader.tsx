@@ -32,6 +32,7 @@ interface PageHeaderProps {
 
   backgroundImage?: { url: string; alt?: string };
   backgroundImageVisibility?: number;
+  children?: React.ReactNode;
 }
 
 const toClamp = (px?: number) =>
@@ -42,7 +43,8 @@ export function PageHeader({
   titleMobileOverride, titleMobileX, titleMobileY, titleMobileWidth, titleMobileFontSize,
   subtitle, subtitleColor, subtitleX, subtitleY, subtitleWidth, subtitleFontSize,
   subtitleMobileOverride, subtitleMobileX, subtitleMobileY, subtitleMobileWidth, subtitleMobileFontSize,
-  backgroundImage, backgroundImageVisibility = 20 
+  backgroundImage, backgroundImageVisibility = 20,
+  children
 }: PageHeaderProps) {
   // Convert visibility (0–100) to overlay opacity (0 = fully transparent overlay = fully visible image)
   const overlayOpacity = 1 - (backgroundImageVisibility / 100);
@@ -107,6 +109,12 @@ export function PageHeader({
             <p className="w-full text-center" style={{ color: subtitleColor || 'var(--muted-foreground)' }}>
               {subtitle}
             </p>
+          </div>
+        )}
+
+        {children && (
+          <div className="absolute w-full top-3/4 left-0 -translate-y-1/2 flex flex-col items-center justify-center z-20">
+            {children}
           </div>
         )}
       </div>
