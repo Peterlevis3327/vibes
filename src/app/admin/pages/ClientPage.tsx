@@ -524,19 +524,19 @@ const GenericPagePreview = ({
       </section>
 
       {/* Render content if it exists */}
-      {data.content && (
+      {typeof data.content === "string" && data.content !== "" && (
         <section className="container mx-auto px-4 py-16">
-          <div className="prose prose-lg dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: data.content as string }} />
+          <div className="prose prose-lg dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: data.content }} />
         </section>
       )}
 
       {/* Render contact info if it exists */}
-      {(data.email || data.phone) && (
+      {((typeof data.email === "string" && data.email !== "") || (typeof data.phone === "string" && data.phone !== "")) && (
         <section className="container mx-auto px-4 py-16 text-center">
           <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
           <div className="flex flex-col gap-4 items-center">
-            {data.email && <div className="text-lg"><strong>Email:</strong> {data.email as string}</div>}
-            {data.phone && <div className="text-lg"><strong>Phone:</strong> {data.phone as string}</div>}
+            {typeof data.email === "string" && data.email !== "" && <div className="text-lg"><strong>Email:</strong> {data.email}</div>}
+            {typeof data.phone === "string" && data.phone !== "" && <div className="text-lg"><strong>Phone:</strong> {data.phone}</div>}
           </div>
         </section>
       )}
