@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { MessageCircle, Mail, Phone } from "lucide-react";
-import { submitContactForm } from "@/app/actions/contact";
+import { getWeb3FormsKey } from "@/app/actions/contact";
 import { toast } from "sonner";import { PageHeader } from "@/components/layout/PageHeader";
 
 interface ContactClientProps {
@@ -25,14 +25,38 @@ export default function ContactClient({ whatsappNumber, whatsappMessage, pageDat
     setIsSubmitting(true);
     
     try {
-      const formData = new FormData(e.currentTarget);
-      const result = await submitContactForm(formData);
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      
+      // 1. Honeypot check
+      if (formData.get('_honey')) {
+        setSubmitted(true);
+        return;
+      }
 
-      if (result.success) {
+      // 2. Get the public access key from the server securely
+      const accessKey = await getWeb3FormsKey();
+      formData.append("access_key", accessKey);
+      formData.append("subject", "New Contact Form Submission");
+      formData.append("from_name", "Agency Portfolio Contact Form");
+
+      // 3. Submit directly to Web3Forms from the client
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.status === 200) {
         toast.success("Message sent! We'll get back to you shortly.");
         setSubmitted(true);
+        form.reset();
       } else {
-        const errorMsg = result.error || "An error occurred during submission.";
+        const errorMsg = result.message || "An error occurred during submission.";
         console.error("Contact form error:", errorMsg);
         toast.error(errorMsg);
       }
