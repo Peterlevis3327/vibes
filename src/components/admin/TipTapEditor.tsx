@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
+import { FindAndReplace } from '@tiptap/extension-find-and-replace';
 import { Button } from '@/components/ui/button';
-import { Bold, Italic, Strikethrough, Heading1, Heading2, List, ListOrdered, Quote, Undo, Redo, Image as ImageIcon } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Bold, Italic, Strikethrough, Heading1, Heading2, List, ListOrdered, Quote, Undo, Redo, Image as ImageIcon, Search } from 'lucide-react';
 import { MediaLibraryModal } from '@/components/admin/MediaLibraryModal';
 
 interface TipTapEditorProps {
@@ -13,6 +15,9 @@ interface TipTapEditorProps {
 
 export function TipTapEditor({ content, onChange }: TipTapEditorProps) {
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [replaceTerm, setReplaceTerm] = useState('');
 
   const editor = useEditor({
     extensions: [
@@ -22,6 +27,7 @@ export function TipTapEditor({ content, onChange }: TipTapEditorProps) {
           class: 'rounded-md my-4 max-w-full',
         },
       }),
+      FindAndReplace,
     ],
     content,
     editorProps: {
@@ -120,6 +126,17 @@ export function TipTapEditor({ content, onChange }: TipTapEditorProps) {
           type="button"
           variant="ghost"
           size="sm"
+          onClick={() => setShowSearch(!showSearch)}
+          className={showSearch ? 'bg-muted' : ''}
+          title="Find and Replace"
+        >
+          <Search className="h-4 w-4" />
+        </Button>
+        <div className="w-px h-6 bg-border mx-1 my-auto" />
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
           onClick={() => setIsMediaLibraryOpen(true)}
         >
           <ImageIcon className="h-4 w-4" />
@@ -144,6 +161,80 @@ export function TipTapEditor({ content, onChange }: TipTapEditorProps) {
           <Redo className="h-4 w-4" />
         </Button>
       </div>
+
+      {showSearch && (
+        <div className="flex flex-wrap gap-2 p-2 border-b bg-muted/30 items-center text-sm">
+          <Input 
+            size="sm" 
+            placeholder="Find..." 
+            value={searchTerm} 
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              editor.commands.setSearchTerm(e.target.value);
+            }} 
+            className="w-40 h-8"
+          />
+          <Input 
+            size="sm" 
+            placeholder="Replace with..." 
+            value={replaceTerm} 
+            onChange={(e) => {
+              setReplaceTerm(e.target.value);
+              editor.commands.setReplaceTerm(e.target.value);
+            }} 
+            className="w-40 h-8"
+          />
+          <Button 
+            type="button" 
+            size="sm" 
+            variant="outline" 
+            className="h-8 px-3 text-xs"
+            onClick={() => editor.commands.goToPreviousResult()}
+          >
+            Prev
+          </Button>
+          <Button 
+            type="button" 
+            size="sm" 
+            variant="outline" 
+            className="h-8 px-3 text-xs"
+            onClick={() => editor.commands.goToNextResult()}
+          >
+            Next
+          </Button>
+          <Button 
+            type="button" 
+            size="sm" 
+            variant="secondary" 
+            className="h-8 px-3 text-xs ml-2"
+            onClick={() => editor.commands.replace()}
+          >
+            Replace
+          </Button>
+          <Button 
+            type="button" 
+            size="sm" 
+            variant="secondary" 
+            className="h-8 px-3 text-xs"
+            onClick={() => editor.commands.replaceAll()}
+          >
+            Replace All
+          </Button>
+          <Button 
+            type="button" 
+            size="sm" 
+            variant="ghost" 
+            className="h-8 px-3 text-xs ml-auto text-muted-foreground"
+            onClick={() => {
+              setShowSearch(false);
+              setSearchTerm("");
+              editor.commands.clearSearch();
+            }}
+          >
+            Close
+          </Button>
+        </div>
+      )}
       <EditorContent editor={editor} />
       <MediaLibraryModal 
         open={isMediaLibraryOpen}
