@@ -116,29 +116,39 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
         </motion.div>
 
         {/* Trust Signals */}
-        <motion.div 
-          className="w-full max-w-5xl mx-auto mt-24 pt-12 border-t grid grid-cols-2 md:grid-cols-4 gap-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.7 }}
-        >
-          <div className="flex flex-col items-center space-y-2">
-            <h3 className="text-3xl font-bold">{data.trustSignal1Value ?? "50+"}</h3>
-            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{data.trustSignal1Label ?? "Projects Delivered"}</p>
-          </div>
-          <div className="flex flex-col items-center space-y-2">
-            <h3 className="text-3xl font-bold">{data.trustSignal2Value ?? "10+"}</h3>
-            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{data.trustSignal2Label ?? "Years Combined Experience"}</p>
-          </div>
-          <div className="flex flex-col items-center space-y-2">
-            <h3 className="text-3xl font-bold">{data.trustSignal3Value ?? "98%"}</h3>
-            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{data.trustSignal3Label ?? "Client Retention"}</p>
-          </div>
-          <div className="flex flex-col items-center space-y-2">
-            <h3 className="text-3xl font-bold">{data.trustSignal4Value ?? "24/7"}</h3>
-            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{data.trustSignal4Label ?? "Support Available"}</p>
-          </div>
-        </motion.div>
+        {(data.trustSignal1Value || data.trustSignal2Value || data.trustSignal3Value || data.trustSignal4Value) && (
+          <motion.div 
+            className="w-full max-w-5xl mx-auto mt-24 pt-12 border-t grid grid-cols-2 md:grid-cols-4 gap-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.7 }}
+          >
+            {data.trustSignal1Value && (
+              <div className="flex flex-col items-center space-y-2">
+                <h3 className="text-3xl font-bold">{data.trustSignal1Value}</h3>
+                <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{data.trustSignal1Label}</p>
+              </div>
+            )}
+            {data.trustSignal2Value && (
+              <div className="flex flex-col items-center space-y-2">
+                <h3 className="text-3xl font-bold">{data.trustSignal2Value}</h3>
+                <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{data.trustSignal2Label}</p>
+              </div>
+            )}
+            {data.trustSignal3Value && (
+              <div className="flex flex-col items-center space-y-2">
+                <h3 className="text-3xl font-bold">{data.trustSignal3Value}</h3>
+                <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{data.trustSignal3Label}</p>
+              </div>
+            )}
+            {data.trustSignal4Value && (
+              <div className="flex flex-col items-center space-y-2">
+                <h3 className="text-3xl font-bold">{data.trustSignal4Value}</h3>
+                <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{data.trustSignal4Label}</p>
+              </div>
+            )}
+          </motion.div>
+        )}
       </section>
 
       {/* Services Overview */}

@@ -42,14 +42,14 @@ const initialHomePageData = {
   seoDescription:
     "We design and build websites and apps that deliver concrete outcomes.",
   
-  trustSignal1Value: "50+",
-  trustSignal1Label: "Projects Delivered",
-  trustSignal2Value: "10+",
-  trustSignal2Label: "Years Combined Experience",
-  trustSignal3Value: "98%",
-  trustSignal3Label: "Client Retention",
-  trustSignal4Value: "24/7",
-  trustSignal4Label: "Support Available",
+  trustSignal1Value: "",
+  trustSignal1Label: "",
+  trustSignal2Value: "",
+  trustSignal2Label: "",
+  trustSignal3Value: "",
+  trustSignal3Label: "",
+  trustSignal4Value: "",
+  trustSignal4Label: "",
   
   capabilitiesTitle: "Capabilities",
   capabilitiesDescription: "We focus on what we do best: building exceptional digital products from scratch.",
