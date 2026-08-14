@@ -77,19 +77,21 @@ export default function ContactClient({ whatsappNumber, whatsappMessage, pageDat
             {pageData?.email && (
               <a
                 href={`mailto:${pageData.email}`}
-                className={buttonVariants({ variant: "secondary", className: "gap-2" })}
+                aria-label={`Email: ${pageData.email}`}
+                title={pageData.email}
+                className={buttonVariants({ variant: "secondary", size: "icon", className: "h-11 w-11 rounded-full" })}
               >
-                <Mail className="h-4 w-4" />
-                {pageData.email}
+                <Mail className="h-5 w-5" />
               </a>
             )}
             {pageData?.phone && (
               <a
                 href={`tel:${pageData.phone}`}
-                className={buttonVariants({ variant: "secondary", className: "gap-2" })}
+                aria-label={`Call: ${pageData.phone}`}
+                title={pageData.phone}
+                className={buttonVariants({ variant: "secondary", size: "icon", className: "h-11 w-11 rounded-full" })}
               >
-                <Phone className="h-4 w-4" />
-                {pageData.phone}
+                <Phone className="h-5 w-5" />
               </a>
             )}
           </div>
