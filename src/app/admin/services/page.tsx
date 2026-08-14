@@ -260,7 +260,6 @@ export default function ServicesAdminPage() {
                     </div>
                   )}
                 </div>
-              </div>
               <div className="space-y-2">
                 <Label>Short Description</Label>
                 <Textarea 
