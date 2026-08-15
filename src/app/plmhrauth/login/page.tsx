@@ -21,10 +21,20 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      // Wait for the server action to set the secure cookie BEFORE we navigate
+      const idToken = await userCredential.user.getIdToken();
+      
+      const { createSession } = await import("@/app/actions/auth");
+      const result = await createSession(idToken);
+      
+      if (!result.success) {
+        throw new Error(result.error || "Failed to create secure session");
+      }
+      
       router.push("/plmhrauth");
     } catch (err: any) {
-      setError("Invalid email or password. (Since this is a demo without actual Firebase credentials yet, you won't be able to log in).");
+      setError(err.message || "Invalid email or password. (Since this is a demo without actual Firebase credentials yet, you won't be able to log in).");
     } finally {
       setLoading(false);
     }
