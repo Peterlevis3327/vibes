@@ -75,9 +75,17 @@ export async function submitContactForm(formData: FormData) {
         "Accept": "application/json",
         "User-Agent": "Tech254-ContactForm/1.0",
       },
+      cache: "no-store",
     });
 
-    const result = await response.json();
+    const responseText = await response.text();
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (e) {
+      console.error("Web3Forms returned non-JSON response:", response.status, responseText);
+      return { success: false, message: `Web3Forms returned a non-JSON response (Status: ${response.status}). This is likely a Cloudflare block or API error.` };
+    }
 
     if (result.success) {
       return { success: true, message: "Message sent successfully!" };
@@ -85,8 +93,8 @@ export async function submitContactForm(formData: FormData) {
       console.error("Web3Forms error:", result);
       return { success: false, message: result.message || "Failed to send message." };
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error submitting to Web3Forms:", error);
-    return { success: false, message: "A network error occurred." };
+    return { success: false, message: `A network error occurred: ${error.message}` };
   }
 }
