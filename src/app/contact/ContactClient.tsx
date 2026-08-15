@@ -176,35 +176,19 @@ export default function ContactClient({ whatsappNumber, whatsappMessage, pageDat
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-2">
-                    <Label htmlFor="projectType">Project Type</Label>
-                    <Select name="projectType" required>
-                      <SelectTrigger className="h-12 bg-background">
-                        <SelectValue placeholder="Select project type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="website">Website Development</SelectItem>
-                        <SelectItem value="mobile">Mobile App</SelectItem>
-                        <SelectItem value="both">Both</SelectItem>
-                        <SelectItem value="unsure">Not Sure / Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="budget">Budget Range (Optional)</Label>
-                    <Select name="budget">
-                      <SelectTrigger className="h-12 bg-background">
-                        <SelectValue placeholder="Select budget range" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="10k-25k">$10k - $25k</SelectItem>
-                        <SelectItem value="25k-50k">$25k - $50k</SelectItem>
-                        <SelectItem value="50k+">$50k+</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="projectType">Project Type</Label>
+                  <Select name="projectType" required>
+                    <SelectTrigger className="h-12 bg-background">
+                      <SelectValue placeholder="Select project type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="website">Website Development</SelectItem>
+                      <SelectItem value="mobile">Mobile App</SelectItem>
+                      <SelectItem value="both">Both</SelectItem>
+                      <SelectItem value="unsure">Not Sure / Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">
