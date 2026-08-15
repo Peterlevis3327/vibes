@@ -30,10 +30,36 @@ export default function ContactClient({ whatsappNumber, whatsappMessage, pageDat
       formData.append("subject", "New Contact Form Submission");
       formData.append("from_name", "Agency Portfolio Contact Form");
 
-      // 1. Submit to Server Action (which handles honeypot, rate limiting, and Web3Forms)
+      // 1. Submit to Server Action (which handles honeypot and rate limiting)
       const result = await submitContactForm(formData);
 
-      if (result.success) {
+      if (result.success && result.accessKey) {
+        // 2. Client-side Web3Forms submission
+        // Bypasses Cloudflare WAF server-blocks, because we are sending from a real browser.
+        formData.append("access_key", result.accessKey);
+        const objectData = Object.fromEntries(formData.entries());
+        const jsonBody = JSON.stringify(objectData);
+
+        const response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: jsonBody
+        });
+
+        const web3Result = await response.json();
+        
+        if (web3Result.success) {
+          toast.success(web3Result.message || "Message sent! We'll get back to you shortly.");
+          setSubmitted(true);
+          form.reset();
+        } else {
+          toast.error(web3Result.message || "Failed to send message via Web3Forms.");
+        }
+      } else if (result.success && !result.accessKey) {
+        // Honeypot triggered silently (returns success but no accessKey)
         toast.success(result.message || "Message sent! We'll get back to you shortly.");
         setSubmitted(true);
         form.reset();

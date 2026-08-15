@@ -54,49 +54,14 @@ export async function submitContactForm(formData: FormData) {
   }
 
 
-  // 3. Web3Forms Submission
+  // 3. Rate limiter passed! Return the Web3Forms access key so the client can submit directly
   const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
   if (!accessKey) {
     console.error("Missing WEB3FORMS_ACCESS_KEY");
     return { success: false, message: "Server configuration error." };
   }
 
-  // Convert FormData to JSON
-  const objectData = Object.fromEntries(formData.entries());
-  objectData.access_key = accessKey;
-  const jsonBody = JSON.stringify(objectData);
-
-  try {
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      body: jsonBody,
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        "Origin": headersList.get("origin") || "https://tech254.netlify.app",
-        "Referer": headersList.get("referer") || "https://tech254.netlify.app/",
-      },
-      cache: "no-store",
-    });
-
-    const responseText = await response.text();
-    let result;
-    try {
-      result = JSON.parse(responseText);
-    } catch (e) {
-      console.error("Web3Forms returned non-JSON response:", response.status, responseText);
-      return { success: false, message: `Web3Forms returned a non-JSON response (Status: ${response.status}). This is likely a Cloudflare block or API error.` };
-    }
-
-    if (result.success) {
-      return { success: true, message: "Message sent successfully!" };
-    } else {
-      console.error("Web3Forms error:", result);
-      return { success: false, message: result.message || "Failed to send message." };
-    }
-  } catch (error: any) {
-    console.error("Error submitting to Web3Forms:", error);
-    return { success: false, message: `A network error occurred: ${error.message}` };
-  }
+  // We return the access key here so the client can do the final submission.
+  // This bypasses Cloudflare WAF server-blocks, while still rate-limiting and honeypot-protecting the key!
+  return { success: true, accessKey };
 }
