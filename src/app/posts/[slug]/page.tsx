@@ -7,7 +7,7 @@ import { getPostBySlug } from "@/lib/firebase/db";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 
-import DOMPurify from 'isomorphic-dompurify';
+import sanitizeHtml from 'sanitize-html';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -32,7 +32,15 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     ? post.date.toDate().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) 
     : String(post.date || "");
     
-  const cleanContent = DOMPurify.sanitize(post.content || "");
+  const cleanContent = sanitizeHtml(post.content || "", {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'iframe' ]),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      'img': ['src', 'alt', 'width', 'height'],
+      'iframe': ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen']
+    },
+    allowedIframeHostnames: ['www.youtube.com', 'player.vimeo.com']
+  });
 
   return (
     <div className="flex flex-col w-full">
