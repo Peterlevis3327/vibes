@@ -74,6 +74,8 @@ export async function submitContactForm(formData: FormData) {
         "Content-Type": "application/json",
         "Accept": "application/json",
         "User-Agent": "Tech254-ContactForm/1.0",
+        "Origin": headersList.get("origin") || "https://tech254.com",
+        "Referer": headersList.get("referer") || "https://tech254.com/",
       },
       cache: "no-store",
     });
