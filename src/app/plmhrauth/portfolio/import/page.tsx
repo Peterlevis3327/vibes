@@ -122,7 +122,7 @@ export default function ImportPortfolioPage() {
       toast.success(`${project.title} imported successfully!`);
       
       // Redirect to the portfolio admin page and auto-open the edit modal
-      router.push(`/admin/portfolio?edit=${docId}`);
+      router.push(`/plmhrauth/portfolio?edit=${docId}`);
       
     } catch (error) {
       console.error("Import failed", error);
@@ -138,7 +138,7 @@ export default function ImportPortfolioPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/admin/portfolio">
+        <Link href="/plmhrauth/portfolio">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-5 w-5" />
           </Button>

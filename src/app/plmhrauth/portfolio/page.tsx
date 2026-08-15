@@ -84,7 +84,7 @@ function PortfolioAdminContent() {
       if (projectToEdit) {
         openEditModal(projectToEdit);
         // Clean up the URL so it doesn't reopen on refresh
-        window.history.replaceState(null, '', '/admin/portfolio');
+        window.history.replaceState(null, '', '/plmhrauth/portfolio');
       }
     }
   }, [searchParams, projects]);
@@ -191,7 +191,7 @@ function PortfolioAdminContent() {
           <p className="text-muted-foreground">Manage your case studies and past work.</p>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/admin/portfolio/import">
+          <Link href="/plmhrauth/portfolio/import">
             <Button variant="outline">
               <Plus className="mr-2 h-4 w-4" /> Import from Personal Portfolio
             </Button>

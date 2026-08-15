@@ -10,7 +10,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const session = cookieStore.get("__session")?.value;
 
   if (!session) {
-    redirect("/admin/login");
+    redirect("/plmhrauth/login");
   }
 
   try {
@@ -18,7 +18,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     await adminApp.auth().verifyIdToken(session);
   } catch (error) {
     console.error("Invalid session:", error);
-    redirect("/admin/login");
+    redirect("/plmhrauth/login");
   }
 
   return <ClientLayout>{children}</ClientLayout>;

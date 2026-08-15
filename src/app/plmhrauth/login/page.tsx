@@ -22,7 +22,7 @@ export default function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/admin");
+      router.push("/plmhrauth");
     } catch (err: any) {
       setError("Invalid email or password. (Since this is a demo without actual Firebase credentials yet, you won't be able to log in).");
     } finally {

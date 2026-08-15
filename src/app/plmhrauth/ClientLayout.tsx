@@ -14,8 +14,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!loading && !user && pathname !== "/admin/login") {
-      router.push("/admin/login");
+    if (!loading && !user && pathname !== "/plmhrauth/login") {
+      router.push("/plmhrauth/login");
     }
   }, [user, loading, router, pathname]);
 
@@ -24,23 +24,23 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   }
 
   // Don't wrap the login page in the dashboard layout
-  if (pathname === "/admin/login") {
+  if (pathname === "/plmhrauth/login") {
     return <>{children}</>;
   }
 
   if (!user) return null;
 
   const navItems = [
-    { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/pages", label: "Pages", icon: FileText },
-    { href: "/admin/services", label: "Services", icon: Layers },
-    { href: "/admin/portfolio", label: "Portfolio", icon: Briefcase },
-    { href: "/admin/process", label: "Process", icon: GitMerge },
-    { href: "/admin/posts", label: "Posts", icon: FileText },
-    { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
-    { href: "/admin/team", label: "Team", icon: Users },
-    { href: "/admin/faqs", label: "FAQs", icon: FileText },
-    { href: "/admin/settings", label: "Settings", icon: Settings },
+    { href: "/plmhrauth", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/plmhrauth/pages", label: "Pages", icon: FileText },
+    { href: "/plmhrauth/services", label: "Services", icon: Layers },
+    { href: "/plmhrauth/portfolio", label: "Portfolio", icon: Briefcase },
+    { href: "/plmhrauth/process", label: "Process", icon: GitMerge },
+    { href: "/plmhrauth/posts", label: "Posts", icon: FileText },
+    { href: "/plmhrauth/testimonials", label: "Testimonials", icon: MessageSquareQuote },
+    { href: "/plmhrauth/team", label: "Team", icon: Users },
+    { href: "/plmhrauth/faqs", label: "FAQs", icon: FileText },
+    { href: "/plmhrauth/settings", label: "Settings", icon: Settings },
   ];
 
   return (
@@ -48,7 +48,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       {/* Sidebar */}
       <aside className="w-64 bg-background border-r flex flex-col fixed inset-y-0 left-0 z-10">
         <div className="p-6 border-b">
-          <Link href="/admin" className="font-bold text-xl tracking-tight">
+          <Link href="/plmhrauth" className="font-bold text-xl tracking-tight">
             Tech254 CMS
           </Link>
         </div>
