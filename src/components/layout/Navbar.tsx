@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export function Navbar({ siteName = "Agency." }: { siteName?: string }) {
+export function Navbar({ siteName = "Tech254" }: { siteName?: string }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 

@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Our Services | Agency.",
+  title: "Our Services | Tech254",
   description: "Explore our capabilities in web development, mobile apps, and UI/UX design.",
 };
 

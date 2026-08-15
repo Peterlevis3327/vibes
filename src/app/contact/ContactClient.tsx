@@ -28,7 +28,7 @@ export default function ContactClient({ whatsappNumber, whatsappMessage, pageDat
       const form = e.currentTarget;
       const formData = new FormData(form);
       formData.append("subject", "New Contact Form Submission");
-      formData.append("from_name", "Agency Portfolio Contact Form");
+      formData.append("from_name", "Tech254 Portfolio Contact Form");
 
       // 1. Submit to Server Action (which handles honeypot and rate limiting)
       const result = await submitContactForm(formData);

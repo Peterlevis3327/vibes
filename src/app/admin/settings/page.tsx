@@ -16,7 +16,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
-    siteName: "Agency.",
+    siteName: "Tech254",
     primaryColor: "#0f172a",
     secondaryColor: "#f1f5f9",
     headingColor: "",
@@ -25,7 +25,7 @@ export default function SettingsPage() {
     fontFamily: "Inter",
     baseFontSize: 16,
     enableAnalytics: false,
-    defaultSeoTitle: "Agency | Digital Product Studio",
+    defaultSeoTitle: "Tech254 | Digital Product Studio",
     defaultSeoDescription: "We design and build websites and apps that deliver concrete outcomes.",
     whatsappNumber: "+1234567890",
     whatsappMessage: "Hi, I'm interested in working with you!",
@@ -104,7 +104,7 @@ export default function SettingsPage() {
               id="siteName"
               value={settings.siteName || ""}
               onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
-              placeholder="Agency."
+              placeholder="Tech254"
             />
             <p className="text-sm text-muted-foreground">This text appears in the navigation bar and footer.</p>
           </div>
@@ -114,7 +114,7 @@ export default function SettingsPage() {
               id="defaultSeoTitle"
               value={settings.defaultSeoTitle || ""}
               onChange={(e) => setSettings({ ...settings, defaultSeoTitle: e.target.value })}
-              placeholder="Agency | Digital Product Studio"
+              placeholder="Tech254 | Digital Product Studio"
             />
             <p className="text-sm text-muted-foreground">The default title shown in browser tabs and search engine results.</p>
           </div>

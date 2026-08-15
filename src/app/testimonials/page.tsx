@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "Testimonials | Agency.",
+  title: "Testimonials | Tech254",
   description: "Read what our clients have to say about working with us.",
 };
 

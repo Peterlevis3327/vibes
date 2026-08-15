@@ -6,7 +6,7 @@ import { getPosts, getPageData } from "@/lib/firebase/db";
 import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
-  title: "Insights & Blog | Agency.",
+  title: "Insights & Blog | Tech254",
   description: "Read our latest thoughts on design, engineering, and digital products.",
 };
 import { Button, buttonVariants } from "@/components/ui/button";

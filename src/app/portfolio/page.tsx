@@ -6,7 +6,7 @@ import { getPortfolioProjects, getPageData } from "@/lib/firebase/db";
 import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
-  title: "Portfolio & Case Studies | Agency.",
+  title: "Portfolio & Case Studies | Tech254",
   description: "Explore our recent digital products, websites, and mobile applications.",
 };
 import { Briefcase } from "lucide-react";

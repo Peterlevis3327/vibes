@@ -209,9 +209,9 @@ export async function getGlobalSettings() {
         const snapshot = await getDocs(q);
         return snapshot.docs[0]?.data() || { enableAnalytics: false };
     }, {
-        siteName: "Agency.",
+        siteName: "Tech254",
         enableAnalytics: true,
-        defaultSeoTitle: "Agency | Digital Product Studio",
+        defaultSeoTitle: "Tech254 | Digital Product Studio",
         defaultSeoDescription: "We design and build websites and apps that deliver concrete outcomes.",
         primaryColor: "#0f172a", // Default dark accent for light mode
         secondaryColor: "#f1f5f9", // Default subtle secondary

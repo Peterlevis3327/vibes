@@ -5,7 +5,7 @@ import { getGlobalSettings, getPageData } from "@/lib/firebase/db";
 import ContactClient from "./ContactClient";
 
 export const metadata: Metadata = {
-  title: "Contact Us | Agency.",
+  title: "Contact Us | Tech254",
   description: "Get in touch with our team to discuss your next digital product, mobile app, or website project.",
 };
 

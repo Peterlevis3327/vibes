@@ -6,7 +6,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { getProcessSteps } from "@/lib/firebase/db";
 
 export const metadata: Metadata = {
-  title: "Our Process | Agency.",
+  title: "Our Process | Tech254",
   description: "Learn how we take digital products from ideation to launch.",
 };
 

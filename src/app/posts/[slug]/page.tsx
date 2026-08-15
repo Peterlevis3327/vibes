@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = await getPostBySlug(slug);
   const title = post?.seoTitle || post?.title || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   return {
-    title: title.includes('|') ? title : `${title} | Insights | Agency.`,
+    title: title.includes('|') ? title : `${title} | Insights | Tech254`,
     description: post?.seoDescription || post?.excerpt || `Read our latest article: ${title}.`,
   };
 }

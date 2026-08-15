@@ -5,7 +5,7 @@ import HomeClient from "./HomeClient";
 import { getHomePageData, getServices, getPortfolioProjects, getFaqs } from "@/lib/firebase/db";
 
 export const metadata: Metadata = {
-  title: "Agency. | Digital Product Studio",
+  title: "Tech254 | Digital Product Studio",
   description: "An independent digital agency crafting high-performance websites and mobile apps for ambitious brands.",
 };
 

@@ -10,7 +10,7 @@ export function StructuredData({ settings }: StructuredDataProps) {
   const orgData = {
     "@context": "https://schema.org",
     "@type": "Organization", // Could be LocalBusiness based on settings
-    "name": settings.siteName || "Agency",
+    "name": settings.siteName || "Tech254",
     "url": baseUrl,
     "logo": settings.logoUrl ? `${baseUrl}${settings.logoUrl}` : undefined,
     "contactPoint": {

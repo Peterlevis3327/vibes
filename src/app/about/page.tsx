@@ -7,7 +7,7 @@ import { getTeamMembers, getPageData } from "@/lib/firebase/db";
 import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
-  title: "About Us | Agency.",
+  title: "About Us | Tech254",
   description: "Learn about our mission, our team, and our commitment to building exceptional digital products.",
 };
 

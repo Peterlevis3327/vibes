@@ -18,7 +18,7 @@ const inter = Inter({
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getGlobalSettings();
   return {
-    title: settings.defaultSeoTitle || "Agency | Digital Product Studio",
+    title: settings.defaultSeoTitle || "Tech254 | Digital Product Studio",
     description: settings.defaultSeoDescription || "We design and build websites and apps that deliver concrete outcomes.",
   };
 }
@@ -86,11 +86,11 @@ export default async function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <Navbar siteName={settings.siteName || "Agency."} />
+          <Navbar siteName={settings.siteName || "Tech254"} />
           <main className="flex-1">
             {children}
           </main>
-          <Footer siteName={settings.siteName || "Agency."} />
+          <Footer siteName={settings.siteName || "Tech254"} />
           <WhatsAppButton 
             phoneNumber={settings.whatsappNumber} 
             defaultMessage={settings.whatsappMessage} 

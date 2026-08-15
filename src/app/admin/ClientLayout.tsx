@@ -49,7 +49,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <aside className="w-64 bg-background border-r flex flex-col fixed inset-y-0 left-0 z-10">
         <div className="p-6 border-b">
           <Link href="/admin" className="font-bold text-xl tracking-tight">
-            Agency CMS
+            Tech254 CMS
           </Link>
         </div>
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">

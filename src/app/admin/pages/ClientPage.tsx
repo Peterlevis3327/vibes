@@ -38,7 +38,7 @@ const initialHomePageData = {
   heroSubheadlineMobileWidth: 100,
   heroSubheadlineMobileFontSize: 16,
 
-  seoTitle: "Agency | Digital Product Studio",
+  seoTitle: "Tech254 | Digital Product Studio",
   seoDescription:
     "We design and build websites and apps that deliver concrete outcomes.",
   

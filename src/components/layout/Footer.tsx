@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export function Footer({ siteName = "Agency." }: { siteName?: string }) {
+export function Footer({ siteName = "Tech254" }: { siteName?: string }) {
   return (
     <footer className="border-t bg-muted/20">
       <div className="container px-4 md:px-8 py-12 md:py-16">

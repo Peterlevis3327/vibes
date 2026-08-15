@@ -5,7 +5,7 @@ import { getPageData } from "@/lib/firebase/db";
 import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Agency.",
+  title: "Privacy Policy | Tech254",
   description: "Our privacy policy.",
 };
 

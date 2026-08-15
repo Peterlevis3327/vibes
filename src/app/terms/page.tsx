@@ -5,7 +5,7 @@ import { getPageData } from "@/lib/firebase/db";
 import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Agency.",
+  title: "Terms of Service | Tech254",
   description: "Our terms of service.",
 };
 
