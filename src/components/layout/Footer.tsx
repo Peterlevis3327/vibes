@@ -3,8 +3,8 @@ import Link from "next/link";
 export function Footer({ siteName = "Tech254" }: { siteName?: string }) {
   return (
     <footer className="border-t bg-muted/20">
-      <div className="container px-4 md:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div className="container px-4 md:px-8 py-8 md:py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           <div className="col-span-2 md:col-span-1 space-y-4">
             <h3 className="text-lg font-bold">{siteName}</h3>
             <p className="text-sm text-muted-foreground">
@@ -12,7 +12,7 @@ export function Footer({ siteName = "Tech254" }: { siteName?: string }) {
             </p>
           </div>
           <div className="col-span-1">
-            <h4 className="font-medium mb-4">Company</h4>
+            <h4 className="font-medium mb-3 md:mb-4">Company</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/about" className="hover:text-foreground">About Us</Link></li>
               <li><Link href="/services" className="hover:text-foreground">Services</Link></li>
@@ -22,7 +22,7 @@ export function Footer({ siteName = "Tech254" }: { siteName?: string }) {
             </ul>
           </div>
           <div className="col-span-1">
-            <h4 className="font-medium mb-4">Services</h4>
+            <h4 className="font-medium mb-3 md:mb-4">Services</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/services" className="hover:text-foreground">Web Development</Link></li>
               <li><Link href="/services" className="hover:text-foreground">Mobile App Development</Link></li>
@@ -30,10 +30,10 @@ export function Footer({ siteName = "Tech254" }: { siteName?: string }) {
             </ul>
           </div>
           <div className="col-span-2 md:col-span-1">
-            <h4 className="font-medium mb-4">Contact</h4>
+            <h4 className="font-medium mb-3 md:mb-4">Contact</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
              
-              <li className="pt-2">
+              <li className="pt-1 md:pt-2">
                 <Link href="/contact" className="font-medium text-foreground hover:underline">
                  <u>Get in touch</u> 
                 </Link>
@@ -41,7 +41,7 @@ export function Footer({ siteName = "Tech254" }: { siteName?: string }) {
             </ul>
           </div>
         </div>
-        <div className="mt-12 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+        <div className="mt-8 pt-6 md:mt-12 md:pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} {siteName} All rights reserved.</p>
           <div className="flex gap-4">
             <Link href="/privacy" className="hover:text-foreground">Privacy Policy</Link>
