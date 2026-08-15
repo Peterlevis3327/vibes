@@ -7,6 +7,8 @@ import { getPostBySlug } from "@/lib/firebase/db";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 
+import DOMPurify from 'isomorphic-dompurify';
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
@@ -29,6 +31,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const displayDate = post.date?.toDate 
     ? post.date.toDate().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) 
     : String(post.date || "");
+    
+  const cleanContent = DOMPurify.sanitize(post.content || "");
 
   return (
     <div className="flex flex-col w-full">
@@ -68,7 +72,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
           <div 
             className="prose prose-lg md:prose-xl prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 max-w-none"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: cleanContent }}
           />
         </div>
       </article>

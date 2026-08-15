@@ -90,7 +90,7 @@ service cloud.firestore {
 
     // Rate Limits Collection (Contact Form)
     match /rate_limits/{ipHash} {
-      allow read, write: if true; 
+      allow read, write: if false; 
     }
   }
 }

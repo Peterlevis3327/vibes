@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { MessageCircle, Mail, Phone } from "lucide-react";
-import { getWeb3FormsKey } from "@/app/actions/contact";
+import { submitContactForm } from "@/app/actions/contact";
 import { toast } from "sonner";import { PageHeader } from "@/components/layout/PageHeader";
 
 interface ContactClientProps {
@@ -27,32 +27,14 @@ export default function ContactClient({ whatsappNumber, whatsappMessage, pageDat
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
-      
-      // 1. Honeypot check
-      if (formData.get('_honey')) {
-        setSubmitted(true);
-        return;
-      }
-
-      // 2. Get the public access key from the server securely
-      const accessKey = await getWeb3FormsKey();
-      formData.append("access_key", accessKey);
       formData.append("subject", "New Contact Form Submission");
       formData.append("from_name", "Agency Portfolio Contact Form");
 
-      // 3. Submit directly to Web3Forms from the client
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData,
-        headers: {
-          Accept: "application/json",
-        },
-      });
+      // 1. Submit to Server Action (which handles honeypot, rate limiting, and Web3Forms)
+      const result = await submitContactForm(formData);
 
-      const result = await response.json();
-
-      if (response.status === 200) {
-        toast.success("Message sent! We'll get back to you shortly.");
+      if (result.success) {
+        toast.success(result.message || "Message sent! We'll get back to you shortly.");
         setSubmitted(true);
         form.reset();
       } else {
