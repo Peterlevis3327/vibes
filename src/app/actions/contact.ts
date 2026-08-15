@@ -61,17 +61,19 @@ export async function submitContactForm(formData: FormData) {
     return { success: false, message: "Server configuration error." };
   }
 
-  // Add the access key to the form data
-  formData.append("access_key", accessKey);
+  // Convert FormData to JSON
+  const objectData = Object.fromEntries(formData.entries());
+  objectData.access_key = accessKey;
+  const jsonBody = JSON.stringify(objectData);
 
   try {
     const response = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
-      body: formData,
+      body: jsonBody,
       headers: {
-        // Use an honest, descriptive User-Agent
-        "User-Agent": "Tech254-ContactForm/1.0",
+        "Content-Type": "application/json",
         "Accept": "application/json",
+        "User-Agent": "Tech254-ContactForm/1.0",
       },
     });
 
