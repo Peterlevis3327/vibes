@@ -74,8 +74,8 @@ export async function submitContactForm(formData: FormData) {
         "Content-Type": "application/json",
         "Accept": "application/json",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        "Origin": headersList.get("origin") || "https://tech254.vercel.app",
-        "Referer": headersList.get("referer") || "https://tech254.vercel.app/",
+        "Origin": headersList.get("origin") || "https://tech254.netlify.app",
+        "Referer": headersList.get("referer") || "https://tech254.netlify.app/",
       },
       cache: "no-store",
     });
