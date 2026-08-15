@@ -6,7 +6,8 @@ import { getFirebaseAdmin } from "@/lib/firebase/admin";
 import ClientLayout from "./ClientLayout";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = cookies().get("__session")?.value;
+  const cookieStore = await cookies();
+  const session = cookieStore.get("__session")?.value;
 
   if (!session) {
     redirect("/admin/login");

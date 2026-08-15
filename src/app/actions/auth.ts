@@ -10,7 +10,8 @@ export async function createSession(idToken: string) {
     await adminApp.auth().verifyIdToken(idToken);
     
     // Set the cookie
-    cookies().set("__session", idToken, {
+    const cookieStore = await cookies();
+    cookieStore.set("__session", idToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 5, // 5 days
@@ -25,6 +26,7 @@ export async function createSession(idToken: string) {
 }
 
 export async function removeSession() {
-  cookies().delete("__session");
+  const cookieStore = await cookies();
+  cookieStore.delete("__session");
   return { success: true };
 }

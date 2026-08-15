@@ -7,7 +7,8 @@ const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 const MAX_REQUESTS_PER_WINDOW = 3;
 
 export async function submitContactForm(formData: FormData) {
-  const ip = headers().get("x-forwarded-for") || "unknown";
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for") || "unknown";
   const now = Date.now();
   
   // 1. Server-side Honeypot
@@ -78,11 +79,6 @@ export async function submitContactForm(formData: FormData) {
     const result = await response.json();
 
     if (result.success) {
-      // Update rate limit on success
-      limitData.count += 1;
-      limitData.lastSubmit = now;
-      rateLimitMap.set(ip, limitData);
-      
       return { success: true, message: "Message sent successfully!" };
     } else {
       console.error("Web3Forms error:", result);
