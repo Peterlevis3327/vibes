@@ -1,17 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import * as admin from 'firebase-admin';
-
-// Initialize Firebase Admin for token verification (only requires projectId)
-export function getFirebaseAdmin() {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    });
-  }
-  return admin;
-}
+import { getFirebaseAdmin } from "@/lib/firebase/admin";
 
 export async function createSession(idToken: string) {
   try {

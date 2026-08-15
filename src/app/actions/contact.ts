@@ -1,8 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
-
-import { getFirebaseAdmin } from "./auth";
+import { getFirebaseAdmin } from "@/lib/firebase/admin";
 
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 const MAX_REQUESTS_PER_WINDOW = 3;
