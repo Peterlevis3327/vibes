@@ -50,8 +50,7 @@ export async function submitContactForm(formData: FormData) {
     }
   } catch (error) {
     console.error("Rate limiting error:", error);
-    // Note: If GOOGLE_APPLICATION_CREDENTIALS are not provided, admin.firestore() will fail here.
-    // We fail open so legitimate users aren't blocked by missing credentials.
+    return { success: false, message: "Service temporarily unavailable. Please try again later." };
   }
 
 
