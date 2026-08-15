@@ -7,27 +7,38 @@ async function getDashboardStats() {
     const adminApp = getFirebaseAdmin();
     const db = adminApp.firestore();
     
-    // Run all count queries in parallel for performance
-    const [pagesCount, portfolioCount, postsCount, teamCount] = await Promise.all([
+    // Run count queries in parallel
+    const [
+      pagesCount,
+      totalPortfolioCount,
+      activePortfolioCount,
+      totalPostsCount,
+      publishedPostsCount,
+      totalTeamCount,
+      activeTeamCount
+    ] = await Promise.all([
       db.collection('pages').count().get().then(snap => snap.data().count),
       db.collection('portfolio').count().get().then(snap => snap.data().count),
+      db.collection('portfolio').where("status", "==", "Published").count().get().then(snap => snap.data().count),
       db.collection('posts').count().get().then(snap => snap.data().count),
+      db.collection('posts').where("status", "==", "Published").count().get().then(snap => snap.data().count),
       db.collection('team').count().get().then(snap => snap.data().count),
+      db.collection('team').where("status", "==", "Published").count().get().then(snap => snap.data().count),
     ]);
 
     return {
       pages: pagesCount,
-      portfolio: portfolioCount,
-      posts: postsCount,
-      team: teamCount,
+      portfolio: { total: totalPortfolioCount, active: activePortfolioCount },
+      posts: { total: totalPostsCount, published: publishedPostsCount },
+      team: { total: totalTeamCount, active: activeTeamCount },
     };
   } catch (error) {
     console.error("Failed to fetch dashboard stats:", error);
     return {
       pages: 0,
-      portfolio: 0,
-      posts: 0,
-      team: 0,
+      portfolio: { total: 0, active: 0 },
+      posts: { total: 0, published: 0 },
+      team: { total: 0, active: 0 },
     };
   }
 }
@@ -50,7 +61,7 @@ export default async function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.pages}</div>
-            <p className="text-xs text-muted-foreground">Published pages</p>
+            <p className="text-xs text-muted-foreground">Total static pages</p>
           </CardContent>
         </Card>
         <Card>
@@ -59,8 +70,8 @@ export default async function AdminDashboard() {
             <Briefcase className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.portfolio}</div>
-            <p className="text-xs text-muted-foreground">Active case studies</p>
+            <div className="text-2xl font-bold">{stats.portfolio.total}</div>
+            <p className="text-xs text-muted-foreground">{stats.portfolio.active} active case studies</p>
           </CardContent>
         </Card>
         <Card>
@@ -69,8 +80,8 @@ export default async function AdminDashboard() {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.posts}</div>
-            <p className="text-xs text-muted-foreground">Published articles</p>
+            <div className="text-2xl font-bold">{stats.posts.total}</div>
+            <p className="text-xs text-muted-foreground">{stats.posts.published} published articles</p>
           </CardContent>
         </Card>
         <Card>
@@ -79,8 +90,8 @@ export default async function AdminDashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.team}</div>
-            <p className="text-xs text-muted-foreground">Active personnel</p>
+            <div className="text-2xl font-bold">{stats.team.total}</div>
+            <p className="text-xs text-muted-foreground">{stats.team.active} active personnel</p>
           </CardContent>
         </Card>
       </div>

@@ -34,8 +34,9 @@ export function middleware(request: NextRequest) {
 
       return response;
     } else {
-      // If no key and no cookie, pretend the page doesn't exist (404)
-      return new NextResponse("Not Found", { status: 404 });
+      // If no key and no cookie, pretend the page doesn't exist by rewriting to a non-existent path
+      // This triggers Next.js's built-in not-found.tsx instead of returning an unstyled raw text response
+      return NextResponse.rewrite(new URL('/_not-found-trigger', request.url));
     }
   }
 

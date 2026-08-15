@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 import { getLuminance, getContrastRatio, getOptimalForeground, getContrastString } from "@/lib/utils/colorUtils";
+import { SecuritySettings } from "./SecuritySettings";
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
@@ -397,6 +398,8 @@ export default function SettingsPage() {
           </Button>
         </CardFooter>
       </Card>
+      
+      <SecuritySettings />
       
       {/* We can add SEO and Analytics sections here later if needed */}
     </div>

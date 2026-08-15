@@ -28,197 +28,316 @@ export async function fetchWithFallback<T>(
   }
 }
 
-// Example specific fetchers
-export async function getHomePageData() {
-    return fetchWithFallback(async () => {
-        const docRef = doc(db, "pages", "home");
-        const docSnap = await getDoc(docRef);
-        return docSnap.exists() ? docSnap.data() : null;
-    }, {
-        availabilityBadge: "",
-        heroHeadline: "",
-        heroSubheadline: "",
-        primaryCtaText: "",
-        secondaryCtaText: ""
-    });
-}
+import { unstable_cache } from 'next/cache';
+import { cache } from 'react';
 
-export async function getPageData(pageId: string) {
-    return fetchWithFallback(async () => {
-        const docRef = doc(db, "pages", pageId);
-        const docSnap = await getDoc(docRef);
-        return docSnap.exists() ? docSnap.data() : null;
-    }, {
-        title: null,
-        subtitle: null,
-        headerBackgroundImage: { url: "", alt: "", caption: "", showCaption: false }
-    });
-}
+// Example specific fetchers wrapped with React cache (for request deduplication) 
+// and Next.js unstable_cache (for persistent data caching across requests)
+
+export const getHomePageData = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const docRef = doc(db, "pages", "home");
+          const docSnap = await getDoc(docRef);
+          return docSnap.exists() ? docSnap.data() : null;
+      }, {
+          availabilityBadge: "",
+          heroHeadline: "",
+          heroSubheadline: "",
+          primaryCtaText: "",
+          secondaryCtaText: ""
+      });
+    },
+    ['homePageData'],
+    { tags: ['pages'] }
+  )
+);
+
+export const getPageData = cache(
+  (pageId: string) => unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const docRef = doc(db, "pages", pageId);
+          const docSnap = await getDoc(docRef);
+          return docSnap.exists() ? docSnap.data() : null;
+      }, {
+          title: null,
+          subtitle: null,
+          headerBackgroundImage: { url: "", alt: "", caption: "", showCaption: false }
+      });
+    },
+    [`pageData-${pageId}`],
+    { tags: ['pages'] }
+  )()
+);
 
 
-export async function getPortfolioProjects() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "portfolio"), where("status", "==", "Published"), orderBy("year", "desc"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getPortfolioProjects = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "portfolio"), where("status", "==", "Published"), orderBy("year", "desc"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['portfolioProjects'],
+    { tags: ['portfolio'] }
+  )
+);
 
-export async function getAllPortfolioProjects() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "portfolio"), orderBy("year", "desc"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getAllPortfolioProjects = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "portfolio"), orderBy("year", "desc"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['allPortfolioProjects'],
+    { tags: ['portfolio'] }
+  )
+);
 
-export async function getProjectBySlug(slug: string) {
-    return fetchWithFallback(async () => {
-        const docRef = doc(db, "portfolio", slug);
-        const docSnap = await getDoc(docRef);
-        return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } as any : null;
-    }, null);
-}
+export const getProjectBySlug = cache(
+  (slug: string) => unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const docRef = doc(db, "portfolio", slug);
+          const docSnap = await getDoc(docRef);
+          return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } as any : null;
+      }, null);
+    },
+    [`project-${slug}`],
+    { tags: ['portfolio'] }
+  )()
+);
 
-export async function getPosts() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "posts"), where("status", "==", "Published"), orderBy("date", "desc"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getPosts = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "posts"), where("status", "==", "Published"), orderBy("date", "desc"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['posts'],
+    { tags: ['posts'] }
+  )
+);
 
-export async function getPostBySlug(slug: string) {
-    return fetchWithFallback(async () => {
-        const docRef = doc(db, "posts", slug);
-        const docSnap = await getDoc(docRef);
-        return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } as any : null;
-    }, null);
-}
+export const getPostBySlug = cache(
+  (slug: string) => unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const docRef = doc(db, "posts", slug);
+          const docSnap = await getDoc(docRef);
+          return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } as any : null;
+      }, null);
+    },
+    [`post-${slug}`],
+    { tags: ['posts'] }
+  )()
+);
 
-export async function getAllPosts() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "posts"), orderBy("date", "desc"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getAllPosts = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "posts"), orderBy("date", "desc"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['allPosts'],
+    { tags: ['posts'] }
+  )
+);
 
-export async function getServices() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "services"), where("status", "==", "Published"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getServices = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "services"), where("status", "==", "Published"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['services'],
+    { tags: ['services'] }
+  )
+);
 
-export async function getAllServices() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "services"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getAllServices = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "services"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['allServices'],
+    { tags: ['services'] }
+  )
+);
 
-export async function getTestimonials() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "testimonials"), where("status", "==", "Published"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getTestimonials = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "testimonials"), where("status", "==", "Published"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['testimonials'],
+    { tags: ['testimonials'] }
+  )
+);
 
-export async function getAllTestimonials() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "testimonials"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getAllTestimonials = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "testimonials"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['allTestimonials'],
+    { tags: ['testimonials'] }
+  )
+);
 
-export async function getTeamMembers() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "team"), where("status", "==", "Published"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getTeamMembers = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "team"), where("status", "==", "Published"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['teamMembers'],
+    { tags: ['team'] }
+  )
+);
 
-export async function getAllTeamMembers() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "team"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getAllTeamMembers = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "team"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['allTeamMembers'],
+    { tags: ['team'] }
+  )
+);
 
-export async function getProcessSteps() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "process"), where("status", "==", "Published"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getProcessSteps = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "process"), where("status", "==", "Published"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['processSteps'],
+    { tags: ['process'] }
+  )
+);
 
-export async function getAllProcessSteps() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "process"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getAllProcessSteps = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "process"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['allProcessSteps'],
+    { tags: ['process'] }
+  )
+);
 
-export async function getFaqs() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "faqs"), where("status", "==", "Published"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, [
-        {
-            id: "faq-1",
-            question: "How long does a typical project take?",
-            answer: "Most of our website projects take between 4-8 weeks from kickoff to launch. Mobile apps typically take 3-6 months depending on complexity.",
-            status: "Published"
-        },
-        {
-            id: "faq-2",
-            question: "Do you provide ongoing support after launch?",
-            answer: "Yes, we offer flexible retainer packages for ongoing support, maintenance, and iterative improvements to keep your digital product performing at its best.",
-            status: "Published"
-        },
-        {
-            id: "faq-3",
-            question: "What is your pricing model?",
-            answer: "We typically work on a fixed-bid basis for clearly scoped projects, or time-and-materials for ongoing product development. Minimum engagement starts at $10,000.",
-            status: "Published"
-        }
-    ]);
-}
+export const getFaqs = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "faqs"), where("status", "==", "Published"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, [
+          {
+              id: "faq-1",
+              question: "How long does a typical project take?",
+              answer: "Most of our website projects take between 4-8 weeks from kickoff to launch. Mobile apps typically take 3-6 months depending on complexity.",
+              status: "Published"
+          },
+          {
+              id: "faq-2",
+              question: "Do you provide ongoing support after launch?",
+              answer: "Yes, we offer flexible retainer packages for ongoing support, maintenance, and iterative improvements to keep your digital product performing at its best.",
+              status: "Published"
+          },
+          {
+              id: "faq-3",
+              question: "What is your pricing model?",
+              answer: "We typically work on a fixed-bid basis for clearly scoped projects, or time-and-materials for ongoing product development. Minimum engagement starts at $10,000.",
+              status: "Published"
+          }
+      ]);
+    },
+    ['faqs'],
+    { tags: ['faqs'] }
+  )
+);
 
-export async function getAllFaqs() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, "faqs"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-    }, []);
-}
+export const getAllFaqs = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, "faqs"));
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      }, []);
+    },
+    ['allFaqs'],
+    { tags: ['faqs'] }
+  )
+);
 
-export async function getGlobalSettings() {
-    return fetchWithFallback(async () => {
-        const q = query(collection(db, 'settings'));
-        const snapshot = await getDocs(q);
-        return snapshot.docs[0]?.data() || { enableAnalytics: false };
-    }, {
-        siteName: "Tech254",
-        enableAnalytics: true,
-        defaultSeoTitle: "Tech254 | Digital Product Studio",
-        defaultSeoDescription: "We design and build websites and apps that deliver concrete outcomes.",
-        primaryColor: "#0f172a", // Default dark accent for light mode
-        secondaryColor: "#f1f5f9", // Default subtle secondary
-        whatsappNumber: "+1234567890",
-        whatsappMessage: "Hi, I'm interested in working with you!"
-    });
-}
+export const getGlobalSettings = cache(
+  unstable_cache(
+    async () => {
+      return fetchWithFallback(async () => {
+          const q = query(collection(db, 'settings'));
+          const snapshot = await getDocs(q);
+          return snapshot.docs[0]?.data() || { enableAnalytics: false };
+      }, {
+          siteName: "Tech254",
+          enableAnalytics: true,
+          defaultSeoTitle: "Tech254 | Digital Product Studio",
+          defaultSeoDescription: "We design and build websites and apps that deliver concrete outcomes.",
+          primaryColor: "#0f172a", // Default dark accent for light mode
+          secondaryColor: "#f1f5f9", // Default subtle secondary
+          whatsappNumber: "+1234567890",
+          whatsappMessage: "Hi, I'm interested in working with you!"
+      });
+    },
+    ['globalSettings'],
+    { tags: ['settings'] }
+  )
+);
 
 import { addDoc, deleteDoc, serverTimestamp, setDoc } from "firebase/firestore";
 

@@ -40,12 +40,6 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
   const imgRef = useRef<HTMLImageElement>(null);
   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    if (open) {
-      loadImages();
-    }
-  }, [open]);
-
   const loadImages = async () => {
     setIsLoading(true);
     try {
@@ -58,6 +52,12 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (open) {
+      loadImages();
+    }
+  }, [open]);
 
   const handleConfirm = () => {
     if (selectedImage && altText) {
@@ -178,6 +178,7 @@ export function MediaLibraryModal({ open, onOpenChange, onSelect }: MediaLibrary
 
     window.addEventListener('paste', handlePaste);
     return () => window.removeEventListener('paste', handlePaste);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, uploading]);
 
   return (

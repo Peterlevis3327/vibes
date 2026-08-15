@@ -1,8 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 
 export async function revalidatePublicRoutes(collectionName: string, docId?: string) {
+  // Clear the persistent Data Cache for this collection
+  updateTag(collectionName);
+  
   if (collectionName === "portfolio") {
     revalidatePath("/portfolio");
     if (docId) revalidatePath(`/portfolio/${docId}`);

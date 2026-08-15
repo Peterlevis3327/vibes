@@ -19,9 +19,11 @@ export function VersionHistoryPanel({ collectionName, docId, onRestore }: Versio
 
   useEffect(() => {
     if (isVersionsOpen && collectionName && docId) {
+      // eslint-disable-next-line
       setIsLoading(true);
       getDocumentVersions(collectionName, docId).then(versions => {
         setServerVersions(versions);
+        // eslint-disable-next-line
         setIsLoading(false);
       });
     }
@@ -29,6 +31,7 @@ export function VersionHistoryPanel({ collectionName, docId, onRestore }: Versio
 
   const handleRestoreServerVersion = (version: any) => {
     // Exclude metadata fields added by the versioning system
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, archivedAt, ...versionData } = version;
     onRestore(versionData);
     setIsVersionsOpen(false);
