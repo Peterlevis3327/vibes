@@ -1,7 +1,40 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, FileText, Briefcase, Users } from "lucide-react";
+import { getFirebaseAdmin } from "@/lib/firebase/admin";
 
-export default function AdminDashboard() {
+async function getDashboardStats() {
+  try {
+    const adminApp = getFirebaseAdmin();
+    const db = adminApp.firestore();
+    
+    // Run all count queries in parallel for performance
+    const [pagesCount, portfolioCount, postsCount, teamCount] = await Promise.all([
+      db.collection('pages').count().get().then(snap => snap.data().count),
+      db.collection('portfolio').count().get().then(snap => snap.data().count),
+      db.collection('posts').count().get().then(snap => snap.data().count),
+      db.collection('team').count().get().then(snap => snap.data().count),
+    ]);
+
+    return {
+      pages: pagesCount,
+      portfolio: portfolioCount,
+      posts: postsCount,
+      team: teamCount,
+    };
+  } catch (error) {
+    console.error("Failed to fetch dashboard stats:", error);
+    return {
+      pages: 0,
+      portfolio: 0,
+      posts: 0,
+      team: 0,
+    };
+  }
+}
+
+export default async function AdminDashboard() {
+  const stats = await getDashboardStats();
+
   return (
     <div className="space-y-8">
       <div>
@@ -16,8 +49,8 @@ export default function AdminDashboard() {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">8</div>
-            <p className="text-xs text-muted-foreground">+2 from last month</p>
+            <div className="text-2xl font-bold">{stats.pages}</div>
+            <p className="text-xs text-muted-foreground">Published pages</p>
           </CardContent>
         </Card>
         <Card>
@@ -26,8 +59,8 @@ export default function AdminDashboard() {
             <Briefcase className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">+1 new this week</p>
+            <div className="text-2xl font-bold">{stats.portfolio}</div>
+            <p className="text-xs text-muted-foreground">Active case studies</p>
           </CardContent>
         </Card>
         <Card>
@@ -36,18 +69,18 @@ export default function AdminDashboard() {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">24</div>
-            <p className="text-xs text-muted-foreground">3 drafts pending</p>
+            <div className="text-2xl font-bold">{stats.posts}</div>
+            <p className="text-xs text-muted-foreground">Published articles</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Site Visitors</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Team Members</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12,234</div>
-            <p className="text-xs text-muted-foreground">+19% from last month</p>
+            <div className="text-2xl font-bold">{stats.team}</div>
+            <p className="text-xs text-muted-foreground">Active personnel</p>
           </CardContent>
         </Card>
       </div>
