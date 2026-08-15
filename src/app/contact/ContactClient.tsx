@@ -176,19 +176,26 @@ export default function ContactClient({ whatsappNumber, whatsappMessage, pageDat
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="projectType">Project Type</Label>
-                  <Select name="projectType" required>
-                    <SelectTrigger className="h-12 bg-background">
-                      <SelectValue placeholder="Select project type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="website">Website Development</SelectItem>
-                      <SelectItem value="mobile">Mobile App</SelectItem>
-                      <SelectItem value="both">Both</SelectItem>
-                      <SelectItem value="unsure">Not Sure / Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-2">
+                    <Label htmlFor="projectType">Project Type</Label>
+                    <Select name="projectType" required>
+                      <SelectTrigger className="h-12 bg-background">
+                        <SelectValue placeholder="Select project type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="website">Website Development</SelectItem>
+                        <SelectItem value="mobile">Mobile App</SelectItem>
+                        <SelectItem value="both">Both</SelectItem>
+                        <SelectItem value="unsure">Not Sure / Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="budget">Budget (Optional)</Label>
+                    <Input id="budget" name="budget" placeholder="e.g. Ksh 50,000 - 100,000" className="h-12 bg-background" />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
