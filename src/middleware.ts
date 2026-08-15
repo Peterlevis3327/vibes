@@ -12,9 +12,20 @@ export function middleware(request: NextRequest) {
     const hasSecretCookie = request.cookies.has('admin_access_granted');
 
     if (secretKey === 'open_sesame' || hasSecretCookie) {
+      // NOW we do the standard auth check
+      let response: NextResponse;
+      
+      if (!request.nextUrl.pathname.startsWith('/plmhrauth/login') && !session) {
+         response = NextResponse.redirect(new URL('/plmhrauth/login', request.url));
+      } else if (request.nextUrl.pathname.startsWith('/plmhrauth/login') && session) {
+         response = NextResponse.redirect(new URL('/plmhrauth', request.url));
+      } else {
+         response = NextResponse.next();
+      }
+
       // Allow them to proceed, but if they used the URL parameter, we need to set the cookie
       // so they don't have to keep passing ?key=open_sesame
-      const response = NextResponse.next();
+      // Note: We MUST set the cookie on the final response object we are returning (whether redirect or next)
       if (secretKey === 'open_sesame' && !hasSecretCookie) {
         response.cookies.set('admin_access_granted', 'true', {
           httpOnly: true,
@@ -22,14 +33,6 @@ export function middleware(request: NextRequest) {
           sameSite: 'strict',
           path: '/',
         });
-      }
-
-      // NOW we do the standard auth check
-      if (!request.nextUrl.pathname.startsWith('/plmhrauth/login') && !session) {
-         return NextResponse.redirect(new URL('/plmhrauth/login', request.url));
-      }
-      if (request.nextUrl.pathname.startsWith('/plmhrauth/login') && session) {
-         return NextResponse.redirect(new URL('/plmhrauth', request.url));
       }
 
       return response;
