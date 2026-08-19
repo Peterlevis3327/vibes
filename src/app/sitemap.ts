@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { getPortfolioProjects, getPosts } from '@/lib/firebase/db'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tech254.netlify.app'
 
   const projects = await getPortfolioProjects()
   const posts = await getPosts()
