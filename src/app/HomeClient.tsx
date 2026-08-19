@@ -12,6 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { ProjectCard } from "@/components/portfolio/ProjectCard";
 
 
 const fadeUp = {
@@ -221,36 +222,13 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
               {portfolio.slice(0, 4).map((item: any, i: number) => (
                 <motion.div 
                   key={item.id || i} 
-                  className={`group cursor-pointer ${i % 2 !== 0 ? 'md:mt-16' : ''}`}
+                  className={`cursor-pointer ${i % 2 !== 0 ? 'md:mt-16' : ''}`}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.1 }}
                 >
-                  <Link href={`/portfolio/${item.id || item}`} className="block">
-                    <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-muted mb-6 border flex items-center justify-center">
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                      {(() => {
-                        const imgSrc = item.thumbnailImage?.url || item.coverImage?.url || item.images?.[0]?.url;
-                        const imgAlt = item.thumbnailImage?.alt || item.coverImage?.alt || item.images?.[0]?.alt || item.title;
-                        return imgSrc ? (
-                          <Image 
-                            src={imgSrc} 
-                            alt={imgAlt} 
-                            fill 
-                            className={`${item.category?.toLowerCase().includes('mobile') ? 'object-contain p-6 sm:p-10 drop-shadow-2xl' : 'object-cover'} group-hover:scale-105 transition-transform duration-500`} 
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" 
-                          />
-                        ) : (
-                          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/30">
-                            <Briefcase className="h-24 w-24" />
-                          </div>
-                        );
-                      })()}
-                    </div>
-                    <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">{item.title || `Client Project ${item}`}</h3>
-                    <p className="text-muted-foreground">{item.category || "Web Platform"} &middot; {item.year || "2024"}</p>
-                  </Link>
+                  <ProjectCard project={item} />
                 </motion.div>
               ))}
             </div>

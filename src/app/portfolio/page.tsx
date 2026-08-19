@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 import { Briefcase } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
+import { ProjectCard } from "@/components/portfolio/ProjectCard";
 
 // Mock data - will be replaced with Firestore data
 export default async function PortfolioPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
@@ -75,39 +76,11 @@ export default async function PortfolioPage({ searchParams }: { searchParams: Pr
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
-              {projects.map((project: any, i: number) => {
-                const isMobile = project.category?.toLowerCase().includes('mobile');
-                return (
-                <div key={project.id} className={`group cursor-pointer ${i % 2 !== 0 ? 'md:mt-24' : ''}`}>
-                  <Link href={`/portfolio/${project.id}`} className="group block">
-                    <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-muted mb-6 border flex items-center justify-center">
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                      {(() => {
-                        const imgSrc = project.thumbnailImage?.url || project.coverImage?.url || project.images?.[0]?.url;
-                        const imgAlt = project.thumbnailImage?.alt || project.coverImage?.alt || project.images?.[0]?.alt || project.title;
-                        return imgSrc ? (
-                          <Image 
-                            src={imgSrc} 
-                            alt={imgAlt} 
-                            fill 
-                            className={`${isMobile ? 'object-contain p-6 sm:p-10 drop-shadow-2xl' : 'object-cover'} group-hover:scale-105 transition-transform duration-500`} 
-                            sizes="(max-width: 768px) 100vw, 50vw" 
-                          />
-                        ) : (
-                          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/30">
-                            <Briefcase className="h-24 w-24" />
-                          </div>
-                        );
-                      })()}
-                    </div>
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">{project.title}</h3>
-                    </div>
-                    <p className="text-muted-foreground font-medium mb-3">{project.category} &middot; {project.year}</p>
-                    <p className="text-foreground/80 leading-relaxed">{project.description}</p>
-                  </Link>
+              {projects.map((project: any, i: number) => (
+                <div key={project.id} className={`${i % 2 !== 0 ? 'md:mt-24' : ''}`}>
+                  <ProjectCard project={project} />
                 </div>
-              )})}
+              ))}
             </div>
           )}
         </div>
