@@ -33,6 +33,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
+        <meta name="google-site-verification" content="Ox-p53CCbWMZyHGJ1c605QJh_kOv80Blih7gg_CyPa8" />
         {settings.fontFamily && settings.fontFamily !== "Inter" && (
           <link 
             href={`https://fonts.googleapis.com/css2?family=${settings.fontFamily.replace(/ /g, '+')}:wght@300;400;500;600;700&display=swap`} 
