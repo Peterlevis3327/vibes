@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, ImageIcon } from "lucide-react";
+import { MediaLibraryModal } from "@/components/admin/MediaLibraryModal";
 
 import { getLuminance, getContrastRatio, getOptimalForeground, getContrastString } from "@/lib/utils/colorUtils";
 import { SecuritySettings } from "./SecuritySettings";
@@ -30,7 +31,10 @@ export default function SettingsPage() {
     defaultSeoDescription: "We design and build websites and apps that deliver concrete outcomes.",
     whatsappNumber: "+1234567890",
     whatsappMessage: "Hi, I'm interested in working with you!",
+    faviconUrl: "",
   });
+
+  const [isFaviconMediaOpen, setIsFaviconMediaOpen] = useState(false);
 
   const primaryForeground = getOptimalForeground(settings.primaryColor);
   const secondaryForeground = getOptimalForeground(settings.secondaryColor);
@@ -127,6 +131,33 @@ export default function SettingsPage() {
               onChange={(e) => setSettings({ ...settings, defaultSeoDescription: e.target.value })}
               placeholder="We design and build websites and apps..."
             />
+          </div>
+          <div className="space-y-4">
+            <Label>Site Favicon (Browser Tab Icon)</Label>
+            {settings.faviconUrl ? (
+              <div className="border rounded-lg p-4 bg-muted/30 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={settings.faviconUrl} alt="Favicon preview" className="h-10 w-10 object-contain rounded-md bg-white border" />
+                    <div>
+                      <p className="text-sm font-medium line-clamp-1 max-w-[200px]">{settings.faviconUrl.split('/').pop()}</p>
+                    </div>
+                  </div>
+                  <Button type="button" variant="ghost" size="sm" onClick={() => setSettings({ ...settings, faviconUrl: "" })}>
+                    Remove
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed rounded-lg p-8 text-center bg-muted/30">
+                <p className="text-sm text-muted-foreground mb-4">Select a square image (.png or .ico) to be used as your website's icon</p>
+                <Button type="button" variant="outline" onClick={() => setIsFaviconMediaOpen(true)}>
+                  <ImageIcon className="h-4 w-4 mr-2" />
+                  Select Favicon
+                </Button>
+              </div>
+            )}
           </div>
         </CardContent>
         <CardFooter className="border-t px-6 py-4">
@@ -400,8 +431,14 @@ export default function SettingsPage() {
       </Card>
       
       <SecuritySettings />
-      
-      {/* We can add SEO and Analytics sections here later if needed */}
+
+      <MediaLibraryModal 
+        open={isFaviconMediaOpen} 
+        onOpenChange={setIsFaviconMediaOpen}
+        onSelect={(url) => {
+          setSettings({ ...settings, faviconUrl: url });
+        }}
+      />
     </div>
   );
 }

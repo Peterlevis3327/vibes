@@ -17,10 +17,18 @@ const inter = Inter({
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getGlobalSettings();
-  return {
+  const metadata: Metadata = {
     title: settings.defaultSeoTitle || "Tech254 | Digital Product Studio",
     description: settings.defaultSeoDescription || "We design and build websites and apps that deliver concrete outcomes.",
   };
+
+  if (settings.faviconUrl) {
+    metadata.icons = {
+      icon: settings.faviconUrl,
+    };
+  }
+
+  return metadata;
 }
 
 export default async function RootLayout({
