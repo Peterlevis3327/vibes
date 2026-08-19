@@ -2,15 +2,15 @@ import type { NextConfig } from "next";
 
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline';
-  style-src 'self' 'unsafe-inline';
-  img-src 'self' blob: data: https://res.cloudinary.com https://firebasestorage.googleapis.com;
-  font-src 'self' data:;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  img-src 'self' blob: data: https://res.cloudinary.com https://firebasestorage.googleapis.com https://www.googletagmanager.com;
+  font-src 'self' data: https://fonts.gstatic.com;
   object-src 'none';
   base-uri 'self';
   form-action 'self' https://api.web3forms.com;
   frame-ancestors 'none';
-  connect-src 'self' https://api.web3forms.com https://firebase.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;
+  connect-src 'self' https://api.web3forms.com https://firebase.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://api.cloudinary.com https://www.google-analytics.com;
   upgrade-insecure-requests;
 `;
 
