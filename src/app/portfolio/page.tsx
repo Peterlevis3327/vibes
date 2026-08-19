@@ -76,11 +76,11 @@ export default async function PortfolioPage({ searchParams }: { searchParams: Pr
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
-              {projects.map((project: any, i: number) => {
+              {projects.map((project: any, i: number) => (
                 <div key={project.id} className={`cursor-pointer ${i % 2 !== 0 ? 'md:mt-24' : ''}`}>
                   <ProjectCard project={project} />
                 </div>
-              )})}
+              ))}
             </div>
           )}
         </div>
