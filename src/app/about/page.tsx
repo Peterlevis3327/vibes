@@ -46,8 +46,8 @@ export default async function AboutPage() {
             </div>
             <div className="aspect-square bg-muted rounded-3xl overflow-hidden relative">
               <Image 
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800" 
-                alt="Our creative team collaborating in a modern office space" 
+                src={pageData?.missionImage?.url || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800"} 
+                alt={pageData?.missionImage?.alt || "Our creative team collaborating in a modern office space"} 
                 fill 
                 className="object-cover" 
                 sizes="(max-width: 768px) 100vw, 50vw"

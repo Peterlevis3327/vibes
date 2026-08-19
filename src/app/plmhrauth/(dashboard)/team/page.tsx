@@ -36,8 +36,14 @@ export default function TeamAdminPage() {
   const [avatar, setAvatar] = useState<{ url: string, alt: string, caption?: string, showCaption?: boolean } | null>(null);
   const [currentMember, setCurrentMember] = useState<Partial<TeamMember>>({ status: "Draft", socialLinks: {} });
   
-  const [missionData, setMissionData] = useState({ missionTitle: "", missionText1: "", missionText2: "" });
+  const [missionData, setMissionData] = useState<{
+    missionTitle: string;
+    missionText1: string;
+    missionText2: string;
+    missionImage?: { url: string; alt: string; caption?: string; showCaption?: boolean } | null;
+  }>({ missionTitle: "", missionText1: "", missionText2: "", missionImage: null });
   const [isSavingMission, setIsSavingMission] = useState(false);
+  const [isMissionMediaOpen, setIsMissionMediaOpen] = useState(false);
 
   const fetchTeamMembers = async () => {
     setIsLoading(true);
@@ -52,7 +58,8 @@ export default function TeamAdminPage() {
       setMissionData({
         missionTitle: data.missionTitle || "",
         missionText1: data.missionText1 || "",
-        missionText2: data.missionText2 || ""
+        missionText2: data.missionText2 || "",
+        missionImage: data.missionImage || null
       });
     }
   };
@@ -173,9 +180,45 @@ export default function TeamAdminPage() {
             rows={3}
           />
         </div>
+        <div className="space-y-2">
+          <Label>Mission Image</Label>
+          {missionData.missionImage ? (
+            <div className="border rounded-lg p-4 bg-muted/30 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={missionData.missionImage.url} alt={missionData.missionImage.alt} className="h-16 w-16 object-cover rounded-md" />
+                  <div>
+                    <p className="text-sm font-medium line-clamp-1 max-w-[200px]">{missionData.missionImage.url.split('/').pop()}</p>
+                    <p className="text-xs text-muted-foreground">Alt: {missionData.missionImage.alt}</p>
+                  </div>
+                </div>
+                <Button type="button" variant="ghost" size="sm" onClick={() => setMissionData({ ...missionData, missionImage: null })}>
+                  Remove
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="border-2 border-dashed rounded-lg p-8 text-center bg-muted/30">
+              <p className="text-sm text-muted-foreground mb-4">Select an image for the mission section</p>
+              <Button type="button" variant="outline" onClick={() => setIsMissionMediaOpen(true)}>
+                <ImageIcon className="h-4 w-4 mr-2" />
+                Open Media Library
+              </Button>
+            </div>
+          )}
+        </div>
         <Button onClick={handleSaveMission} disabled={isSavingMission}>
           {isSavingMission ? "Saving..." : "Save Mission"}
         </Button>
+
+        <MediaLibraryModal 
+          open={isMissionMediaOpen} 
+          onOpenChange={setIsMissionMediaOpen}
+          onSelect={(url, alt, caption) => {
+            setMissionData({ ...missionData, missionImage: { url, alt, caption, showCaption: !!caption } });
+          }}
+        />
       </div>
 
       <div className="flex justify-between items-center pt-6 border-t">
