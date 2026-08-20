@@ -1,6 +1,12 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function Footer({ siteName = "Tech254" }: { siteName?: string }) {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/plmhrauth")) return null;
+
   return (
     <footer className="border-t bg-muted/20">
       <div className="container px-4 md:px-8 py-8 md:py-16">

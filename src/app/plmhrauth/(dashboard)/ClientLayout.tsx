@@ -85,9 +85,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             <span className="text-xs px-2 py-1 bg-muted rounded-full font-medium">
               {isAdmin ? "Admin" : "Editor"}
             </span>
-            <div className="text-sm font-medium text-muted-foreground">
-              {user.email}
-            </div>
           </div>
         </header>
         <div className="flex-1 p-8">
