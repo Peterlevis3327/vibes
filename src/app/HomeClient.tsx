@@ -58,9 +58,13 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
       >
         {data.heroBackgroundImage?.url && (
           <>
-            <div 
-              className="absolute inset-0 z-0 bg-cover bg-center" 
-              style={{ backgroundImage: `url(${data.heroBackgroundImage.url})` }} 
+            <Image 
+              src={data.heroBackgroundImage.url} 
+              alt={data.heroHeadline || "Hero Image"} 
+              fill 
+              className="absolute inset-0 z-0 object-cover object-center" 
+              priority
+              sizes="100vw"
             />
             <div 
               className="absolute inset-0 bg-background z-0 transition-all duration-200"
@@ -189,6 +193,10 @@ export default function HomeClient({ data, services = [], portfolio = [], faqs =
                         fill 
                         className={isMobile ? "object-contain p-6 sm:p-10 drop-shadow-2xl" : "object-cover group-hover:scale-105 transition-transform duration-500"} 
                         sizes="(max-width: 768px) 100vw, 50vw" 
+                        {...(service.screenshotImage.blurDataURL && {
+                          placeholder: "blur",
+                          blurDataURL: service.screenshotImage.blurDataURL
+                        })}
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/40">
