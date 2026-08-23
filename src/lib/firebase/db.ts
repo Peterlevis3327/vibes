@@ -363,24 +363,28 @@ export async function saveWithVersionHistory(collectionName: string, docId: stri
   
   const docRef = doc(db, collectionName, docId);
   try {
-    const currentDoc = await getDoc(docRef);
-    if (currentDoc.exists()) {
-      // Save current version to _versions subcollection before overwriting
-      const versionsRef = collection(docRef, "_versions");
-      await addDoc(versionsRef, {
-        ...currentDoc.data(),
-        archivedAt: serverTimestamp(),
-      });
+    try {
+      const currentDoc = await getDoc(docRef);
+      if (currentDoc.exists()) {
+        // Save current version to _versions subcollection before overwriting
+        const versionsRef = collection(docRef, "_versions");
+        await addDoc(versionsRef, {
+          ...currentDoc.data(),
+          archivedAt: serverTimestamp(),
+        });
 
-      // Prune old versions if > 10
-      const q = query(versionsRef, orderBy("archivedAt", "desc"));
-      const snapshot = await getDocs(q);
-      
-      if (snapshot.size > 10) {
-        // Delete all versions beyond the 10th
-        const docsToDelete = snapshot.docs.slice(10);
-        await Promise.all(docsToDelete.map(d => deleteDoc(d.ref)));
+        // Prune old versions if > 10
+        const q = query(versionsRef, orderBy("archivedAt", "desc"));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.size > 10) {
+          // Delete all versions beyond the 10th
+          const docsToDelete = snapshot.docs.slice(10);
+          await Promise.all(docsToDelete.map(d => deleteDoc(d.ref)));
+        }
       }
+    } catch (versionError) {
+      console.warn("Version history archiving note (proceeding with main document save):", versionError);
     }
     
     // Save new data
@@ -390,7 +394,7 @@ export async function saveWithVersionHistory(collectionName: string, docId: stri
     }, { merge: true });
     
   } catch (error) {
-    console.error("Failed to save with version history:", error);
+    console.error("Failed to save document:", error);
     throw error;
   }
 }

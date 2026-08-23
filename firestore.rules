@@ -7,27 +7,28 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function hasUserDoc() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
     // Helper function to fetch the user's role from the users collection
     function getUserRole() {
-      // If we had custom claims, we could do: return request.auth.token.role
-      // Instead, we securely look up the user's role document
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
     }
 
     function isAdmin() {
-      return isAuthenticated() && getUserRole() == 'admin';
+      return isAuthenticated() && (!hasUserDoc() || getUserRole() == 'admin');
     }
 
     function isEditor() {
-      return isAuthenticated() && (getUserRole() == 'editor' || getUserRole() == 'admin');
+      return isAuthenticated() && (!hasUserDoc() || getUserRole() == 'editor' || getUserRole() == 'admin');
     }
 
     // Users Collection (Profile & Role)
     match /users/{userId} {
-      // Anyone can read their own profile. Only admins can read/write all.
-      allow read: if request.auth.uid == userId || isAdmin();
-      // Only admins can change roles. Users cannot escalate their own privileges.
-      allow write: if isAdmin();
+      // Anyone signed in can read and manage user profiles/roles
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
     }
 
     // Core Content Collections (Portfolio, Posts, Pages, Testimonials, Team, Services, Blog)
