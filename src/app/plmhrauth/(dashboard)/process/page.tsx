@@ -53,6 +53,7 @@ export default function ProcessAdminPage() {
       setSteps(steps.filter(s => s.id !== id));
       toast("Process step deleted");
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to delete process step");
     }
   };
@@ -87,6 +88,7 @@ export default function ProcessAdminPage() {
       setDeliverablesInput("");
       fetchSteps();
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to save process step");
     }
   };

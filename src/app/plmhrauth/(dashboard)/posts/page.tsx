@@ -68,6 +68,7 @@ export default function PostsAdminPage() {
       setPosts(posts.filter(p => p.id !== id));
       toast("Post deleted");
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to delete post");
     }
   };
@@ -105,6 +106,7 @@ export default function PostsAdminPage() {
       setCoverImage(null);
       fetchPosts();
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to save post");
     }
   };

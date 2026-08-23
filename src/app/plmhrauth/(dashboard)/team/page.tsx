@@ -76,8 +76,10 @@ export default function TeamAdminPage() {
         await deleteDoc(doc(db, "team", id));
       }
       setTeamMembers(teamMembers.filter(m => m.id !== id));
+      await revalidatePublicRoutes("team", id);
       toast("Team member deleted");
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to delete team member");
     }
   };

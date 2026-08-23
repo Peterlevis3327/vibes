@@ -62,6 +62,7 @@ export default function ServicesAdminPage() {
       setServices(services.filter(s => s.id !== id));
       toast("Service deleted");
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to delete service");
     }
   };
@@ -98,6 +99,7 @@ export default function ServicesAdminPage() {
       setScreenshotImage(null);
       fetchServices();
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to save service");
     }
   };

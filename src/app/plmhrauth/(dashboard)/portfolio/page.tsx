@@ -96,8 +96,10 @@ function PortfolioAdminContent() {
         await deleteDoc(doc(db, "portfolio", id));
       }
       setProjects(projects.filter(p => p.id !== id));
+      await revalidatePublicRoutes("portfolio", id);
       toast("Project deleted");
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to delete project");
     }
   };

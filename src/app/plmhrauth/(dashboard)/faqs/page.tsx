@@ -50,6 +50,7 @@ export default function FaqsAdminPage() {
       setFaqs(faqs.filter(s => s.id !== id));
       toast("FAQ deleted");
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to delete FAQ");
     }
   };
@@ -81,6 +82,7 @@ export default function FaqsAdminPage() {
       setCurrentFaq({ status: "Draft", order: 0 });
       fetchFaqs();
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to save FAQ");
     }
   };

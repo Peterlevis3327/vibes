@@ -61,6 +61,7 @@ export default function TestimonialsAdminPage() {
       setTestimonials(testimonials.filter(t => t.id !== id));
       toast("Testimonial deleted");
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to delete testimonial");
     }
   };
@@ -89,6 +90,7 @@ export default function TestimonialsAdminPage() {
       setAvatar(null);
       fetchData();
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to save testimonial");
     }
   };

@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, FileText, Briefcase, Settings, Users, LogOut, MessageSquareQuote, Layers, GitMerge } from "lucide-react";
 import { signOut, auth } from "@/lib/firebase/client";
+import { Toaster } from "sonner";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, isAdmin } = useAuth();
@@ -91,6 +92,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           {children}
         </div>
       </main>
+      <Toaster position="bottom-right" />
     </div>
   );
 }
