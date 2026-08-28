@@ -45,22 +45,30 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           <div className="mb-12">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">{project.title}</h1>
             <div className="flex flex-wrap gap-x-8 gap-y-4 text-sm font-medium text-muted-foreground uppercase tracking-wider">
-              <div>
-                <span className="block text-xs mb-1">Client</span>
-                <span className="text-foreground">{project.client}</span>
-              </div>
-              <div>
-                <span className="block text-xs mb-1">Industry</span>
-                <span className="text-foreground">{project.industry}</span>
-              </div>
-              <div>
-                <span className="block text-xs mb-1">Services</span>
-                <span className="text-foreground">{project.category}</span>
-              </div>
-              <div>
-                <span className="block text-xs mb-1">Year</span>
-                <span className="text-foreground">{project.year}</span>
-              </div>
+              {project.client && (
+                <div>
+                  <span className="block text-xs mb-1">Client</span>
+                  <span className="text-foreground">{project.client}</span>
+                </div>
+              )}
+              {project.industry && (
+                <div>
+                  <span className="block text-xs mb-1">Industry</span>
+                  <span className="text-foreground">{project.industry}</span>
+                </div>
+              )}
+              {project.category && (
+                <div>
+                  <span className="block text-xs mb-1">Services</span>
+                  <span className="text-foreground">{project.category}</span>
+                </div>
+              )}
+              {project.year && (
+                <div>
+                  <span className="block text-xs mb-1">Year</span>
+                  <span className="text-foreground">{project.year}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -146,62 +154,90 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         })()}
 
         <div className="container mx-auto px-4 md:px-8 max-w-4xl space-y-24">
-          {/* Content Sections */}
-          <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16 border-t pt-12">
-            <h2 className="text-2xl font-bold">The Challenge</h2>
-            <div className="prose prose-lg">
-              <p className="text-muted-foreground leading-relaxed">{project.challenge}</p>
+          {/* Content Sections — only render if content exists */}
+          {project.description && (
+            <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16 border-t pt-12">
+              <h2 className="text-2xl font-bold">Project Overview</h2>
+              <div className="prose prose-lg">
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{project.description}</p>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16 border-t pt-12">
-            <h2 className="text-2xl font-bold">The Approach</h2>
-            <div className="prose prose-lg">
-              <p className="text-muted-foreground leading-relaxed">{project.approach}</p>
+          {project.challenge && (
+            <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16 border-t pt-12">
+              <h2 className="text-2xl font-bold">The Challenge</h2>
+              <div className="prose prose-lg">
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{project.challenge}</p>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16 border-t pt-12">
-            <h2 className="text-2xl font-bold">The Outcome</h2>
-            <div className="prose prose-lg">
-              <p className="text-muted-foreground leading-relaxed">{project.outcome}</p>
+          {project.approach && (
+            <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16 border-t pt-12">
+              <h2 className="text-2xl font-bold">The Approach</h2>
+              <div className="prose prose-lg">
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{project.approach}</p>
+              </div>
             </div>
-          </div>
+          )}
 
-          <ProjectGallery 
-            images={project.galleryImages || []} 
-            isMobile={project.category?.toLowerCase().includes('mobile')} 
-          />
+          {project.outcome && (
+            <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16 border-t pt-12">
+              <h2 className="text-2xl font-bold">The Outcome</h2>
+              <div className="prose prose-lg">
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{project.outcome}</p>
+              </div>
+            </div>
+          )}
+
+          {project.galleryImages && project.galleryImages.length > 0 && (
+            <ProjectGallery 
+              images={project.galleryImages} 
+              isMobile={project.category?.toLowerCase().includes('mobile')} 
+            />
+          )}
 
           {/* Tech Stack & Links */}
-          <div className="bg-muted/30 rounded-3xl p-8 md:p-12 border">
-            <h3 className="text-xl font-bold mb-6">Technologies Used</h3>
-            <div className="flex flex-wrap gap-2 mb-8">
-              {project.techStack?.map((tech: string) => (
-                <span key={tech} className="px-4 py-2 bg-background border rounded-full text-sm font-medium">
-                  {tech}
-                </span>
-              ))}
+          {((project.techStack && project.techStack.length > 0) || project.liveLink) && (
+            <div className="bg-muted/30 rounded-3xl p-8 md:p-12 border">
+              {project.techStack && project.techStack.length > 0 && (
+                <>
+                  <h3 className="text-xl font-bold mb-6">Technologies Used</h3>
+                  <div className="flex flex-wrap gap-2 mb-8">
+                    {project.techStack.map((tech: string) => (
+                      <span key={tech} className="px-4 py-2 bg-background border rounded-full text-sm font-medium">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
+              {project.liveLink && (
+                <div className={project.techStack && project.techStack.length > 0 ? "mt-8 pt-8 border-t" : ""}>
+                  <h3 className="text-xl font-bold mb-6">Live Project</h3>
+                  {linkPreview ? (
+                    <LinkPreviewCard
+                      title={linkPreview.title || project.title}
+                      description={linkPreview.description || project.description}
+                      image={linkPreview.image}
+                      url={project.liveLink}
+                      domain={linkPreview.domain}
+                    />
+                  ) : (
+                    <a 
+                      href={project.liveLink.startsWith('http://') || project.liveLink.startsWith('https://') ? project.liveLink : `https://${project.liveLink}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className={buttonVariants({ variant: "outline", size: "lg" })}
+                    >
+                      Visit Live Site <ExternalLink className="ml-2 h-4 w-4" />
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
-            {project.liveLink && (
-              <div className="mt-8 pt-8 border-t">
-                <h3 className="text-xl font-bold mb-6">Live Project</h3>
-                {linkPreview ? (
-                  <LinkPreviewCard
-                    title={linkPreview.title || project.title}
-                    description={linkPreview.description || project.description}
-                    image={linkPreview.image}
-                    url={project.liveLink}
-                    domain={linkPreview.domain}
-                  />
-                ) : (
-                  <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className={buttonVariants({ variant: "outline", size: "lg" })}>
-                    Visit Live Site <ExternalLink className="ml-2 h-4 w-4" />
-                  </a>
-                )}
-              </div>
-            )}
-          </div>
+          )}
 
           {relatedTestimonial && (
             <div className="bg-primary text-primary-foreground rounded-3xl p-8 md:p-12 relative overflow-hidden">

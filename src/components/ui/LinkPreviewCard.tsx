@@ -9,9 +9,11 @@ interface LinkPreviewCardProps {
 }
 
 export function LinkPreviewCard({ title, description, image, url, domain }: LinkPreviewCardProps) {
+  const href = url.startsWith("http://") || url.startsWith("https://") ? url : `https://${url}`;
+
   return (
     <a
-      href={url}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       className="group block overflow-hidden rounded-2xl border bg-card text-card-foreground transition-all hover:border-primary/50 hover:shadow-md max-w-2xl"
