@@ -29,6 +29,9 @@ export function Navbar({ siteName = "Tech254" }: { siteName?: string }) {
           <span className="font-bold text-xl tracking-tight">{siteName}</span>
         </Link>
         <nav className="hidden md:flex gap-6">
+          <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            Home
+          </Link>
           <Link href="/services" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Services
           </Link>
@@ -61,6 +64,7 @@ export function Navbar({ siteName = "Tech254" }: { siteName?: string }) {
                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 <div className="flex flex-col space-y-1 mt-6">
                   {[
+                    { href: "/", label: "Home" },
                     { href: "/services", label: "Services" },
                     { href: "/portfolio", label: "Our Work" },
                     { href: "/process", label: "Process" },
