@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Insights & Blog | Tech254",
   description: "Read our latest thoughts on design, engineering, and digital products.",
 };
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 import { formatDate } from "@/lib/utils";
@@ -99,12 +99,6 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                   </article>
                   );
                 })}
-              </div>
-              
-              <div className="mt-24 text-center">
-                <Button variant="outline" size="lg" className="rounded-full px-8">
-                  Load More Articles
-                </Button>
               </div>
             </>
           )}
