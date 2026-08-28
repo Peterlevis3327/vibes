@@ -50,19 +50,30 @@ export default async function TestimonialsPage() {
                     "{testimonial.quote}"
                   </p>
                   <div className="flex flex-col gap-4 mt-auto">
-                    <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-full bg-muted flex-shrink-0 flex items-center justify-center text-muted-foreground/30 relative overflow-hidden">
-                        {testimonial.avatar?.url ? (
-                          <Image src={testimonial.avatar.url} alt={testimonial.avatar.alt || testimonial.name} fill className="object-cover" sizes="48px" />
-                        ) : (
-                          <span className="text-xs">Photo</span>
-                        )}
-                      </div>
-                      <div>
-                        <h4 className="font-bold">{testimonial.name}</h4>
-                        <p className="text-sm text-muted-foreground">{testimonial.role}{testimonial.company ? `, ${testimonial.company}` : ''}</p>
-                      </div>
-                    </div>
+                    {(() => {
+                      const clientName = testimonial.clientName || testimonial.name || "Client";
+                      const clientRole = testimonial.clientRole || testimonial.role || "";
+                      const clientCompany = testimonial.clientCompany || testimonial.company || "";
+                      const roleAndCompany = [clientRole, clientCompany].filter(Boolean).join(", ");
+
+                      return (
+                        <div className="flex items-center gap-4">
+                          <div className="h-12 w-12 rounded-full bg-muted flex-shrink-0 flex items-center justify-center text-muted-foreground/30 relative overflow-hidden">
+                            {testimonial.avatar?.url ? (
+                              <Image src={testimonial.avatar.url} alt={testimonial.avatar.alt || clientName} fill className="object-cover" sizes="48px" />
+                            ) : (
+                              <span className="text-xs">Photo</span>
+                            )}
+                          </div>
+                          <div>
+                            <h4 className="font-bold">{clientName}</h4>
+                            {roleAndCompany && (
+                              <p className="text-sm text-muted-foreground">{roleAndCompany}</p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })()}
                     {testimonial.avatar?.showCaption && testimonial.avatar?.caption && (
                       <p className="text-xs text-muted-foreground mt-2 italic ml-16">
                         {testimonial.avatar.caption}

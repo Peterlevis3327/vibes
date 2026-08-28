@@ -76,8 +76,18 @@ export default function TestimonialsAdminPage() {
     const docId = currentTestimonial.id || currentTestimonial.clientName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     
     try {
+      const clientName = currentTestimonial.clientName || (currentTestimonial as any).name || "";
+      const clientRole = currentTestimonial.clientRole || (currentTestimonial as any).role || "";
+      const clientCompany = currentTestimonial.clientCompany || (currentTestimonial as any).company || "";
+
       const testimonialData = {
         ...currentTestimonial,
+        clientName,
+        clientRole,
+        clientCompany,
+        name: clientName,
+        role: clientRole,
+        company: clientCompany,
         avatar
       };
       
@@ -90,7 +100,7 @@ export default function TestimonialsAdminPage() {
       setAvatar(null);
       fetchData();
     } catch (error) {
-      console.error("Delete error:", error);
+      console.error("Save error:", error);
       toast.error("Failed to save testimonial");
     }
   };
@@ -98,16 +108,24 @@ export default function TestimonialsAdminPage() {
   const handleRestore = (versionData: any) => {
     setCurrentTestimonial({
       ...currentTestimonial,
-      ...versionData
+      ...versionData,
+      clientName: versionData.clientName || versionData.name || "",
+      clientRole: versionData.clientRole || versionData.role || "",
+      clientCompany: versionData.clientCompany || versionData.company || "",
     });
     if (versionData.avatar) {
       setAvatar(versionData.avatar);
     }
   };
 
-  const openEditModal = (testimonial?: Testimonial) => {
+  const openEditModal = (testimonial?: any) => {
     if (testimonial) {
-      setCurrentTestimonial(testimonial);
+      setCurrentTestimonial({
+        ...testimonial,
+        clientName: testimonial.clientName || testimonial.name || "",
+        clientRole: testimonial.clientRole || testimonial.role || "",
+        clientCompany: testimonial.clientCompany || testimonial.company || "",
+      });
       setAvatar(testimonial.avatar || null);
     } else {
       setCurrentTestimonial({ status: "Draft" });
@@ -289,10 +307,10 @@ export default function TestimonialsAdminPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {testimonials.map((testimonial) => (
+            {testimonials.map((testimonial: any) => (
               <TableRow key={testimonial.id}>
-                <TableCell className="font-medium">{testimonial.clientName}</TableCell>
-                <TableCell>{testimonial.clientCompany}</TableCell>
+                <TableCell className="font-medium">{testimonial.clientName || testimonial.name}</TableCell>
+                <TableCell>{testimonial.clientCompany || testimonial.company}</TableCell>
                 <TableCell>
                   <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${testimonial.status === 'Published' ? 'bg-green-500/10 text-green-600' : 'bg-yellow-500/10 text-yellow-600'}`}>
                     {testimonial.status}

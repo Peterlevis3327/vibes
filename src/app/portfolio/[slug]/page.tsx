@@ -211,19 +211,30 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               </p>
               <div className="flex flex-col gap-4 relative z-10">
                 <div>
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-primary-foreground/10 flex-shrink-0 flex items-center justify-center relative overflow-hidden">
-                      {relatedTestimonial.avatar?.url ? (
-                        <Image src={relatedTestimonial.avatar.url} alt={relatedTestimonial.avatar.alt || relatedTestimonial.name} fill className="object-cover" sizes="48px" />
-                      ) : (
-                        <span className="text-xs">Photo</span>
-                      )}
-                    </div>
-                    <div>
-                      <h4 className="font-bold">{relatedTestimonial.name}</h4>
-                      <p className="text-sm opacity-80">{relatedTestimonial.role}{relatedTestimonial.company ? `, ${relatedTestimonial.company}` : ''}</p>
-                    </div>
-                  </div>
+                  {(() => {
+                    const clientName = relatedTestimonial.clientName || relatedTestimonial.name || "Client";
+                    const clientRole = relatedTestimonial.clientRole || relatedTestimonial.role || "";
+                    const clientCompany = relatedTestimonial.clientCompany || relatedTestimonial.company || "";
+                    const roleAndCompany = [clientRole, clientCompany].filter(Boolean).join(", ");
+
+                    return (
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 rounded-full bg-primary-foreground/10 flex-shrink-0 flex items-center justify-center relative overflow-hidden">
+                          {relatedTestimonial.avatar?.url ? (
+                            <Image src={relatedTestimonial.avatar.url} alt={relatedTestimonial.avatar.alt || clientName} fill className="object-cover" sizes="48px" />
+                          ) : (
+                            <span className="text-xs">Photo</span>
+                          )}
+                        </div>
+                        <div>
+                          <h4 className="font-bold">{clientName}</h4>
+                          {roleAndCompany && (
+                            <p className="text-sm opacity-80">{roleAndCompany}</p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
                   {relatedTestimonial.avatar?.showCaption && relatedTestimonial.avatar?.caption && (
                     <p className="text-xs text-primary-foreground/80 mt-3 italic ml-16">
                       {relatedTestimonial.avatar.caption}
