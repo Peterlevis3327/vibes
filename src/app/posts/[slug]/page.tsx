@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 
 import sanitizeHtml from 'sanitize-html';
+import { formatDate } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -28,9 +29,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound();
   }
 
-  const displayDate = post.date?.toDate 
-    ? post.date.toDate().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) 
-    : String(post.date || "");
+  const displayDate = formatDate(post.date);
     
   const cleanContent = sanitizeHtml(post.content || "", {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'iframe' ]),

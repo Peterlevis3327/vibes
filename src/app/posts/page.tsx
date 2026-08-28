@@ -12,6 +12,8 @@ export const metadata: Metadata = {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
+import { formatDate } from "@/lib/utils";
+
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const params = await searchParams;
   const selectedCategory = params.category || "All Insights";
@@ -75,9 +77,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
             <>
               <div className="space-y-16">
                 {posts.map((post: any) => {
-                  const displayDate = post.date?.toDate 
-                    ? post.date.toDate().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) 
-                    : String(post.date || "");
+                  const displayDate = formatDate(post.date);
                   return (
                   <article key={post.id} className="group border-b pb-16 last:border-0 last:pb-0">
                     <Link href={`/posts/${post.id}`} className="group block">

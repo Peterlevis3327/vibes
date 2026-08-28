@@ -17,6 +17,7 @@ import { getAllPosts, saveWithVersionHistory, generateUniqueSlug } from "@/lib/f
 import { db } from "@/lib/firebase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { VersionHistoryPanel } from "@/components/admin/VersionHistoryPanel";
+import { parseDate } from "@/lib/utils";
 
 interface BlogPost {
   id: string;
@@ -46,11 +47,14 @@ export default function PostsAdminPage() {
   const fetchPosts = async () => {
     setIsLoading(true);
     const data = await getAllPosts();
-    // Convert Timestamps to strings for display in the table
-    const formattedData = data.map((p: any) => ({
-      ...p,
-      date: p.date?.toDate ? p.date.toDate().toISOString().split('T')[0] : p.date
-    }));
+    // Convert Timestamps or serialized dates to strings for display in the table
+    const formattedData = data.map((p: any) => {
+      const parsed = parseDate(p.date);
+      return {
+        ...p,
+        date: parsed ? parsed.toISOString().split('T')[0] : (typeof p.date === 'string' ? p.date : todayStr)
+      };
+    });
     setPosts(formattedData as BlogPost[]);
     setIsLoading(false);
   };
