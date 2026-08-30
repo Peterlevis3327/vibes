@@ -125,6 +125,18 @@ function PortfolioAdminContent() {
     try {
       const projectData = {
         ...currentProject,
+        title: currentProject.title?.trim() || "",
+        category: currentProject.category?.trim() || "",
+        year: currentProject.year?.trim() || "",
+        client: currentProject.client?.trim() || "",
+        industry: currentProject.industry?.trim() || "",
+        description: currentProject.description?.trim() || "",
+        challenge: currentProject.challenge?.trim() || "",
+        approach: currentProject.approach?.trim() || "",
+        outcome: currentProject.outcome?.trim() || "",
+        seoTitle: currentProject.seoTitle?.trim() || "",
+        seoDescription: currentProject.seoDescription?.trim() || "",
+        liveLink: currentProject.liveLink?.trim() || "",
         coverImage,
         thumbnailImage,
         galleryImages,
@@ -284,39 +296,43 @@ function PortfolioAdminContent() {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold border-b pb-2">Content & Story</h3>
                 <div className="space-y-2">
-                  <Label>Short Description (Grid View)</Label>
+                  <Label>Project Description / Overview</Label>
+                  <p className="text-xs text-muted-foreground">Comprehensive overview of the project shown on the case study page and portfolio grid.</p>
                   <Textarea 
-                    placeholder="A brief summary for the portfolio grid..." 
+                    placeholder="Describe the project overview, background, objectives, and what was built..." 
                     value={currentProject.description || ""} 
                     onChange={e => setCurrentProject({...currentProject, description: e.target.value})}
-                    rows={2}
+                    rows={5}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>The Challenge</Label>
+                  <Label>The Challenge (Optional)</Label>
+                  <p className="text-xs text-muted-foreground">What problem were we solving? (Leave empty if not applicable)</p>
                   <Textarea 
                     placeholder="What problem were we solving?" 
                     value={currentProject.challenge || ""} 
                     onChange={e => setCurrentProject({...currentProject, challenge: e.target.value})}
-                    rows={4}
+                    rows={3}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>The Approach</Label>
+                  <Label>The Approach (Optional)</Label>
+                  <p className="text-xs text-muted-foreground">How did we solve it? (Leave empty if not applicable)</p>
                   <Textarea 
                     placeholder="How did we solve it?" 
                     value={currentProject.approach || ""} 
                     onChange={e => setCurrentProject({...currentProject, approach: e.target.value})}
-                    rows={4}
+                    rows={3}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>The Outcome</Label>
+                  <Label>The Outcome (Optional)</Label>
+                  <p className="text-xs text-muted-foreground">What were the results and business impact? (Leave empty if not applicable)</p>
                   <Textarea 
                     placeholder="What were the results?" 
                     value={currentProject.outcome || ""} 
                     onChange={e => setCurrentProject({...currentProject, outcome: e.target.value})}
-                    rows={4}
+                    rows={3}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">

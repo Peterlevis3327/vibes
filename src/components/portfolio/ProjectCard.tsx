@@ -33,8 +33,8 @@ export function ProjectCard({ project }: { project: any }) {
         <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">{project.title || `Client Project ${project}`}</h3>
       </div>
       <p className="text-muted-foreground font-medium mb-3">{project.category || "Web Platform"} &middot; {project.year || "2024"}</p>
-      {project.description && (
-        <p className="text-foreground/80 leading-relaxed">{project.description}</p>
+      {project.description?.trim() && (
+        <p className="text-foreground/80 leading-relaxed line-clamp-3">{project.description.trim()}</p>
       )}
     </Link>
   );

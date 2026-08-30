@@ -32,7 +32,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const allTestimonials = await getTestimonials();
   const relatedTestimonial = allTestimonials.find((t: any) => t.relatedProjectId === project.id);
   
-  const linkPreview = project.liveLink ? await getLinkPreview(project.liveLink) : null;
+  const hasLiveLink = Boolean(project.liveLink && project.liveLink.trim());
+  const linkPreview = hasLiveLink ? await getLinkPreview(project.liveLink.trim()) : null;
 
   return (
     <div className="flex flex-col w-full">
@@ -45,28 +46,28 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           <div className="mb-12">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">{project.title}</h1>
             <div className="flex flex-wrap gap-x-8 gap-y-4 text-sm font-medium text-muted-foreground uppercase tracking-wider">
-              {project.client && (
+              {project.client?.trim() && (
                 <div>
                   <span className="block text-xs mb-1">Client</span>
-                  <span className="text-foreground">{project.client}</span>
+                  <span className="text-foreground">{project.client.trim()}</span>
                 </div>
               )}
-              {project.industry && (
+              {project.industry?.trim() && (
                 <div>
                   <span className="block text-xs mb-1">Industry</span>
-                  <span className="text-foreground">{project.industry}</span>
+                  <span className="text-foreground">{project.industry.trim()}</span>
                 </div>
               )}
-              {project.category && (
+              {project.category?.trim() && (
                 <div>
                   <span className="block text-xs mb-1">Services</span>
-                  <span className="text-foreground">{project.category}</span>
+                  <span className="text-foreground">{project.category.trim()}</span>
                 </div>
               )}
-              {project.year && (
+              {project.year?.trim() && (
                 <div>
                   <span className="block text-xs mb-1">Year</span>
-                  <span className="text-foreground">{project.year}</span>
+                  <span className="text-foreground">{project.year.trim()}</span>
                 </div>
               )}
             </div>
@@ -154,39 +155,39 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         })()}
 
         <div className="container mx-auto px-4 md:px-8 max-w-4xl space-y-24">
-          {/* Content Sections — only render if content exists */}
-          {project.description && (
+          {/* Content Sections — only render if non-empty content exists */}
+          {project.description?.trim() && (
             <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16 border-t pt-12">
               <h2 className="text-2xl font-bold">Project Overview</h2>
-              <div className="prose prose-lg">
-                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{project.description}</p>
+              <div className="prose prose-lg max-w-none">
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{project.description.trim()}</p>
               </div>
             </div>
           )}
 
-          {project.challenge && (
+          {project.challenge?.trim() && (
             <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16 border-t pt-12">
               <h2 className="text-2xl font-bold">The Challenge</h2>
-              <div className="prose prose-lg">
-                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{project.challenge}</p>
+              <div className="prose prose-lg max-w-none">
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{project.challenge.trim()}</p>
               </div>
             </div>
           )}
 
-          {project.approach && (
+          {project.approach?.trim() && (
             <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16 border-t pt-12">
               <h2 className="text-2xl font-bold">The Approach</h2>
-              <div className="prose prose-lg">
-                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{project.approach}</p>
+              <div className="prose prose-lg max-w-none">
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{project.approach.trim()}</p>
               </div>
             </div>
           )}
 
-          {project.outcome && (
+          {project.outcome?.trim() && (
             <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16 border-t pt-12">
               <h2 className="text-2xl font-bold">The Outcome</h2>
-              <div className="prose prose-lg">
-                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{project.outcome}</p>
+              <div className="prose prose-lg max-w-none">
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{project.outcome.trim()}</p>
               </div>
             </div>
           )}
@@ -199,7 +200,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           )}
 
           {/* Tech Stack & Links */}
-          {((project.techStack && project.techStack.length > 0) || project.liveLink) && (
+          {((project.techStack && project.techStack.length > 0) || project.liveLink?.trim()) && (
             <div className="bg-muted/30 rounded-3xl p-8 md:p-12 border">
               {project.techStack && project.techStack.length > 0 && (
                 <>
@@ -213,7 +214,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   </div>
                 </>
               )}
-              {project.liveLink && (
+              {project.liveLink?.trim() && (
                 <div className={project.techStack && project.techStack.length > 0 ? "mt-8 pt-8 border-t" : ""}>
                   <h3 className="text-xl font-bold mb-6">Live Project</h3>
                   {linkPreview ? (
@@ -221,12 +222,12 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                       title={linkPreview.title || project.title}
                       description={linkPreview.description || project.description}
                       image={linkPreview.image}
-                      url={project.liveLink}
+                      url={project.liveLink.trim()}
                       domain={linkPreview.domain}
                     />
                   ) : (
                     <a 
-                      href={project.liveLink.startsWith('http://') || project.liveLink.startsWith('https://') ? project.liveLink : `https://${project.liveLink}`} 
+                      href={project.liveLink.trim().startsWith('http://') || project.liveLink.trim().startsWith('https://') ? project.liveLink.trim() : `https://${project.liveLink.trim()}`} 
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className={buttonVariants({ variant: "outline", size: "lg" })}

@@ -23,6 +23,9 @@ interface Testimonial {
   clientRole: string;
   clientCompany: string;
   quote: string;
+  rating?: number; // 1–5
+  date?: string;   // display date e.g. "March 2025"
+  order?: number;  // display order (lower = first)
   avatar?: { url: string; alt: string; caption?: string; showCaption?: boolean };
   status: "Draft" | "Published";
   relatedProjectId?: string;
@@ -88,6 +91,9 @@ export default function TestimonialsAdminPage() {
         name: clientName,
         role: clientRole,
         company: clientCompany,
+        rating: currentTestimonial.rating ?? 5,
+        date: currentTestimonial.date?.trim() || "",
+        order: currentTestimonial.order ?? 0,
         avatar
       };
       
@@ -191,9 +197,6 @@ export default function TestimonialsAdminPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  {/* Empty space for balance or future fields */}
-                </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -222,6 +225,41 @@ export default function TestimonialsAdminPage() {
                   rows={4}
                   required
                 />
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label>Star Rating</Label>
+                  <Select
+                    value={String(currentTestimonial.rating ?? 5)}
+                    onValueChange={(v) => setCurrentTestimonial({...currentTestimonial, rating: Number(v)})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Rating" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[5, 4, 3, 2, 1].map(r => (
+                        <SelectItem key={r} value={String(r)}>{"★".repeat(r)}{"☆".repeat(5 - r)} ({r}/5)</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Display Date (Optional)</Label>
+                  <Input
+                    placeholder="e.g. March 2025"
+                    value={currentTestimonial.date || ""}
+                    onChange={e => setCurrentTestimonial({...currentTestimonial, date: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Order (Optional)</Label>
+                  <Input
+                    type="number"
+                    placeholder="0"
+                    value={currentTestimonial.order ?? ""}
+                    onChange={e => setCurrentTestimonial({...currentTestimonial, order: e.target.value ? Number(e.target.value) : undefined})}
+                  />
+                </div>
               </div>
               <div className="space-y-2">
                 <Label>Avatar Image</Label>
