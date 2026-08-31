@@ -23,7 +23,7 @@ interface TeamMember {
   role: string;
   bio: string;
   avatar?: { url: string; alt: string; caption?: string; showCaption?: boolean };
-  socialLinks?: { linkedin?: string; twitter?: string; portfolioUrl?: string };
+  socialLinks?: { linkedin?: string; github?: string; twitter?: string; portfolioUrl?: string };
   roleColor?: string;
   status: "Draft" | "Published";
 }
@@ -290,7 +290,7 @@ export default function TeamAdminPage() {
               </div>
               
               <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Links</h3>
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Links & Analytics</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>LinkedIn URL</Label>
@@ -301,18 +301,18 @@ export default function TeamAdminPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Twitter / X URL</Label>
+                    <Label>GitHub URL</Label>
                     <Input 
-                      placeholder="https://twitter.com/..." 
-                      value={currentMember.socialLinks?.twitter || ""} 
-                      onChange={e => setCurrentMember({...currentMember, socialLinks: {...currentMember.socialLinks, twitter: e.target.value}})}
+                      placeholder="https://github.com/..." 
+                      value={currentMember.socialLinks?.github || ""} 
+                      onChange={e => setCurrentMember({...currentMember, socialLinks: {...currentMember.socialLinks, github: e.target.value}})}
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Portfolio / Website URL</Label>
+                  <Label>Portfolio / External Website URL</Label>
                   <Input 
-                    placeholder="https://yourname.dev or any URL..." 
+                    placeholder="https://yourname.dev or external link..." 
                     value={currentMember.socialLinks?.portfolioUrl || ""} 
                     onChange={e => setCurrentMember({...currentMember, socialLinks: {...currentMember.socialLinks, portfolioUrl: e.target.value}})}
                   />
