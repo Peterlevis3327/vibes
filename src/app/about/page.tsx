@@ -2,7 +2,7 @@ import Image from "next/image";
 
 
 import { Metadata } from "next";
-import { Users, Target, Zap, Globe } from "lucide-react";
+import { Linkedin, Twitter, Globe } from "lucide-react";
 import { getTeamMembers, getPageData } from "@/lib/firebase/db";
 import { PageHeader } from "@/components/layout/PageHeader";
 
@@ -67,27 +67,73 @@ export default async function AboutPage() {
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-              {team.map((member: any) => (
-                <div key={member.id} className="group">
+              {team.map((member: any) => {
+                const linkedin = member.socialLinks?.linkedin?.trim();
+                const twitter = member.socialLinks?.twitter?.trim();
+                const portfolioUrl = member.socialLinks?.portfolioUrl?.trim();
+                const hasLinks = linkedin || twitter || portfolioUrl;
+
+                return (
+                  <div key={member.id} className="group">
                     <div className="aspect-[4/5] bg-background/10 rounded-2xl mb-6 overflow-hidden relative">
-                       {member.avatar?.url ? (
-                         <Image src={member.avatar.url} alt={member.avatar.alt || member.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw" />
-                       ) : (
-                         <div className="absolute inset-0 flex items-center justify-center text-background/30">
+                      {member.avatar?.url ? (
+                        <Image src={member.avatar.url} alt={member.avatar.alt || member.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw" />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-background/30">
                           <span>Portrait</span>
                         </div>
-                       )}
+                      )}
                     </div>
                     {member.avatar?.showCaption && member.avatar?.caption && (
                       <p className="text-sm text-muted-foreground mt-2 italic text-center mb-4">
                         {member.avatar.caption}
                       </p>
                     )}
-                  <h3 className="text-xl font-bold">{member.name}</h3>
-                  <p className="font-medium mb-3" style={{ color: member.roleColor || 'hsl(var(--primary))' }}>{member.role}</p>
-                  <p className="text-background/70 text-sm leading-relaxed">{member.bio}</p>
-                </div>
-              ))}
+                    <h3 className="text-xl font-bold">{member.name}</h3>
+                    <p className="font-medium mb-3" style={{ color: member.roleColor || 'hsl(var(--primary))' }}>{member.role}</p>
+                    <p className="text-background/70 text-sm leading-relaxed mb-4">{member.bio}</p>
+
+                    {/* Social & Portfolio Links */}
+                    {hasLinks && (
+                      <div className="flex items-center gap-3 pt-3 border-t border-background/10">
+                        {linkedin && (
+                          <a
+                            href={linkedin.startsWith("http") ? linkedin : `https://${linkedin}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${member.name} on LinkedIn`}
+                            className="text-background/50 hover:text-background transition-colors"
+                          >
+                            <Linkedin className="h-4 w-4" />
+                          </a>
+                        )}
+                        {twitter && (
+                          <a
+                            href={twitter.startsWith("http") ? twitter : `https://${twitter}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${member.name} on Twitter`}
+                            className="text-background/50 hover:text-background transition-colors"
+                          >
+                            <Twitter className="h-4 w-4" />
+                          </a>
+                        )}
+                        {portfolioUrl && (
+                          <a
+                            href={portfolioUrl.startsWith("http") ? portfolioUrl : `https://${portfolioUrl}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${member.name}'s portfolio`}
+                            className="text-background/50 hover:text-background transition-colors"
+                          >
+                            <Globe className="h-4 w-4" />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

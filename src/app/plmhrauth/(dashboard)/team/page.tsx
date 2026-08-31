@@ -23,7 +23,7 @@ interface TeamMember {
   role: string;
   bio: string;
   avatar?: { url: string; alt: string; caption?: string; showCaption?: boolean };
-  socialLinks?: { linkedin?: string; twitter?: string };
+  socialLinks?: { linkedin?: string; twitter?: string; portfolioUrl?: string };
   roleColor?: string;
   status: "Draft" | "Published";
 }
@@ -289,21 +289,32 @@ export default function TeamAdminPage() {
                 />
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>LinkedIn URL</Label>
-                  <Input 
-                    placeholder="https://linkedin.com/..." 
-                    value={currentMember.socialLinks?.linkedin || ""} 
-                    onChange={e => setCurrentMember({...currentMember, socialLinks: {...currentMember.socialLinks, linkedin: e.target.value}})}
-                  />
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Links</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>LinkedIn URL</Label>
+                    <Input 
+                      placeholder="https://linkedin.com/in/..." 
+                      value={currentMember.socialLinks?.linkedin || ""} 
+                      onChange={e => setCurrentMember({...currentMember, socialLinks: {...currentMember.socialLinks, linkedin: e.target.value}})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Twitter / X URL</Label>
+                    <Input 
+                      placeholder="https://twitter.com/..." 
+                      value={currentMember.socialLinks?.twitter || ""} 
+                      onChange={e => setCurrentMember({...currentMember, socialLinks: {...currentMember.socialLinks, twitter: e.target.value}})}
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Twitter/X URL</Label>
+                  <Label>Portfolio / Website URL</Label>
                   <Input 
-                    placeholder="https://twitter.com/..." 
-                    value={currentMember.socialLinks?.twitter || ""} 
-                    onChange={e => setCurrentMember({...currentMember, socialLinks: {...currentMember.socialLinks, twitter: e.target.value}})}
+                    placeholder="https://yourname.dev or any URL..." 
+                    value={currentMember.socialLinks?.portfolioUrl || ""} 
+                    onChange={e => setCurrentMember({...currentMember, socialLinks: {...currentMember.socialLinks, portfolioUrl: e.target.value}})}
                   />
                 </div>
               </div>
