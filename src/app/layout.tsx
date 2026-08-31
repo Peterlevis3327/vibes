@@ -95,7 +95,7 @@ export default async function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <Navbar siteName={settings.siteName || "Tech254"} />
+          <Navbar siteName={settings.siteName || "Tech254"} logoUrl={settings.logoUrl} />
           <main className="flex-1">
             {children}
           </main>

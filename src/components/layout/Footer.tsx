@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { BrandLogo } from "./BrandLogo";
 
 export function Footer({ siteName = "Tech254" }: { siteName?: string }) {
   const pathname = usePathname();
@@ -12,7 +13,9 @@ export function Footer({ siteName = "Tech254" }: { siteName?: string }) {
       <div className="container px-4 md:px-8 py-8 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           <div className="col-span-2 md:col-span-1 space-y-4">
-            <h3 className="text-lg font-bold">{siteName}</h3>
+            <Link href="/" className="inline-block" aria-label={`${siteName} Home`}>
+              <BrandLogo siteName={siteName} showStudioBadge={false} />
+            </Link>
             <p className="text-sm text-muted-foreground">
               We design and build websites and apps that deliver concrete outcomes.
             </p>

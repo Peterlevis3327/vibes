@@ -6,8 +6,9 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { BrandLogo } from "./BrandLogo";
 
-export function Navbar({ siteName = "Tech254" }: { siteName?: string }) {
+export function Navbar({ siteName = "Tech254", logoUrl }: { siteName?: string; logoUrl?: string }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
@@ -23,10 +24,10 @@ export function Navbar({ siteName = "Tech254" }: { siteName?: string }) {
   if (pathname?.startsWith("/plmhrauth")) return null;
 
   return (
-    <header className={`sticky top-0 z-50 w-full transition-shadow duration-300 bg-background ${isScrolled ? 'shadow-sm border-b' : 'border-b-transparent'}`}>
+    <header className={`sticky top-0 z-50 w-full transition-all duration-300 bg-background/95 backdrop-blur-md ${isScrolled ? 'shadow-sm border-b' : 'border-b border-border/40'}`}>
       <div className="container flex h-16 items-center justify-between px-4 md:px-8">
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="font-bold text-xl tracking-tight">{siteName}</span>
+        <Link href="/" className="flex items-center" aria-label={`${siteName} Home`}>
+          <BrandLogo siteName={siteName} logoUrl={logoUrl} />
         </Link>
         <nav className="hidden md:flex gap-6">
           <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
