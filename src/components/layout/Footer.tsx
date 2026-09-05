@@ -20,35 +20,40 @@ export function Footer({ siteName = "Tech254" }: { siteName?: string }) {
               We design and build websites and apps that deliver concrete outcomes.
             </p>
           </div>
-          <div className="col-span-1">
-            <h4 className="font-medium mb-3 md:mb-4">Company</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/" className="hover:text-foreground">Home</Link></li>
-              <li><Link href="/about" className="hover:text-foreground">About Us</Link></li>
-              <li><Link href="/services" className="hover:text-foreground">Services</Link></li>
-              <li><Link href="/testimonials" className="hover:text-foreground">Testimonials</Link></li>
-              <li><Link href="/posts" className="hover:text-foreground">Insights</Link></li>
-              <li><Link href="/process" className="hover:text-foreground">Process</Link></li>
-            </ul>
+          <div className="col-span-1 flex flex-col md:items-center">
+            <div>
+              <h4 className="font-medium mb-3 md:mb-4">Company</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link href="/" className="hover:text-foreground transition-colors">Home</Link></li>
+                <li><Link href="/about" className="hover:text-foreground transition-colors">About Us</Link></li>
+                <li><Link href="/services" className="hover:text-foreground transition-colors">Services</Link></li>
+                <li><Link href="/testimonials" className="hover:text-foreground transition-colors">Testimonials</Link></li>
+                <li><Link href="/posts" className="hover:text-foreground transition-colors">Insights</Link></li>
+                <li><Link href="/process" className="hover:text-foreground transition-colors">Process</Link></li>
+              </ul>
+            </div>
           </div>
-          <div className="col-span-1">
-            <h4 className="font-medium mb-3 md:mb-4">Services</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/services" className="hover:text-foreground">Web Development</Link></li>
-              <li><Link href="/services" className="hover:text-foreground">Mobile App Development</Link></li>
-              <li><Link href="/portfolio" className="hover:text-foreground">Portfolio</Link></li>
-            </ul>
+          <div className="col-span-1 flex flex-col md:items-center">
+            <div>
+              <h4 className="font-medium mb-3 md:mb-4">Services</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link href="/services" className="hover:text-foreground transition-colors">Web Development</Link></li>
+                <li><Link href="/services" className="hover:text-foreground transition-colors">Mobile App Development</Link></li>
+                <li><Link href="/portfolio" className="hover:text-foreground transition-colors">Portfolio</Link></li>
+              </ul>
+            </div>
           </div>
-          <div className="col-span-2 md:col-span-1">
-            <h4 className="font-medium mb-3 md:mb-4">Contact</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-             
-              <li className="pt-1 md:pt-2">
-                <Link href="/contact" className="font-medium text-foreground hover:underline">
-                 <u>Get in touch</u> 
-                </Link>
-              </li>
-            </ul>
+          <div className="col-span-2 md:col-span-1 flex flex-col md:items-center">
+            <div>
+              <h4 className="font-medium mb-3 md:mb-4">Contact</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="pt-1 md:pt-2">
+                  <Link href="/contact" className="font-medium text-foreground hover:underline transition-colors">
+                    <u>Get in touch</u> 
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
         <div className="mt-8 pt-6 md:mt-12 md:pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
