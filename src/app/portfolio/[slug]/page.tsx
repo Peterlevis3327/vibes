@@ -223,7 +223,9 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                       description={linkPreview.description || project.description}
                       image={linkPreview.image}
                       url={project.liveLink.trim()}
+                      fallbackImage={project.coverImage?.url || project.images?.[0]?.url || null}
                       domain={linkPreview.domain}
+                      canEmbed={linkPreview.canEmbed}
                     />
                   ) : (
                     <a 

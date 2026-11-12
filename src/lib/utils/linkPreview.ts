@@ -7,6 +7,26 @@ export interface LinkPreviewData {
   image: string | null;
   url: string;
   domain: string;
+  canEmbed: boolean;
+}
+
+function isEmbeddable(headers: Headers): boolean {
+  const xFrameOptions = (headers.get('x-frame-options') || '').trim().toUpperCase();
+  if (xFrameOptions.includes('DENY') || xFrameOptions.includes('SAMEORIGIN') || xFrameOptions.includes('ALLOW-FROM')) {
+    return false;
+  }
+
+  const csp = headers.get('content-security-policy') || '';
+  const frameAncestorsMatch = csp.match(/frame-ancestors\s+([^;]+)/i);
+  if (frameAncestorsMatch) {
+    const tokens = frameAncestorsMatch[1].trim().toLowerCase().split(/\s+/);
+    const allowsAll = tokens.includes('*') || tokens.includes('https:');
+    if (!allowsAll) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 const fetchMetadata = async (url: string): Promise<LinkPreviewData | null> => {
@@ -63,12 +83,15 @@ const fetchMetadata = async (url: string): Promise<LinkPreviewData | null> => {
       }
     }
 
+    const canEmbed = isEmbeddable(response.headers);
+
     return {
       title,
       description,
       image,
       url,
-      domain
+      domain,
+      canEmbed,
     };
   } catch (error) {
     console.warn(`Link preview unavailable for ${url}:`, (error as Error)?.message || error);
@@ -88,7 +111,7 @@ export const getLinkPreview = async (rawUrl: string): Promise<LinkPreviewData | 
 
   return unstable_cache(
     async () => fetchMetadata(normalizedUrl),
-    [`link-preview-${normalizedUrl}`],
+    [`link-preview-v2-${normalizedUrl}`],
     { revalidate: 86400 }
   )();
 };
