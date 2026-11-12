@@ -1,5 +1,3 @@
-
-
 import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Quote } from "lucide-react";
@@ -7,7 +5,7 @@ import { getProjectBySlug, getTestimonials } from "@/lib/firebase/db";
 import { getLinkPreview } from "@/lib/utils/linkPreview";
 import { LinkPreviewCard } from "@/components/ui/LinkPreviewCard";
 import { notFound } from "next/navigation";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
 import ProjectGallery from "./ProjectGallery";
 
@@ -73,86 +71,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             </div>
           </div>
         </div>
-
-        {/* Hero Image */}
-        {(() => {
-          const isMobile = project.category?.toLowerCase().includes('mobile');
-          const imgSrc = project.coverImage?.url || project.images?.[0]?.url;
-          const imgAlt = project.coverImage?.alt || project.images?.[0]?.alt || project.title;
-          
-          return (
-            <div className="w-full max-w-7xl mx-auto px-4 md:px-8 mb-24">
-              {isMobile ? (
-                // Mobile Device Mockup
-                <div className="relative w-full max-w-sm mx-auto flex flex-col">
-                  <div className="relative aspect-[9/19] w-full rounded-[3rem] border-[14px] border-foreground/90 bg-foreground/90 shadow-2xl overflow-hidden ring-1 ring-border/20">
-                    {/* Top Notch */}
-                    <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-20 pointer-events-none">
-                      <div className="w-32 h-6 bg-foreground/90 rounded-b-3xl"></div>
-                    </div>
-                    {/* Screen Content */}
-                    <div className="relative w-full h-full bg-background overflow-hidden rounded-[2rem]">
-                      {imgSrc ? (
-                        <Image 
-                          src={imgSrc} 
-                          alt={imgAlt} 
-                          fill 
-                          className="object-cover" 
-                          priority 
-                          sizes="(max-width: 768px) 100vw, 400px"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
-                          <span>Mobile Mockup</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                // Web Browser Mockup
-                <div className="relative w-full rounded-2xl md:rounded-3xl border shadow-xl bg-card overflow-hidden flex flex-col">
-                  {/* Browser Chrome */}
-                  <div className="h-10 border-b bg-muted/50 flex items-center px-4 gap-2 relative z-20 flex-shrink-0">
-                    <div className="flex gap-2">
-                      <div className="w-3 h-3 rounded-full bg-red-400/80"></div>
-                      <div className="w-3 h-3 rounded-full bg-amber-400/80"></div>
-                      <div className="w-3 h-3 rounded-full bg-green-400/80"></div>
-                    </div>
-                    <div className="absolute inset-x-0 mx-auto flex justify-center pointer-events-none hidden sm:flex">
-                      <div className="h-6 bg-background rounded-md border text-[10px] font-medium flex items-center px-6 text-muted-foreground justify-center shadow-sm max-w-[200px] truncate">
-                        {project.title.toLowerCase().replace(/\s+/g, '')}.com
-                      </div>
-                    </div>
-                  </div>
-                  {/* Screen Content — fixed aspect ratio so image always fits */}
-                  <div className="relative w-full aspect-[16/9] bg-muted/20">
-                    {imgSrc ? (
-                      <Image 
-                        src={imgSrc} 
-                        alt={imgAlt} 
-                        fill 
-                        className="object-contain object-top" 
-                        priority 
-                        sizes="100vw"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
-                        <span>Web Mockup</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-              
-              {project.coverImage?.showCaption && project.coverImage?.caption && (
-                <p className="text-center text-sm text-muted-foreground mt-8 italic w-full">
-                  {project.coverImage.caption}
-                </p>
-              )}
-            </div>
-          );
-        })()}
 
         <div className="container mx-auto px-4 md:px-8 max-w-4xl space-y-24">
           {/* Content Sections — only render if non-empty content exists */}
@@ -283,8 +201,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               </div>
             </div>
           )}
-          
-
         </div>
       </article>
     </div>
